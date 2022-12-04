@@ -12,6 +12,15 @@ func main() {
 	*/
 	fmt.Println(add(1, 3))
 	add3(1, 2, 3, 6)
+
+	// 闭包
+	nextFn := add9()
+	fmt.Println(nextFn())
+	fmt.Println(nextFn())
+	fmt.Println(nextFn())
+	fmt.Println(nextFn())
+
+	add10()
 }
 
 func add(a, b int) int {
@@ -57,4 +66,21 @@ func add7(fn func(int) int) func(int) int {
 
 var add8 = func(a int) int {
 	return a
+}
+
+// 闭包
+func add9() func() int {
+	local := 0 // 一个函数中，访问另外一个函数的局部变量是不行的
+	return func() int {
+		local += 1
+		return local
+	}
+}
+
+// defer 在return之前执行。用来最后来释放资源等功能
+func add10() {
+	defer fmt.Println("defer1") // 最后执行
+	defer fmt.Println("defer2") // 3
+	defer fmt.Println("defer3") // 2
+	fmt.Println("add")          // 最先执行
 }
