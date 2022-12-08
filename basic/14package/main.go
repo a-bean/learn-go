@@ -3,12 +3,12 @@ package main
 // 可以定义别名
 import (
 	"fmt"
-	User "learn-go/14package/user"
+	"learn-go/basic/14package/user"
 )
 
 // 引入不用
 import (
-	_ "learn-go/14package/user"
+	_ "learn-go/basic/14package/user"
 )
 
 func main() {
@@ -17,8 +17,8 @@ func main() {
 	// package的名称可以不跟所属文件夹名称一致
 	// 同一个文件夹下的多个文件package名称都要一致
 	// 同一个文件夹下的多个文件可以互相访问（前提是：变量大写开头）
-	c := User.Course{
+	c := user.Course{
 		Name: "math",
 	}
-	fmt.Println(User.GetCourse(c))
+	fmt.Println(user.GetCourse(c))
 }
