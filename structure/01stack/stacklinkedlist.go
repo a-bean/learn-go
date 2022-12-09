@@ -1,5 +1,7 @@
 package stack
 
+import "fmt"
+
 type Node struct {
 	Val  any
 	Next *Node
@@ -48,6 +50,7 @@ func (ls *ListStack) Show() []any {
 	if cur.Val != nil {
 		list = append(list, cur.Val)
 		cur = cur.Next
+		fmt.Println(cur)
 	}
 	return list
 }
