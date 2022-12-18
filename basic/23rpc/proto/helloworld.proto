@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "/ipc";
+
+service Hello {
+  rpc Hello(HelloRequest) returns (Response);// hello 接口
+}
+
+message HelloRequest {
+  string name = 1; // 编号，不是值
+  int32 age = 2; // int不支持
+  repeated string courses = 3;
+}
+
+message Response {
+  string reply = 1;
+}
