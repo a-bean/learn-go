@@ -27,6 +27,7 @@ func (s *server) GetStream(req *p.SteamReqData, res p.Greeter_GetStreamServer) e
 	}
 	return nil
 }
+
 func (s *server) PutStream(cliStr p.Greeter_PutStreamServer) error {
 	for {
 		a, err := cliStr.Recv()

@@ -4,7 +4,6 @@ option go_package = "/grpc";
 
 service Greeter {
   rpc SayHello(HelloRequest) returns (HelloReply);// hello 接口
-  
 }
 
 message HelloRequest {
