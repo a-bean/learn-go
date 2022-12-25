@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "/metadata";
+
+service Greeter {
+  rpc SayHello(HelloRequest) returns (HelloReply);// hello 接口
+}
+
+message HelloRequest {
+  string name = 1; // 编号，不是值
+}
+
+message HelloReply {
+  string message = 1;
+}
