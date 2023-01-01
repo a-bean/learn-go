@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
 	p "learn-go/basic/23rpc/grpc"
 	"net"
 )
@@ -28,12 +26,12 @@ func (s *Server) SayHello(ctx context.Context, request *p.HelloRequest) (
 		fmt.Println(key, val)
 	}
 
-	//return &p.HelloReply{
-	//	Message: "hello! " + request.Name,
-	//}, status.New(codes.NotFound, "参数错误")
+	return &p.HelloReply{
+		Message: "hello! " + request.Name,
+	}, nil
 
 	// 状态码
-	return nil, status.Error(codes.NotFound, "参数错误")
+	//return nil, status.Error(codes.NotFound, "参数错误")
 
 }
 

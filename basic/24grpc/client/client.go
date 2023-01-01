@@ -30,8 +30,8 @@ func main() {
 			panic("解析err失败")
 
 		}
-		st.Message()
-		st.Code()
+		fmt.Println(st.Message())
+		fmt.Println(st.Code())
 	}
 	defer conn.Close()
 	c := p.NewGreeterClient(conn)
@@ -42,6 +42,9 @@ func main() {
 		"age":  "24",
 	})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	// 设置超时时间
+	//ctx, _ := context.WithTimeout(context.Background(), time.Second*3)
 
 	r, err1 := c.SayHello(ctx, &p.HelloRequest{Name: "kobe"})
 	if err1 != nil {
