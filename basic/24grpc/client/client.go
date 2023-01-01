@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 	p "learn-go/basic/23rpc/grpc"
 	"time"
 )
@@ -22,7 +23,15 @@ func main() {
 	opts := grpc.WithUnaryInterceptor(interceptor) //拦截器
 	conn, err := grpc.Dial("0.0.0.0:8081", grpc.WithTransportCredentials(insecure.NewCredentials()), opts)
 	if err != nil {
-		panic(err)
+		//panic(err)
+		// 解析错误（拿到code跟message）
+		st, ok := status.FromError(err)
+		if !ok {
+			panic("解析err失败")
+
+		}
+		st.Message()
+		st.Code()
 	}
 	defer conn.Close()
 	c := p.NewGreeterClient(conn)
