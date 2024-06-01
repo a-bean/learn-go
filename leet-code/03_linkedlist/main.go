@@ -61,9 +61,6 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	return protect.Next
 }
 
-<<<<<<< HEAD
-func main() {
-=======
 // https://leetcode.cn/problems/linked-list-cycle/
 func hasCycle(head *ListNode) bool {
 	first := head
@@ -99,5 +96,4 @@ func main() {
 		Val:  1,
 		Next: nil,
 	}, 1)
->>>>>>> c562ac88cbd32bb26a6789b909c44a89a3e39a64
 }
