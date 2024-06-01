@@ -1,6 +1,7 @@
 package main
 
 // https://leetcode.cn/problems/reverse-linked-list/
+// https://leetcode.cn/problems/reverse-nodes-in-k-group/submissions/533767895/
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -60,5 +61,43 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	return protect.Next
 }
 
+<<<<<<< HEAD
 func main() {
+=======
+// https://leetcode.cn/problems/linked-list-cycle/
+func hasCycle(head *ListNode) bool {
+	first := head
+	for first != nil && first.Next != nil {
+		first = first.Next.Next
+		head = head.Next
+		if first == head {
+			return true
+		}
+	}
+	return false
+}
+
+// https://leetcode.cn/problems/merge-two-sorted-lists/description/
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+	if list1 == nil {
+		return list2
+	}
+	if list2 == nil {
+		return list1
+	}
+
+	if list1.Val < list2.Val {
+		list1.Next = mergeTwoLists(list1.Next, list2)
+		return list1
+	}
+	list2.Next = mergeTwoLists(list1, list2.Next)
+	return list2
+}
+
+func main() {
+	reverseKGroup(&ListNode{
+		Val:  1,
+		Next: nil,
+	}, 1)
+>>>>>>> c562ac88cbd32bb26a6789b909c44a89a3e39a64
 }
