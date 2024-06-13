@@ -1,7 +1,6 @@
 package main
 
-// https://leetcode.cn/problems/reverse-linked-list/
-// https://leetcode.cn/problems/reverse-nodes-in-k-group/submissions/533767895/
+// 206: https://leetcode.cn/problems/reverse-linked-list/
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -18,7 +17,7 @@ func reverseList(head *ListNode) *ListNode {
 	return behind
 }
 
-// https://leetcode.cn/problems/reverse-nodes-in-k-group/description/
+// 25: https://leetcode.cn/problems/reverse-nodes-in-k-group/description/
 func getEnd(head *ListNode, k int) *ListNode {
 	for head != nil {
 		k--
@@ -61,7 +60,7 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	return protect.Next
 }
 
-// https://leetcode.cn/problems/linked-list-cycle/
+// 141: https://leetcode.cn/problems/linked-list-cycle/
 func hasCycle(head *ListNode) bool {
 	first := head
 	for first != nil && first.Next != nil {
@@ -74,7 +73,7 @@ func hasCycle(head *ListNode) bool {
 	return false
 }
 
-// https://leetcode.cn/problems/merge-two-sorted-lists/description/
+// 21: https://leetcode.cn/problems/merge-two-sorted-lists/description/
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	if list1 == nil {
 		return list2
