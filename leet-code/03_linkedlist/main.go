@@ -90,6 +90,23 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	return list2
 }
 
+// 23: https://leetcode.cn/problems/merge-k-sorted-lists/description/
+func mergeKLists(lists []*ListNode) *ListNode {
+	length := len(lists)
+	if length == 0 {
+		return nil
+	}
+
+	if length == 1 {
+		return lists[0]
+	}
+	num := length / 2
+	left := mergeKLists(lists[:num])
+	right := mergeKLists(lists[num:])
+
+	return mergeTwoLists(left, right)
+}
+
 func main() {
 	reverseKGroup(&ListNode{
 		Val:  1,
