@@ -56,6 +56,69 @@ func shortestSubarray(A []int, K int) int {
 	return -1
 }
 
+// 622: https://leetcode.cn/problems/design-circular-queue/description/
+type MyCircularQueue struct {
+	size  int
+	cap   int
+	queue []int
+	left  int
+	right int
+}
+
+func Constructor(k int) MyCircularQueue {
+	return MyCircularQueue{
+		size:  0,
+		cap:   k,
+		queue: make([]int, k),
+		left:  0,
+		right: 0,
+	}
+}
+
+func (this *MyCircularQueue) EnQueue(value int) bool {
+	if this.IsFull() {
+		return false
+	}
+	this.size++
+	this.queue[this.right] = value
+	this.right++
+	this.right %= this.cap
+	return true
+}
+
+func (this *MyCircularQueue) DeQueue() bool {
+	if this.IsEmpty() {
+		return false
+	}
+	this.size--
+	this.left++
+	this.left %= this.cap
+	return true
+}
+
+func (this *MyCircularQueue) Front() int {
+	if this.IsEmpty() {
+		return -1
+	}
+	return this.queue[this.left]
+}
+
+func (this *MyCircularQueue) Rear() int {
+	if this.IsEmpty() {
+		return -1
+	}
+	if this.right == 0 {
+		return this.queue[this.cap-1]
+	}
+	return this.queue[this.right-1]
+}
+
+func (this *MyCircularQueue) IsEmpty() bool {
+	return this.size == 0
+}
+func (this *MyCircularQueue) IsFull() bool {
+	return this.size == this.cap
+}
 func main() {
 	fmt.Println(maxSlidingWindow([]int{1, 3, -1, -3, 5, 3, 6, 7}, 3))
 	fmt.Println(shortestSubarray([]int{1, 3, -1, -3, 5, 3, 6, 7}, 2))
