@@ -8,25 +8,25 @@ type Node struct {
 }
 
 type ListStack struct {
-	top    *Node
+	head   *Node
 	length int
 }
 
 func (ls *ListStack) Push(n any) {
 	node := &Node{
 		Val:  n,
-		Next: ls.top,
+		Next: ls.head,
 	}
-	ls.top = node
+	ls.head = node
 	ls.length++
 }
 
 func (ls *ListStack) Pop() any {
-	cur := ls.top.Val
-	if ls.top.Next == nil {
-		ls.top = nil
+	cur := ls.head.Val
+	if ls.head.Next == nil {
+		ls.head = nil
 	} else {
-		ls.top.Val, ls.top.Next = ls.top.Next.Val, ls.top.Next.Next
+		ls.head.Val, ls.head.Next = ls.head.Next.Val, ls.head.Next.Next
 	}
 	ls.length--
 	return cur
@@ -41,12 +41,12 @@ func (ls *ListStack) IsEmpty() bool {
 }
 
 func (ls *ListStack) Peak() any {
-	return ls.top.Val
+	return ls.head.Val
 }
 
 func (ls *ListStack) Show() []any {
 	var list []any
-	cur := ls.top
+	cur := ls.head
 	if cur.Val != nil {
 		list = append(list, cur.Val)
 		cur = cur.Next
