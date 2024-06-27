@@ -11,6 +11,7 @@ func main() {
 
 	// 初始化
 	arr := [4]int{112, 3, 6, 4}
+
 	slice2 := arr[0:2]
 	fmt.Println(slice2)
 

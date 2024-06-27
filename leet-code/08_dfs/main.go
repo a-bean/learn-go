@@ -80,6 +80,51 @@ func findPath(n *TreeNode, sum int, slice [][]int, stack []int) [][]int {
 	return slice
 }
 
+// 226: https://leetcode.com/problems/invert-binary-tree/
+func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	invertTree(root.Left)
+	invertTree(root.Right)
+	root.Left, root.Right = root.Right, root.Left
+	return root
+}
+
+// 230: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+func kthSmallest(root *TreeNode, k int) int {
+	ans, count := 0, 0
+	inOrder(root, k, &count, &ans)
+	return ans
+}
+
+func inOrder(root *TreeNode, k int, count *int, ans *int) {
+
+	if root != nil {
+		inOrder(root.Left, k, count, ans)
+		*count++
+		if k == *count {
+			*ans = root.Val
+			return
+		}
+		inOrder(root.Right, k, count, ans)
+	}
+}
+
+// 235: https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/description/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if p == nil || q == nil || root == nil {
+		return nil
+	}
+	if p.Val < root.Val && q.Val < root.Val {
+		return lowestCommonAncestor(root.Left, p, q)
+	}
+	if p.Val > root.Val && q.Val > root.Val {
+		return lowestCommonAncestor(root.Right, p, q)
+	}
+	return root
+}
+
 func main() {
 	fmt.Println(letterCombinations("23"))
 }
