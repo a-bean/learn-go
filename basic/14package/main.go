@@ -3,12 +3,17 @@ package main
 // 可以定义别名
 import (
 	"fmt"
-	"learn-go/basic/14package/user"
+	user "learn-go/basic/14package/user" // 别名，默认就是package名
 )
 
 // 引入不用
 import (
 	_ "learn-go/basic/14package/user"
+)
+
+// 不用前缀直接使用（尽量少用）
+import (
+	. "learn-go/basic/14package/user"
 )
 
 func main() {
@@ -21,4 +26,10 @@ func main() {
 		Name: "math",
 	}
 	fmt.Println(user.GetCourse(c))
+
+	// 不用前缀直接使用
+	c1 := Course{
+		Name: "math",
+	}
+	fmt.Println(user.GetCourse(c1))
 }

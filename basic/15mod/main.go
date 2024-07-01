@@ -17,6 +17,7 @@ func main() {
 }
 
 /* 常用命令
+go list -m -versions *** 查看包的可用版本
 go get :下载依赖
 go get -u:升级依赖到最新
 go get -u=patch:升级依赖到最新的修订版
