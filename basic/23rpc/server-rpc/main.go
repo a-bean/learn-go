@@ -20,5 +20,6 @@ func main() {
 	_ = rpc.RegisterName("HelloService", &HelloService{})
 	// 3. 启动服务
 	conn, _ := listener.Accept()
-	rpc.ServeConn(conn)
+	rpc.ServeConn(conn) // golang默认的协议 gob 序列化
+	// rpc.ServeCodec(jsonrpc.NewServerCodec(conn)) // json 序列化
 }
