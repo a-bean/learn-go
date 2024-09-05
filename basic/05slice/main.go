@@ -22,6 +22,16 @@ func main() {
 	slice4[0] = 2
 	fmt.Println(slice4)
 
+	// 切片的字面量表达式
+	s1 := []string{"a", "b", "c"}
+	s2 := []string{0: "a", 1: "b", 2: "c"}
+	s3 := []string{2: "a", 1: "b", 0: "c"}
+	s4 := []string{2: "a", 0: "b", "c"}
+	fmt.Println(s1)
+	fmt.Println(s2)
+	fmt.Println(s3)
+	fmt.Println(s4)
+
 	// 访问 单个和多个
 	fmt.Println(slice3[0], slice3[0:3], slice3[:2], slice3[1:], slice3[:])
 
@@ -52,6 +62,9 @@ func main() {
 	slice5 := []int{1, 3, 65}
 	print(slice5)
 	fmt.Println(slice5)
+
+	aa := []int{4: 44, 55, 66, 1: 77, 88}
+	fmt.Println(aa) //[0 77 88 0 44 55 66]
 
 }
 
