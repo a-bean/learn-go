@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-option go_package = "/ipc";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/ipc"; // 用来指定代码生成路径
 
 service Hello {
   rpc Hello(HelloRequest) returns (Response);// hello 接口
@@ -14,12 +16,46 @@ message HelloRequest {
 
 message Response {
   string reply = 1;
+  string reply1 = 2;
 }
+
 // 嵌套
+message HelloResponse {
+  string reply = 1;
+  message Result {
+    string reply1 = 1;
+  }
+
+}
 message result {
   string a = 1;
    message result1 {
     string b = 2;
   }
   repeated HelloRequest data = 3;
+}
+
+// 枚举
+enum Gender {
+  UNKNOWN = 0;
+  FEMALE = 1;
+  MALE = 2;
+}
+
+message User {
+  Gender gender = 1;
+}
+
+// map
+message UserMap {
+  map<string, User> user = 1;
+}
+
+message MapMessage {
+  UserMap userMap = 1;
+}
+
+// 时间戳 timestamp
+message Timestamp {
+ google.protobuf.Timestamp timestamp = 1;
 }
