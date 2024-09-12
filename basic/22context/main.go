@@ -1,10 +1,25 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"sync"
 	"time"
+)
+
+// content 协程的上下文
+// 场景：
+//      信息传递
+//      取消任务
+//      超时控制
+// 最佳实践
+//      将context作为第一个参数传递
+//      不要在内层函数创建context
+//		及时取消context
+//		不要在context中存储大量数据，敏感数据
+//		不要滥用context
+
+import (
+	"context"
 )
 
 func cpuInfo(ctx context.Context) {
