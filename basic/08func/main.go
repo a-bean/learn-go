@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	/*
@@ -21,6 +23,17 @@ func main() {
 	fmt.Println(nextFn())
 
 	add10()
+	add11([]int{1, 2, 3})
+
+	var s []int = []int{1, 2, 3}
+	setSlice(s)
+	fmt.Println(s)
+	fmt.Println(deferDemo(1)) // 3
+
+}
+
+func setSlice(s []int) {
+	s[0] = 4
 }
 
 func add(a, b int) int {
@@ -47,6 +60,10 @@ func add3(a ...int) int { // a是一个slice
 func add4(b string, a ...int) int { // a是一个slice
 	fmt.Println(b, a)
 	return 0
+}
+
+func add11(a []int) {
+	fmt.Println(a)
 }
 
 // 一等公民的特性
@@ -83,4 +100,11 @@ func add10() {
 	defer fmt.Println("defer2") // 3
 	defer fmt.Println("defer3") // 2
 	fmt.Println("add")          // 最先执行
+}
+
+func deferDemo(a int) (r int) {
+	defer func() {
+		r += a
+	}()
+	return a + a
 }

@@ -10,6 +10,12 @@ func main() {
 	map1["age"] = "18"
 	fmt.Println(map1["name"])
 
+	var mapFloat = map[float64]int{
+		1.1: 1,
+		1.2: 2,
+	}
+	fmt.Println(mapFloat)
+
 	//var map2 map[int]int
 	// 初始化
 	var map3 = map[int]int{}

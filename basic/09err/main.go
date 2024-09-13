@@ -14,6 +14,7 @@ func main() {
 	*/
 	recover1()
 	fmt.Println("继续执行")
+
 }
 
 func err1() (int, error) {
