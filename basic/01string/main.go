@@ -65,4 +65,5 @@ func main() {
 	fmt.Println("aa", aaa+bbb)
 	//fmt.Println(math.MaxInt32 + 2)
 	//fmt.Println(math.MaxInt32 + math.MaxInt32)
+
 }
