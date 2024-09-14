@@ -29,7 +29,9 @@ func main() {
 	setSlice(s)
 	fmt.Println(s)
 	fmt.Println(deferDemo(1)) // 3
-
+	deferDemo1()
+	deferDemo2()
+	deferDemo3()
 }
 
 func setSlice(s []int) {
@@ -94,7 +96,7 @@ func add9() func() int {
 	}
 }
 
-// defer 在return之前执行。用来最后来释放资源等功能
+// defer 在return之前执行。用来最后来释放资源,异常捕获等收尾功能
 func add10() {
 	defer fmt.Println("defer1") // 最后执行
 	defer fmt.Println("defer2") // 3
@@ -102,9 +104,40 @@ func add10() {
 	fmt.Println("add")          // 最先执行
 }
 
+// 先执行a+a=2
+// 再执行r+=a=2
+// 返回r=3
 func deferDemo(a int) (r int) {
 	defer func() {
 		r += a
 	}()
 	return a + a
+	// 相当于
+	//r = a+a
+	// return
+}
+
+func deferDemo1() {
+	x := 0
+	defer fmt.Println("x", x) // 打印的是0 defer中变量的估值时刻是在 defer定义的时候估值的
+	x = 1
+	fmt.Println(x)
+} // 打印的是0
+
+func deferDemo2() {
+	x := 0
+	defer func(a int) {
+		fmt.Println("a", a) // 打印的是0
+	}(x)
+	x = 1
+	fmt.Println(x)
+}
+
+func deferDemo3() {
+	x := 0
+	defer func() {
+		fmt.Println("x", x) // 打印的是1,闭包func是等到return之前才估值的
+	}()
+	x = 1
+	fmt.Println(x)
 }
