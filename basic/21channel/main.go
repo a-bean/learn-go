@@ -6,6 +6,14 @@ import (
 )
 
 /*
+channel:
+
+	用于goroutine之间通信的机制
+	实现编发编程中的数据传递和同步操作
+	Go语言通过通讯来共享内存
+
+channel的数据结构: 双向链表+锁,每一个channel都有一个缓冲区,用于存储传递的数据
+
 不要通过共享内存来通信，而是用通信来共享内存
 channel运用场景：
 
@@ -20,7 +28,7 @@ channel运用场景：
 */
 func main() {
 	// 1. 简单使用
-	var msg chan string
+	var msg chan string // 此时msg等于nil
 	if msg == nil {
 		fmt.Println(msg)
 	}
@@ -58,14 +66,17 @@ func main() {
 	}()
 	msg5 <- 1
 	msg5 <- 2
-	close(msg5) //可以关闭掉msg5的channel，让55行的range可以退出，然后执行到58行
-	//已经关闭的channel可以继续取值，不能存值
+	// 可以关闭掉msg5的channel，让55行的range可以退出，然后执行到58行
+	// 已经关闭的channel可以继续取值，不能存值,不然就会报panic
+	close(msg5)
 	time.Sleep(time.Second)
 
-	// 4. 单向channel
-	//var ch1 chan int
-	//var ch2 chan<- int // 单向，只能写入int数据
-	//var ch3 <-chan int // 单向，只能读int数据
+	// 4. 单向channel(双向的channel可以隐式转成单项的,单项不能转成双向的)
+	var ch1 chan int
+	var ch2 chan<- int // 单向，只能写入int数据
+	var ch3 <-chan int // 单向，只能读int数据
+
+	fmt.Println(ch1, ch2, ch3)
 	c := make(chan int, 3)
 	var send chan<- int = c
 	var read <-chan int = c
@@ -78,11 +89,15 @@ func main() {
 	go consumer(c1)
 	time.Sleep(time.Second)
 
-	// 5. select语句：主要作用于多个channel
+	// 5. select语句：主要作用于多个channel(监听channel)
+	// 特性:
+	//		1. select后面不能是语句,且仅支持管道,且是单管道操作
+	//		2. 不能使用fallthrough
+	// 		3. 每个case语句只能处理一个管道,要么读要么写
+	//		4. 多个非堵塞的case操作将随机执行(目的：防止饥饿)
+	//		5. 所有的case均堵塞了,则执行default(如果存在的话)
 	go g1(done1)
 	go g2(done2)
-	// 监听channel
-	// 哪一个channel就绪了就执行那个分支。如果两个都就绪了，随机执行。目的：防止饥饿
 
 	timer := time.NewTimer(time.Second)
 	select {

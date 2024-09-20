@@ -1,10 +1,13 @@
 package main
 
 import (
+	bytes2 "bytes"
 	"fmt"
 	"math"
 	"reflect"
 	"strings"
+	"unicode/utf8"
+	"unsafe"
 )
 
 func main() {
@@ -66,4 +69,56 @@ func main() {
 	//fmt.Println(math.MaxInt32 + 2)
 	//fmt.Println(math.MaxInt32 + math.MaxInt32)
 
+	// 字符串的len(): 是字符串的字节长度,而非字符个数
+	s1 := "abc"
+	s2 := "中文"
+	fmt.Println(len(s1), unsafe.Sizeof(s1), utf8.RuneCountInString(s1), len([]rune(s1)))
+	fmt.Println(len(s2), unsafe.Sizeof(s2), utf8.RuneCountInString(s2), len([]rune(s2)))
+
+	// 字符串的拼接方式
+	s3 := s1 + s2 // 会创建一个新的空间 旧的对象进行gc
+	s4 := fmt.Sprintf("%s%s", s1, s2)
+
+	var buf bytes2.Buffer
+	buf.Grow(len(s1) + len(s2))
+	buf.WriteString(s1)
+	buf.WriteString(s2)
+
+	// 推荐
+	// 性能略高于bytes2.Buffer,bytes2.Buffer转换字符串需要重新申请内存空间,
+	// strings.Builder是将底层的bytes转换为string
+	var bul strings.Builder
+	bul.Grow(len(s1) + len(s2))
+	bul.WriteString(s1)
+	bul.WriteString(s2)
+
+	bt := make([]byte, 0, len(s1)+len(s2))
+	bt = append(bt, s1...)
+	bt = append(bt, s2...)
+
+	sl := []string{s1, s2}
+	st := strings.Join(sl, "")
+
+	fmt.Println(s3, s4, buf.String(), bul.String(), string(bt), st)
+
+	var ss1 = "kebo"
+	ss2 := ss1
+	ss3 := ss1
+	fmt.Println(&ss1, &ss2, &ss3)
+	prt := (*reflect.StringHeader)(unsafe.Pointer(&ss1))
+	prt2 := (*reflect.StringHeader)(unsafe.Pointer(&ss2))            // 字符串在赋值的过程中不会发生拷贝
+	fmt.Println(unsafe.Pointer(prt.Data), unsafe.Pointer(prt2.Data)) // 两个相同(赋值底层指针不变)
+
+}
+
+/*
+	避免字符串截取而导致内存泄漏
+	1. 将字符串转成字节切片,再转成字符串
+	2. 截取后在前面拼接一个新的字符串,然后在截掉
+	3. 使用strings.Builder对新的字符串进行重构
+
+*/
+
+func sliceString(s string, index int) string {
+	return string([]byte(s[:index])) // 这种强转的方式会进行拷贝(开辟新的空间),跟原始值没有引用关系
 }
