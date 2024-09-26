@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+/*
+map的元素无法取址的原因:
+	map的扩容跟重整会导致键值的重新分布
+	元素还会因为各种原因导致地址变化
+*/
+
 func main() {
 	// map 是一个key，value的 无序 集合，查询方便O(1)
 	var map1 = map[string]string{

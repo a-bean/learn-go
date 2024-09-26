@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/kirinlabs/HttpRequest v1.1.1
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.0
 )
