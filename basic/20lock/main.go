@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 // lock 解决资源竞争问题。本质是将并行的代码串行化了
@@ -91,86 +92,62 @@ func subRw() {
 	fmt.Println(num)
 }
 
-// Mutex 自旋锁的简单实现
-type Mutex struct {
-	state int32
+// SpinLock 自旋锁的简单实现
+type SpinLock struct {
+	flag int32
 }
 
-const (
-	mutexLocked = 1
-)
-
-// 自旋条件如下：GOMAXPROCS>1,否则会死锁
-func canSpin() bool {
-	if runtime.GOMAXPROCS(0) <= 1 {
-		return false
-	}
-	return true
-}
-
-// 让协程忙等待
-func doSpin() {
-	for i, j := 0, 0; i < 30; i++ {
-		j = j + 2
-	}
-	return
-}
-
-func (m *Mutex) Lock() {
-	//通过原子操作加锁
-	if atomic.CompareAndSwapInt32(&m.state, 0, mutexLocked) {
-		return
-	}
-	for m.state&mutexLocked == mutexLocked && canSpin() { // 满足自旋条件
-		doSpin()
-		if atomic.CompareAndSwapInt32(&m.state, 0, mutexLocked) {
-			return
-		}
-	}
-	panic("cant lock with one core cpu!")
-}
-
-func (m *Mutex) Unlock() {
-	//通过原子操作解锁
-	newVal := atomic.AddInt32(&m.state, -mutexLocked)
-	if newVal == 0 {
-		return
-	}
-
-	//解锁时倘若发现 Mutex 此前未加锁，直接panic
-	if (newVal+mutexLocked)&mutexLocked == 0 {
-		panic("unlock of unlocked mutex")
+// Lock 尝试获取锁。如果失败，就一直自旋，直到成功获取锁。
+func (s *SpinLock) Lock() {
+	for !atomic.CompareAndSwapInt32(&s.flag, 0, 1) {
+		// 主动让出 CPU，以减少 CPU 的繁忙等待。
+		runtime.Gosched()
 	}
 }
 
-var count int
-var mu Mutex
-
-func increment() {
-	mu.Lock()
-	count++
-	mu.Unlock()
-	wg.Done()
+// Unlock 释放锁。
+func (s *SpinLock) Unlock() {
+	atomic.StoreInt32(&s.flag, 0)
 }
 
 func main() {
-	//wg.Add(2)
-	//go add()
-	//go sub()
-	//wg.Wait()
-	//fmt.Println("total", total)
+	wg.Add(2)
+	go add()
+	go sub()
+	wg.Wait()
+	fmt.Println("total", total)
 
-	//go addRw()
-	//time.Sleep(time.Second)
-	//go subRw()
-	//wg.Wait()
+	go addRw()
+	time.Sleep(time.Second)
+	go subRw()
+	wg.Wait()
 
 	// 自旋锁
-	for i := 0; i < 1000; i++ {
-		wg.Add(1)
-		go increment()
-	}
+	var lock SpinLock
+	var counter int
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			lock.Lock()
+			counter++
+			lock.Unlock()
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			lock.Lock()
+			counter++
+			lock.Unlock()
+		}
+	}()
+
 	wg.Wait()
-	fmt.Println("Final count:", count)
+	fmt.Println("Final Counter:", counter)
 
 }
