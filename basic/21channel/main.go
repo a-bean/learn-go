@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -112,6 +113,35 @@ func main() {
 	}
 
 	time.Sleep(time.Second)
+
+	// 互斥锁
+	m := NewMutex()
+	counter := 0
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// 第一个 Goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			m.Lock()
+			counter++
+			m.Unlock()
+		}
+	}()
+
+	// 第二个 Goroutine
+	go func() {
+		defer wg.Done()
+		for i := 0; i < 1000; i++ {
+			m.Lock()
+			counter++
+			m.Unlock()
+		}
+	}()
+
+	wg.Wait()
+	fmt.Println("Final Counter:", counter)
 }
 
 func producer(out chan<- int) {
@@ -140,4 +170,26 @@ func g1(c chan struct{}) {
 func g2(c chan struct{}) {
 	fmt.Println("第二个")
 	c <- struct{}{}
+}
+
+// Mutex 使用 channel 来实现一个互斥锁
+type Mutex struct {
+	ch chan struct{}
+}
+
+// NewMutex 创建一个新的 Mutex 实例
+func NewMutex() *Mutex {
+	return &Mutex{
+		ch: make(chan struct{}, 1), // 创建一个容量为 1 的 channel
+	}
+}
+
+// Lock 获取锁
+func (m *Mutex) Lock() {
+	m.ch <- struct{}{} // 尝试向 channel 发送数据，如果 channel 已满，则阻塞
+}
+
+// Unlock 释放锁
+func (m *Mutex) Unlock() {
+	<-m.ch // 从 channel 中接收数据，释放锁
 }
