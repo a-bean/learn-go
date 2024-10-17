@@ -30,7 +30,7 @@ func (m *ConcreteMediator) Send(message string, colleague Colleague) {
 	}
 }
 
-// 具体同事类
+// ConcreteColleague1 具体同事类
 type ConcreteColleague1 struct {
 	mediator Mediator
 }
