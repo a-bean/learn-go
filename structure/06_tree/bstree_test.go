@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	bt "learn-go/structure/tree"
+	bt "learn-go/structure/06_tree"
 )
 
 func TestPush(t *testing.T) {

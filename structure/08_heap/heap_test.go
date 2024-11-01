@@ -1,7 +1,7 @@
 package heap_test
 
 import (
-	"learn-go/structure/heap"
+	heap "learn-go/structure/08_heap"
 	"reflect"
 	"testing"
 )

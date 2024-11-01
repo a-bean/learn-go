@@ -1,7 +1,7 @@
 package hashmap_test
 
 import (
-	"learn-go/structure/hashmap"
+	hashmap "learn-go/structure/04_hashmap"
 	"testing"
 )
 

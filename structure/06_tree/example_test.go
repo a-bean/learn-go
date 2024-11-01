@@ -5,7 +5,7 @@ import (
 	"learn-go/structure/constraints"
 	"testing"
 
-	bt "learn-go/structure/tree"
+	bt "learn-go/structure/06_tree"
 )
 
 type TestTree[T constraints.Ordered] interface {

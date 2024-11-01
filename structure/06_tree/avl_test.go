@@ -1,7 +1,7 @@
 package tree_test
 
 import (
-	bt "learn-go/structure/tree"
+	bt "learn-go/structure/06_tree"
 	"math/rand"
 	"sort"
 	"testing"

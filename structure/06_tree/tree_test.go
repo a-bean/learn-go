@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	bt "learn-go/structure/tree"
+	bt "learn-go/structure/06_tree"
 )
 
 func TestTreeGetOrHas(t *testing.T) {
