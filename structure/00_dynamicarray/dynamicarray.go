@@ -44,7 +44,8 @@ func (da *DynamicArray) Remove(index int) error {
 		return err
 	}
 
-	copy(da.ElementData[index:], da.ElementData[index+1:da.Size])
+	copy(da.ElementData[index:], da.ElementData[index+1:])
+
 	da.ElementData[da.Size-1] = nil
 
 	da.Size--

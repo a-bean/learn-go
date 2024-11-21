@@ -103,6 +103,9 @@ func (t *BinarySearch[T]) PostOrder() []T {
 }
 
 // LevelOrder returns the level order traversal of the tree
+// LevelOrder 返回二叉搜索树的层序遍历结果。
+// 它返回一个切片，其中包含树中节点的值，按照层级顺序排列。
+// 该方法使用辅助函数 levelOrderHelper 进行递归遍历。
 func (t *BinarySearch[T]) LevelOrder() []T {
 	traversal := make([]T, 0)
 	levelOrderHelper[T](t.Root, t._NIL, &traversal)
@@ -110,6 +113,9 @@ func (t *BinarySearch[T]) LevelOrder() []T {
 }
 
 // AccessNodesByLayer accesses nodes layer by layer (2-D array),  instead of printing the results as 1-D array.
+// AccessNodesByLayer 返回一个二维切片，包含按层访问的二叉搜索树节点。
+// 每个子切片代表树的一层，节点按从左到右的顺序排列。
+// 该方法使用辅助函数 accessNodeByLayerHelper 来实现层次遍历。
 func (t *BinarySearch[T]) AccessNodesByLayer() [][]T {
 	return accessNodeByLayerHelper[T](t.Root, t._NIL)
 }
@@ -183,6 +189,7 @@ func (t *BinarySearch[T]) pushHelper(x *BSNode[T], val T) {
 		right:  t._NIL,
 		parent: y,
 	}
+
 	if y == t._NIL {
 		t.Root = z
 	} else if val < y.key {
