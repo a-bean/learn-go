@@ -6,14 +6,12 @@ import (
 
 var defaultCapacity = 10
 
-// DynamicArray structure
 type DynamicArray struct {
 	Size        int
 	Capacity    int
 	ElementData []any
 }
 
-// Put function is change/update the value in array with the index and new value
 func (da *DynamicArray) Put(index int, element any) error {
 	err := da.CheckRangeFromIndex(index)
 
@@ -26,7 +24,6 @@ func (da *DynamicArray) Put(index int, element any) error {
 	return nil
 }
 
-// Add function is add new element to our array
 func (da *DynamicArray) Add(element any) {
 	if da.Size == da.Capacity {
 		da.NewCapacity()
@@ -36,7 +33,6 @@ func (da *DynamicArray) Add(element any) {
 	da.Size++
 }
 
-// Remove function is remove an element with the index
 func (da *DynamicArray) Remove(index int) error {
 	err := da.CheckRangeFromIndex(index)
 
@@ -53,7 +49,6 @@ func (da *DynamicArray) Remove(index int) error {
 	return nil
 }
 
-// Get function is return one element with the index of array
 func (da *DynamicArray) Get(index int) (any, error) {
 	err := da.CheckRangeFromIndex(index)
 
@@ -64,17 +59,14 @@ func (da *DynamicArray) Get(index int) (any, error) {
 	return da.ElementData[index], nil
 }
 
-// IsEmpty function is check that the array has value or not
 func (da *DynamicArray) IsEmpty() bool {
 	return da.Size == 0
 }
 
-// GetData function return all value of array
 func (da *DynamicArray) GetData() []any {
 	return da.ElementData[:da.Size]
 }
 
-// CheckRangeFromIndex function it will check the range from the index
 func (da *DynamicArray) CheckRangeFromIndex(index int) error {
 	if index >= da.Size || index < 0 {
 		return errors.New("index out of range")
@@ -82,7 +74,6 @@ func (da *DynamicArray) CheckRangeFromIndex(index int) error {
 	return nil
 }
 
-// NewCapacity function increase the Capacity
 func (da *DynamicArray) NewCapacity() {
 	if da.Capacity == 0 {
 		da.Capacity = defaultCapacity
