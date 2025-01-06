@@ -73,6 +73,36 @@ func hasCycle(head *ListNode) bool {
 	return false
 }
 
+// 142: https://leetcode.cn/problems/linked-list-cycle-ii/description/
+func detectCycle(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return nil
+	}
+	isCycle, slow := hasCycle142(head)
+	if !isCycle {
+		return nil
+	}
+	fast := head
+	for fast != slow {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	return fast
+}
+
+func hasCycle142(head *ListNode) (bool, *ListNode) {
+	fast := head
+	slow := head
+	for slow != nil && fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+		if fast == slow {
+			return true, slow
+		}
+	}
+	return false, nil
+}
+
 // 21: https://leetcode.cn/problems/merge-two-sorted-lists/description/
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	if list1 == nil {
@@ -105,6 +135,52 @@ func mergeKLists(lists []*ListNode) *ListNode {
 	right := mergeKLists(lists[num:])
 
 	return mergeTwoLists(left, right)
+}
+
+// 86: 分隔链表 https://leetcode.cn/problems/partition-list/description/
+func partition(head *ListNode, x int) *ListNode {
+	// 构造 2 个链表，一个链表专门存储比 x 小的结点，另一个专门存储比 x 大的结点
+	beforeHead := &ListNode{Val: 0, Next: nil}
+	before := beforeHead
+	afterHead := &ListNode{Val: 0, Next: nil}
+	after := afterHead
+
+	for head != nil {
+		if head.Val < x {
+			before.Next = head
+			before = before.Next
+		} else {
+			after.Next = head
+			after = after.Next
+		}
+		head = head.Next
+	}
+	after.Next = nil
+	before.Next = afterHead.Next
+	return beforeHead.Next
+}
+
+// 92: 反转链表 II https://leetcode.cn/problems/reverse-linked-list-ii/description/
+func reverseBetween(head *ListNode, m int, n int) *ListNode {
+	if head == nil || m >= n {
+		return head
+	}
+	newHead := &ListNode{Val: 0, Next: head}
+	pre := newHead
+	for count := 0; pre.Next != nil && count < m-1; count++ {
+		pre = pre.Next
+	}
+	if pre.Next == nil {
+		return head
+	}
+	cur := pre.Next
+	for i := 0; i < n-m; i++ {
+		tmp := pre.Next
+		pre.Next = cur.Next
+		cur.Next = cur.Next.Next
+		pre.Next.Next = tmp
+	}
+	return newHead.Next
 }
 
 func main() {
