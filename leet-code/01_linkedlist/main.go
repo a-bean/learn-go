@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // 206: https://leetcode.cn/problems/reverse-linked-list/
 type ListNode struct {
 	Val  int
@@ -74,6 +76,7 @@ func hasCycle(head *ListNode) bool {
 }
 
 // 142: https://leetcode.cn/problems/linked-list-cycle-ii/description/
+// 解法1: 快慢指针
 func detectCycle(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return nil
@@ -101,6 +104,20 @@ func hasCycle142(head *ListNode) (bool, *ListNode) {
 		}
 	}
 	return false, nil
+}
+
+// 解法2: 哈希表
+// 一个非常直观的思路是：我们遍历链表中的每个节点，并将它记录下来；一旦遇到了此前遍历过的节点，就可以判定链表中存在环。借助哈希表可以很方便地实现。
+func detectCycle1(head *ListNode) *ListNode {
+	seen := map[*ListNode]struct{}{}
+	for head != nil {
+		if _, ok := seen[head]; ok {
+			return head
+		}
+		seen[head] = struct{}{}
+		head = head.Next
+	}
+	return nil
 }
 
 // 21: https://leetcode.cn/problems/merge-two-sorted-lists/description/
@@ -183,9 +200,125 @@ func reverseBetween(head *ListNode, m int, n int) *ListNode {
 	return newHead.Next
 }
 
+// 147. 对链表进行插入排序 https://leetcode.cn/problems/insertion-sort-list/description/
+func insertionSortList(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+	newHead := &ListNode{Val: 0, Next: nil} // 这里初始化不要直接指向 head，为了下面循环可以统一处理
+	cur, pre := head, newHead
+	for cur != nil {
+		next := cur.Next
+		for pre.Next != nil && pre.Next.Val < cur.Val {
+			pre = pre.Next
+		}
+		cur.Next = pre.Next
+		pre.Next = cur
+		pre = newHead // 归位，重头开始
+		cur = next
+	}
+	return newHead.Next
+}
+
+// 148. 排序链表 https://leetcode.cn/problems/sort-list/description/
+func sortList(head *ListNode) *ListNode {
+	length := 0
+	cur := head
+	for cur != nil {
+		length++
+		cur = cur.Next
+	}
+	if length <= 1 {
+		return head
+	}
+
+	middleNode := middleNode(head)
+	cur = middleNode.Next
+	middleNode.Next = nil
+	middleNode = cur
+
+	left := sortList(head)
+	right := sortList(middleNode)
+	return mergeTwoLists1(left, right)
+}
+
+func middleNode(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	p1 := head
+	p2 := head
+	for p2.Next != nil && p2.Next.Next != nil {
+		p1 = p1.Next
+		p2 = p2.Next.Next
+	}
+	return p1
+}
+
+func mergeTwoLists1(l1 *ListNode, l2 *ListNode) *ListNode {
+	if l1 == nil {
+		return l2
+	}
+	if l2 == nil {
+		return l1
+	}
+	if l1.Val < l2.Val {
+		l1.Next = mergeTwoLists(l1.Next, l2)
+		return l1
+	}
+	l2.Next = mergeTwoLists(l1, l2.Next)
+	return l2
+}
+
+// 160. 相交链表 https://leetcode.cn/problems/intersection-of-two-linked-lists/description/
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	//boundary check
+	if headA == nil || headB == nil {
+		return nil
+	}
+
+	a := headA
+	b := headB
+
+	//if a & b have different len, then we will stop the loop after second iteration
+	for a != b {
+		//for the end of first iteration, we just reset the pointer to the head of another linkedlist
+		if a == nil {
+			a = headB
+		} else {
+			a = a.Next
+		}
+
+		if b == nil {
+			b = headA
+		} else {
+			b = b.Next
+		}
+		fmt.Printf("a = %v b = %v\n", a, b)
+	}
+	return a
+}
+
+// 876. 链表的中间结点 https://leetcode.cn/problems/middle-of-the-linked-list/description/
+func middleNode1(head *ListNode) *ListNode {
+	slow, fast := head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	return slow
+}
+
 func main() {
 	reverseKGroup(&ListNode{
 		Val:  1,
 		Next: nil,
 	}, 1)
+	sortList(&ListNode{
+		Val: 1,
+		Next: &ListNode{
+			Val:  0,
+			Next: nil,
+		},
+	})
 }
