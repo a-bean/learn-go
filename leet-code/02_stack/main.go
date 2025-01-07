@@ -52,7 +52,7 @@ func simplifyPath(path string) string {
 	return res
 }
 
-// 150: 逆波兰表达式求值 https://leetcode.cn/problems/evaluate-reverse-polish-notation/
+// 150: 逆波兰表达式求值（后缀表达式） https://leetcode.cn/problems/evaluate-reverse-polish-notation/
 func evalRPN(tokens []string) int {
 	stack := make([]int, 0, len(tokens))
 	for _, token := range tokens {
@@ -77,6 +77,67 @@ func evalRPN(tokens []string) int {
 
 	return stack[0]
 }
+
+// 227: 基本计算器 II https://leetcode.cn/problems/basic-calculator-ii/
+func calculateII(s string) int {
+	tokens := make([]string, 0)
+	ops := make([]byte, 0)
+	num := ""
+
+	for i := 0; i < len(s); i++ {
+		if s[i] >= '0' && s[i] <= '9' {
+			num += string(s[i])
+		} else {
+			// 处理累积的数字
+			if num != "" {
+				tokens = append(tokens, num)
+				num = ""
+			}
+
+			if s[i] == ' ' {
+				continue
+			}
+
+			// 只处理运算符
+			if s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' {
+				currentRank := getRank(s[i])
+				for len(ops) > 0 && getRank(ops[len(ops)-1]) >= currentRank {
+					tokens = append(tokens, string(ops[len(ops)-1]))
+					ops = ops[:len(ops)-1]
+				}
+				ops = append(ops, s[i])
+			}
+		}
+	}
+
+	// 处理最后一个数字
+	if num != "" {
+		tokens = append(tokens, num)
+	}
+
+	// 处理剩余的运算符
+	for len(ops) > 0 {
+		tokens = append(tokens, string(ops[len(ops)-1]))
+		ops = ops[:len(ops)-1]
+	}
+
+	return evalRPN(tokens)
+}
+
+func getRank(s byte) int {
+	if s == '*' || s == '/' {
+		return 2
+	}
+	if s == '+' || s == '-' {
+		return 1
+	}
+	return 0
+}
+
+// 224: 基本计算器 https://leetcode.cn/problems/basic-calculator/
+// func calculate(s string) int {
+
+// }
 
 // 84: 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
 

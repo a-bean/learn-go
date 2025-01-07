@@ -16,37 +16,18 @@ func New(items ...any) Set {
 
 // Set is an interface of possible methods on 'set'.
 type Set interface {
-	// Add: adds new element to the set
 	Add(item any)
-	// Delete: deletes the passed element from the set if present
 	Delete(item any)
-	// Len: gives the length of the set (total no. of elements in set)
 	Len() int
-	// GetItems: gives the array( []any ) of elements of the set.
 	GetItems() []any
-	// In: checks whether item is present in set or not.
 	In(item any) bool
-	// IsSubsetOf: checks whether set is subset of set2 or not.
 	IsSubsetOf(set2 Set) bool
-	// IsProperSubsetOf: checks whether set is proper subset of set2 or not.
-	// ex: [1,2,3] proper subset of [1,2,3,4] -> true
 	IsProperSubsetOf(set2 Set) bool
-	// IsSupersetOf: checks whether set is superset of set2 or not.
 	IsSupersetOf(set2 Set) bool
-	// IsProperSupersetOf: checks whether set is proper superset of set2 or not.
-	// ex: [1,2,3,4] proper superset of [1,2,3] -> true
 	IsProperSupersetOf(set2 Set) bool
-	// Union: gives new union set of both sets.
-	// ex: [1,2,3] union [3,4,5] -> [1,2,3,4,5]
 	Union(set2 Set) Set
-	// Intersection: gives new intersection set of both sets.
-	// ex: [1,2,3] Intersection [3,4,5] -> [3]
 	Intersection(set2 Set) Set
-	// Difference: gives new difference set of both sets.
-	// ex: [1,2,3] Difference [3,4,5] -> [1,2]
 	Difference(set2 Set) Set
-	// SymmetricDifference: gives new symmetric difference set of both sets.
-	// ex: [1,2,3] SymmetricDifference [3,4,5] -> [1,2,4,5]
 	SymmetricDifference(set2 Set) Set
 }
 
@@ -81,6 +62,7 @@ func (st *set) In(value any) bool {
 	return false
 }
 
+// 注释：判断是否是子集
 func (st *set) IsSubsetOf(superSet Set) bool {
 	if st.Len() > superSet.Len() {
 		return false
@@ -94,6 +76,7 @@ func (st *set) IsSubsetOf(superSet Set) bool {
 	return true
 }
 
+// 注释：判断是否是真子集
 func (st *set) IsProperSubsetOf(superSet Set) bool {
 	if st.Len() == superSet.Len() {
 		return false
@@ -101,10 +84,12 @@ func (st *set) IsProperSubsetOf(superSet Set) bool {
 	return st.IsSubsetOf(superSet)
 }
 
+// 注释：判断是否是超集
 func (st *set) IsSupersetOf(subSet Set) bool {
 	return subSet.IsSubsetOf(st)
 }
 
+// 注释：判断是否是真超集
 func (st *set) IsProperSupersetOf(subSet Set) bool {
 	if st.Len() == subSet.Len() {
 		return false
@@ -112,6 +97,7 @@ func (st *set) IsProperSupersetOf(subSet Set) bool {
 	return st.IsSupersetOf(subSet)
 }
 
+// 注释：求并集
 func (st *set) Union(st2 Set) Set {
 	unionSet := New()
 	for _, item := range st.GetItems() {
@@ -123,6 +109,7 @@ func (st *set) Union(st2 Set) Set {
 	return unionSet
 }
 
+// 注释：求交集
 func (st *set) Intersection(st2 Set) Set {
 	intersectionSet := New()
 	var minSet, maxSet Set
@@ -141,6 +128,7 @@ func (st *set) Intersection(st2 Set) Set {
 	return intersectionSet
 }
 
+// 注释：求差集
 func (st *set) Difference(st2 Set) Set {
 	differenceSet := New()
 	for _, item := range st.GetItems() {
@@ -151,6 +139,7 @@ func (st *set) Difference(st2 Set) Set {
 	return differenceSet
 }
 
+// 注释：求对称差集
 func (st *set) SymmetricDifference(st2 Set) Set {
 	symmetricDifferenceSet := New()
 	dropSet := New()
