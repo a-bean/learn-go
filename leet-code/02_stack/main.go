@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// https://leetcode.cn/problems/valid-parentheses/
+// 20: 有效的括号 https://leetcode.cn/problems/valid-parentheses/
 func isValid(s string) bool {
 	if len(s) == 0 {
 		return true
@@ -30,7 +30,7 @@ func isValid(s string) bool {
 	return len(stack) == 0
 }
 
-// https://leetcode.cn/problems/simplify-path/
+// 71: 简化路径 https://leetcode.cn/problems/simplify-path/
 func simplifyPath(path string) string {
 	arr := strings.Split(path, "/")
 	stack := make([]string, 0)
@@ -52,7 +52,7 @@ func simplifyPath(path string) string {
 	return res
 }
 
-// https://leetcode.cn/problems/evaluate-reverse-polish-notation/
+// 150: 逆波兰表达式求值 https://leetcode.cn/problems/evaluate-reverse-polish-notation/
 func evalRPN(tokens []string) int {
 	stack := make([]int, 0, len(tokens))
 	for _, token := range tokens {
@@ -78,7 +78,7 @@ func evalRPN(tokens []string) int {
 	return stack[0]
 }
 
-// https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
+// 84: 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
 
 func max(a int, b int) int {
 	if a > b {
@@ -112,7 +112,7 @@ func largestRectangleArea(heights []int) int {
 	return maxArea
 }
 
-// https://leetcode.cn/problems/trapping-rain-water/
+// 42: 接雨水 https://leetcode.cn/problems/trapping-rain-water/
 func min(a int, b int) int {
 	if a < b {
 		return a
@@ -139,7 +139,7 @@ func trap(height []int) int {
 	return area
 }
 
-// 496: https://leetcode.cn/problems/next-greater-element-i/
+// 496: 下一个更大元素 I https://leetcode.cn/problems/next-greater-element-i/
 func nextGreaterElement(nums1 []int, nums2 []int) []int {
 	if len(nums1) == 0 || len(nums2) == 0 {
 		return []int{}

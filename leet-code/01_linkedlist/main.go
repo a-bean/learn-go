@@ -272,7 +272,6 @@ func mergeTwoLists1(l1 *ListNode, l2 *ListNode) *ListNode {
 
 // 160. 相交链表 https://leetcode.cn/problems/intersection-of-two-linked-lists/description/
 func getIntersectionNode(headA, headB *ListNode) *ListNode {
-	//boundary check
 	if headA == nil || headB == nil {
 		return nil
 	}
@@ -280,9 +279,10 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 	a := headA
 	b := headB
 
-	//if a & b have different len, then we will stop the loop after second iteration
 	for a != b {
-		//for the end of first iteration, we just reset the pointer to the head of another linkedlist
+
+		// 当 a 到达链表 A 的末尾时，将 a 指向链表 B 的头部
+		// 当 b 到达链表 B 的末尾时，将 b 指向链表 A 的头部
 		if a == nil {
 			a = headB
 		} else {
@@ -294,6 +294,7 @@ func getIntersectionNode(headA, headB *ListNode) *ListNode {
 		} else {
 			b = b.Next
 		}
+
 		fmt.Printf("a = %v b = %v\n", a, b)
 	}
 	return a
@@ -314,6 +315,7 @@ func main() {
 		Val:  1,
 		Next: nil,
 	}, 1)
+
 	sortList(&ListNode{
 		Val: 1,
 		Next: &ListNode{
@@ -321,4 +323,5 @@ func main() {
 			Next: nil,
 		},
 	})
+
 }

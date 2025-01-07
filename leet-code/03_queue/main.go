@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// https://leetcode.cn/problems/sliding-window-maximum/description/
+// 239: 滑动窗口最大值 https://leetcode.cn/problems/sliding-window-maximum/description/
 func maxSlidingWindow(nums []int, k int) []int {
 	deque := make([]int, 0, k)
 	ans := make([]int, 0, len(nums)-k+1)
@@ -26,7 +26,8 @@ func maxSlidingWindow(nums []int, k int) []int {
 	return ans
 }
 
-// https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/description/ 返回 A 的最短的非空连续子数组的长度，该子数组的和 至少 为 K 。如果没有和至少为 K 的非空子数组，返回 -1
+// 862: 和至少为 K 的最短子数组 https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/description/
+// 返回 A 的最短的非空连续子数组的长度，该子数组的和 至少 为 K 。如果没有和至少为 K 的非空子数组，返回 -1
 func shortestSubarray(A []int, K int) int {
 	res, prefixSum := len(A)+1, make([]int, len(A)+1)
 	for i := 0; i < len(A); i++ {
@@ -56,7 +57,7 @@ func shortestSubarray(A []int, K int) int {
 	return -1
 }
 
-// 622: https://leetcode.cn/problems/design-circular-queue/description/
+// 622: 设计循环队列 https://leetcode.cn/problems/design-circular-queue/description/
 type MyCircularQueue struct {
 	size  int
 	cap   int
@@ -82,7 +83,7 @@ func (this *MyCircularQueue) EnQueue(value int) bool {
 	this.size++
 	this.queue[this.right] = value
 	this.right++
-	this.right %= this.cap
+	this.right %= this.cap // 关键操作：确保right指针循环
 	return true
 }
 
