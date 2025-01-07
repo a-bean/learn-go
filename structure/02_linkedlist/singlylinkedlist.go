@@ -160,6 +160,7 @@ func (ll *Singly[T]) ReversePartition(left, right int) error {
 	ll.Head = tmpNode.Next
 	return nil
 }
+
 func (ll *Singly[T]) CheckRangeFromIndex(left, right int) error {
 	if left > right {
 		return errors.New("left boundary must smaller than right")

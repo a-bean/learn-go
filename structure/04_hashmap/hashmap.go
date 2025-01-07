@@ -60,29 +60,36 @@ func (hm *HashMap) Contains(key any) bool {
 }
 
 func (hm *HashMap) putValue(hash uint64, key any, value any) any {
+	// 如果哈希表还未初始化，进行初始化操作
 	if hm.capacity == 0 {
-		hm.capacity = defaultCapacity
-		hm.table = make([]*node, defaultCapacity)
+		hm.capacity = defaultCapacity             // 设置默认容量（1024）
+		hm.table = make([]*node, defaultCapacity) // 创建哈希表数组
 	}
 
+	// 根据哈希值获取对应位置的节点
 	node := hm.getNodeByHash(hash)
 
+	// 情况1：该位置还没有节点
 	if node == nil {
-		hm.table[hash] = newNode(key, value)
+		hm.table[hash] = newNode(key, value) // 直接创建新节点放入
 
+		// 情况2：该位置已有节点，且key相同（更新值）
 	} else if node.key == key {
+		// 创建新节点，并将原节点作为next（形成链表）
 		hm.table[hash] = newNodeWithNext(key, value, node)
 		return value
 
+		// 情况3：发生了哈希冲突（不同的key映射到相同位置）
 	} else {
-		hm.resize()
+		hm.resize() // 扩容哈希表
+		// 递归调用，重新插入该键值对
 		return hm.putValue(hash, key, value)
 	}
 
+	// 插入新节点后，增加哈希表的大小计数
 	hm.size++
 
 	return value
-
 }
 
 func (hm *HashMap) getNodeByHash(hash uint64) *node {
@@ -90,18 +97,26 @@ func (hm *HashMap) getNodeByHash(hash uint64) *node {
 }
 
 func (hm *HashMap) resize() {
+	// 容量翻倍（左移1位相当于乘2）
 	hm.capacity <<= 1
 
+	// 保存旧的哈希表
 	tempTable := hm.table
 
+	// 创建新的、更大的哈希表
 	hm.table = make([]*node, hm.capacity)
 
+	// 遍历旧表中的所有位置
 	for i := 0; i < len(tempTable); i++ {
 		node := tempTable[i]
+		// 跳过空位置
 		if node == nil {
 			continue
 		}
 
+		// 对于非空节点，使用新的容量重新计算哈希值
+		// 并将节点放入新表中对应位置
+		// 注意：由于容量变化，同一个key的哈希值会发生变化
 		hm.table[hm.hash(node.key)] = node
 	}
 }
