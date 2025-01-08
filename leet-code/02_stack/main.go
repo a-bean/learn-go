@@ -79,48 +79,82 @@ func evalRPN(tokens []string) int {
 }
 
 // 227: 基本计算器 II https://leetcode.cn/problems/basic-calculator-ii/
-func calculateII(s string) int {
-	tokens := make([]string, 0)
-	ops := make([]byte, 0)
-	num := ""
+// 224: 基本计算器 https://leetcode.cn/problems/basic-calculator/
+// 同时解决224和227: 支持+-*/()
+func calculate(s string) int {
+	tokens := make([]string, 0) // 后缀表达式栈，用于存储最终的逆波兰表达式
+	ops := make([]byte, 0)      // 操作符栈，用于临时存储运算符
+	num := ""                   // 用于累积多位数字的字符串
 
+	needZero := true // 标记是否需要在前面补0，处理类似 "-1" 这样的表达式
+
+	// 遍历输入字符串，将中缀表达式转换为后缀表达式（逆波兰表达式）
 	for i := 0; i < len(s); i++ {
+		// 处理数字：将连续数字字符拼接成完整数字
 		if s[i] >= '0' && s[i] <= '9' {
 			num += string(s[i])
+			needZero = false
 		} else {
-			// 处理累积的数字
+			// 如果已经累积了数字，将其加入tokens
 			if num != "" {
 				tokens = append(tokens, num)
 				num = ""
 			}
 
+			// 跳过空格
 			if s[i] == ' ' {
 				continue
 			}
 
-			// 只处理运算符
+			// 处理左括号：直接入栈
+			if s[i] == '(' {
+				ops = append(ops, s[i])
+				needZero = true
+				continue
+			}
+
+			// 处理右括号：弹出ops中的运算符直到遇到左括号
+			if s[i] == ')' {
+				for ops[len(ops)-1] != '(' {
+					tokens = append(tokens, string(ops[len(ops)-1]))
+					ops = ops[:len(ops)-1]
+				}
+				ops = ops[:len(ops)-1] // 弹出左括号
+				needZero = false
+				continue
+			}
+
+			// 处理一元运算符：在+/-前补0
+			if needZero && (s[i] == '+' || s[i] == '-') {
+				tokens = append(tokens, "0")
+			}
+
+			// 处理运算符
 			if s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/' {
 				currentRank := getRank(s[i])
+				// 将优先级更高或相等的运算符从ops弹出并加入tokens
 				for len(ops) > 0 && getRank(ops[len(ops)-1]) >= currentRank {
 					tokens = append(tokens, string(ops[len(ops)-1]))
 					ops = ops[:len(ops)-1]
 				}
 				ops = append(ops, s[i])
+				needZero = true
 			}
 		}
 	}
 
-	// 处理最后一个数字
+	// 处理最后剩余的数字
 	if num != "" {
 		tokens = append(tokens, num)
 	}
 
-	// 处理剩余的运算符
+	// 将ops中剩余的运算符依次加入tokens
 	for len(ops) > 0 {
 		tokens = append(tokens, string(ops[len(ops)-1]))
 		ops = ops[:len(ops)-1]
 	}
 
+	// 使用逆波兰表达式求值函数计算最终结果
 	return evalRPN(tokens)
 }
 
@@ -133,11 +167,6 @@ func getRank(s byte) int {
 	}
 	return 0
 }
-
-// 224: 基本计算器 https://leetcode.cn/problems/basic-calculator/
-// func calculate(s string) int {
-
-// }
 
 // 84: 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
 
@@ -235,4 +264,5 @@ func main() {
 	fmt.Println(largestRectangleArea([]int{1, 2, 3, 4, 5}))
 	fmt.Println(trap([]int{2, 1, 2}))
 	nextGreaterElement([]int{4, 1, 2}, []int{1, 3, 4, 2})
+	calculate("3+2*2")
 }
