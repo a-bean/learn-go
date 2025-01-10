@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // 03 无重复字符的最长子串 https://leetcode.cn/problems/longest-substring-without-repeating-characters/
 func lengthOfLongestSubstring(s string) int {
@@ -157,8 +160,115 @@ func findSubstring1(s string, words []string) []int {
 	return result
 }
 
+// 76 最小覆盖子串 https://leetcode.cn/problems/minimum-window-substring/
+// s = "ADOBECODEBANC", t = "ABC"
+func minWindow(s string, t string) string {
+	if len(s) == 0 || len(t) == 0 {
+		return ""
+	}
+
+	// 创建字符计数器
+	countT := [128]int{}
+	for _, char := range t {
+		countT[char]++
+	}
+
+	// 初始化指针和变量
+	left, right, minLen, start := 0, 0, len(s)+1, 0
+	required := len(t)
+	windowCounts := [128]int{}
+
+	// 开始滑动窗口
+	for right < len(s) {
+		char := s[right]
+		windowCounts[char]++
+
+		// 如果当前字符在 t 中且计数匹配
+		if windowCounts[char] <= countT[char] {
+			required--
+		}
+
+		// 尝试收缩窗口
+		for left <= right && required == 0 {
+			// 更新最小窗口
+			if right-left+1 < minLen {
+				minLen = right - left + 1
+				start = left
+			}
+
+			leftChar := s[left]
+			windowCounts[leftChar]--
+			if windowCounts[leftChar] < countT[leftChar] {
+				required++
+			}
+			left++
+		}
+		right++
+	}
+
+	// 返回结果
+	if minLen == len(s)+1 {
+		return ""
+	}
+	return s[start : start+minLen]
+}
+
+// 93 复原IP地址 https://leetcode.cn/problems/restore-ip-addresses/description/
+// Input: "25525511135"
+// Output: ["255.255.11.135", "255.255.111.35"]
+// 处理每一段的有效性
+func isValid(part string) bool {
+	if len(part) == 0 || len(part) > 3 {
+		return false
+	}
+	if len(part) > 1 && part[0] == '0' { // 前导零情况
+		return false
+	}
+	val, err := strconv.Atoi(part)
+	return err == nil && val >= 0 && val <= 255
+}
+
+func restoreIpAddresses(s string) (res []string) {
+	// 定义构建 IP 地址的递归函数
+	var construct func(k, i int, prev []byte)
+	construct = func(k, i int, prev []byte) {
+		// 超过 4 段或当前已处理字符串结束，直接返回
+		if k > 4 {
+			return
+		}
+		// 如果已遍历完整个字符串，且正好 4 段，存储结果
+		if k == 4 && i == len(s) {
+			res = append(res, string(prev))
+			return
+		}
+
+		// 核心循环，处理每一段
+		for j := 1; j <= 3; j++ {
+			if i+j > len(s) { // 如果超出字符串长度，则结束循环
+				break
+			}
+			// 取出当前段
+			part := s[i : i+j]
+
+			// 如果当前段值在 0-255 范围内，且没有前导零，继续递归
+			if isValid(part) {
+				prevTmp := append(append([]byte(nil), prev...), part...)
+				if k < 3 { // 只有在前三段添加 '.' 分隔符
+					prevTmp = append(prevTmp, '.')
+				}
+				construct(k+1, i+j, prevTmp)
+			}
+		}
+	}
+
+	// 从 0 段、0 索引开始，初始化 prev 为 nil
+	construct(0, 0, nil)
+	return
+}
 func main() {
 	fmt.Println(lengthOfLongestSubstring("abcabcbb"))
 	fmt.Println(findSubstring("barfoothefoobarman", []string{"foo", "bar"}))
-
+	fmt.Println(findSubstring1("barfoothefoobarman", []string{"foo", "bar"}))
+	fmt.Println(minWindow("ADOBECODEBANC", "ABC"))
+	restoreIpAddresses("25525511135")
 }
