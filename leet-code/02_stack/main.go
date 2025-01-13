@@ -169,7 +169,7 @@ func getRank(s byte) int {
 }
 
 // 84: 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/description/
-
+// 单调栈(递增)
 func max(a int, b int) int {
 	if a > b {
 		return a
@@ -203,6 +203,7 @@ func largestRectangleArea(heights []int) int {
 }
 
 // 42: 接雨水 https://leetcode.cn/problems/trapping-rain-water/
+// 单调栈(递减)
 func min(a int, b int) int {
 	if a < b {
 		return a

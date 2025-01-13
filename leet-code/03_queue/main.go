@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 // 239: 滑动窗口最大值 https://leetcode.cn/problems/sliding-window-maximum/description/
+// 单调队列
 func maxSlidingWindow(nums []int, k int) []int {
 	deque := make([]int, 0, k)
 	ans := make([]int, 0, len(nums)-k+1)
