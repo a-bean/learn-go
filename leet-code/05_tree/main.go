@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -12,7 +13,7 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-// https://leetcode.cn/problems/invert-binary-tree/description/
+// 226 翻转二叉树 https://leetcode.cn/problems/invert-binary-tree/description/
 func invertTree(root *TreeNode) *TreeNode {
 	if root == nil {
 		return nil
@@ -26,7 +27,7 @@ func invertTree(root *TreeNode) *TreeNode {
 	return root
 }
 
-// https://leetcode.cn/problems/validate-binary-search-tree/description/
+// 98. 验证二叉搜索树  https://leetcode.cn/problems/validate-binary-search-tree/description/
 func isValidBST(root *TreeNode) bool {
 	return isValid(root, math.Inf(-1), math.Inf(1))
 }
@@ -58,7 +59,36 @@ func inOrder(root *TreeNode, arr *[]int) {
 	inOrder(root.Right, arr)
 }
 
-// https://leetcode.cn/problems/n-ary-tree-preorder-traversal/
+// 104. 二叉树的最大深度 https://leetcode.cn/problems/maximum-depth-of-binary-tree/description/
+func maxDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	return max(maxDepth(root.Left), maxDepth(root.Right)) + 1
+}
+
+// 111. 二叉树的最小深度 https://leetcode.cn/problems/minimum-depth-of-binary-tree/description/
+func minDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	if root.Left == nil {
+		return minDepth(root.Right) + 1
+	}
+	if root.Right == nil {
+		return minDepth(root.Left) + 1
+	}
+	return min(minDepth(root.Left), minDepth(root.Right)) + 1
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// 589. N 叉树的前序遍历 https://leetcode.cn/problems/n-ary-tree-preorder-traversal/
 type Node struct {
 	Val      int
 	Children []*Node
@@ -105,7 +135,7 @@ func levelOrder(root *Node) [][]int {
 	return res
 }
 
-// https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
+// 105. 从前序与中序遍历序列构造二叉树 https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 func build(preorder []int, inorder []int, l1, r1, l2, r2 int) *TreeNode {
 	if l1 > r2 {
 		return nil
@@ -155,7 +185,7 @@ func buildTree1(preorder []int, inorder []int) *TreeNode {
 	return build(0, 0, len(inorder)-1)
 }
 
-// https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/description/
+// 297. 二叉树的序列化与反序列化 https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/description/
 
 type Codec struct {
 	Builder strings.Builder
@@ -199,7 +229,52 @@ func (this *Codec) deserializeHelper() *TreeNode {
 	}
 }
 
-// https://leetcode.cn/problems/tree-diameter/description/
+// 1245 树的直径 https://leetcode.cn/problems/tree-diameter/description/
+// 树的直径是树中任意两个节点之间的最长路径的长度
+
+var diameter int
+
+func diameterOfBinaryTree(root *TreeNode) int {
+	diameter = 0
+	depth(root) // 计算深度并更新直径
+	return diameter
+}
+
+// depth 计算树的深度并更新直径
+func depth(node *TreeNode) int {
+	if node == nil {
+		return 0
+	}
+
+	// 递归计算左子树和右子树的深度
+	leftDepth := depth(node.Left)
+	rightDepth := depth(node.Right)
+
+	// 更新直径
+	diameter = max(diameter, leftDepth+rightDepth)
+
+	// 返回当前节点的深度
+	return max(leftDepth, rightDepth) + 1
+}
+
+// max 返回两个整数中的较大者
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 
 func main() {
+
+	// 构建一个示例树
+	root := &TreeNode{Val: 1}
+	root.Left = &TreeNode{Val: 2}
+	root.Right = &TreeNode{Val: 3}
+	root.Left.Left = &TreeNode{Val: 4}
+	root.Left.Right = &TreeNode{Val: 5}
+
+	// 计算树的直径
+	result := diameterOfBinaryTree(root)
+	fmt.Println("树的直径是:", result) // 输出树的直径
 }
