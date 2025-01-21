@@ -108,7 +108,7 @@ func preorder(root *Node) []int {
 	return list
 }
 
-// 层序遍历 https://leetcode.cn/problems/n-ary-tree-level-order-traversal/description/
+//429 层序遍历 https://leetcode.cn/problems/n-ary-tree-level-order-traversal/description/
 
 func levelOrder(root *Node) [][]int {
 	var res [][]int
@@ -265,6 +265,22 @@ func max(a, b int) int {
 	return b
 }
 
+// 236 最近公共祖先 https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == q || root == p {
+		return root
+	}
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+	if left != nil {
+		if right != nil {
+			return root
+		}
+		return left
+	}
+	return right
+}
+
 func main() {
 
 	// 构建一个示例树
@@ -277,4 +293,6 @@ func main() {
 	// 计算树的直径
 	result := diameterOfBinaryTree(root)
 	fmt.Println("树的直径是:", result) // 输出树的直径
+
+	lowestCommonAncestor(root, root.Left, root.Right)
 }

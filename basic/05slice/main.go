@@ -66,6 +66,9 @@ func main() {
 	aa := []int{4: 44, 55, 66, 1: 77, 88}
 	fmt.Println(aa) //[0 77 88 0 44 55 66]
 
+	// 二维切片初始化
+	var slice6 [][]int = [][]int{{1, 2, 3}, {4, 5, 6}}
+	fmt.Println(slice6)
 }
 
 func print(data []int) {

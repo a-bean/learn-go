@@ -45,6 +45,44 @@ func myPow(x float64, n int) float64 {
 	return tmp * tmp * x
 }
 
+// 23 合并 K 个升序链表 https://leetcode.cn/problems/merge-k-sorted-lists/description/
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func mergeKLists(lists []*ListNode) *ListNode {
+	length := len(lists)
+	if length < 1 {
+		return nil
+	}
+	if length == 1 {
+		return lists[0]
+	}
+	min := length / 2
+	left := mergeKLists(lists[:min])
+	right := mergeKLists(lists[min:])
+	return mergeTwoLists(left, right)
+}
+
+func mergeTwoLists(left, right *ListNode) *ListNode {
+	if left == nil {
+		return right
+	}
+	if right == nil {
+		return left
+	}
+
+	if left.Val < right.Val {
+		left.Next = mergeTwoLists(left.Next, right)
+		return left
+	}
+	right.Next = mergeTwoLists(left, right.Next)
+	return right
+
+}
+
 func main() {
 	fmt.Println(generateParenthesis(1))
+	mergeKLists([]*ListNode{{Val: 1, Next: nil}, {Val: 2, Next: nil}, {Val: 3, Next: nil}})
 }
