@@ -6,7 +6,7 @@ import "fmt"
 
 var (
 	letterMap = []string{
-		" ",    //0
+		"",     //0
 		"",     //1
 		"abc",  //2
 		"def",  //3
@@ -116,7 +116,9 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 }
 
 // 51 n皇后 ： https://leetcode.cn/problems/n-queens/
-
+// TODO
 func main() {
-	fmt.Println(letterCombinations("23"))
+	fmt.Println(letterCombinations("234"))
+	hasPathSum(&TreeNode{}, 0)
+	pathSum(&TreeNode{}, 0)
 }
