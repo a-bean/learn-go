@@ -2,7 +2,8 @@ package main
 
 import "fmt"
 
-// 17 https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+// 17 电话号码的字母组合 https://leetcode.cn/problems/letter-combinations-of-a-phone-number/
+
 var (
 	letterMap = []string{
 		" ",    //0
@@ -41,7 +42,7 @@ func findCombination(digits *string, index int, s string) {
 	}
 }
 
-// 112: https://leetcode.com/problems/path-sum/
+// 112 路径总和 : https://leetcode.cn/problems/path-sum/
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -58,7 +59,7 @@ func hasPathSum(root *TreeNode, sum int) bool {
 	return hasPathSum(root.Left, sum-root.Val) || hasPathSum(root.Right, sum-root.Val)
 }
 
-// 113: https://leetcode.com/problems/path-sum-ii/
+// 113 路径总和 II: https://leetcode.cn/problems/path-sum-ii/
 func pathSum(root *TreeNode, sum int) [][]int {
 	var slice [][]int
 	slice = findPath(root, sum, slice, []int(nil))
@@ -80,18 +81,7 @@ func findPath(n *TreeNode, sum int, slice [][]int, stack []int) [][]int {
 	return slice
 }
 
-// 226: https://leetcode.com/problems/invert-binary-tree/
-func invertTree(root *TreeNode) *TreeNode {
-	if root == nil {
-		return nil
-	}
-	invertTree(root.Left)
-	invertTree(root.Right)
-	root.Left, root.Right = root.Right, root.Left
-	return root
-}
-
-// 230: https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+// 230  二叉搜索树中第 K 小的元素: https://leetcode.cn/problems/kth-smallest-element-in-a-bst/
 func kthSmallest(root *TreeNode, k int) int {
 	ans, count := 0, 0
 	inOrder(root, k, &count, &ans)
@@ -111,7 +101,7 @@ func inOrder(root *TreeNode, k int, count *int, ans *int) {
 	}
 }
 
-// 235: https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/description/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+// 235 二叉搜索树的最近公共祖先: https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/description
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 	if p == nil || q == nil || root == nil {
 		return nil
@@ -124,6 +114,8 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 	}
 	return root
 }
+
+// 51 n皇后 ： https://leetcode.cn/problems/n-queens/
 
 func main() {
 	fmt.Println(letterCombinations("23"))

@@ -13,17 +13,14 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-// 226 翻转二叉树 https://leetcode.cn/problems/invert-binary-tree/description/
+// 226 翻转二叉树: https://leetcode.cn/problems/invert-binary-tree/
 func invertTree(root *TreeNode) *TreeNode {
 	if root == nil {
 		return nil
 	}
-
-	temp := root.Left
-	root.Left = root.Right
-	root.Right = temp
 	invertTree(root.Left)
 	invertTree(root.Right)
+	root.Left, root.Right = root.Right, root.Left
 	return root
 }
 
