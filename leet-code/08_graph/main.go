@@ -2,6 +2,7 @@ package main
 
 // 684: 冗余连接 https://leetcode.cn/problems/redundant-connection/description/
 // TODO
+
 // 207: 课程表 https://leetcode.cn/problems/course-schedule/description/
 /*
 AOV 网的拓扑排序
@@ -56,28 +57,39 @@ func canFinish(n int, pre [][]int) bool {
 
 // 210: 课程表 II https://leetcode.cn/problems/course-schedule-ii/description/
 func findOrder(numCourses int, prerequisites [][]int) []int {
+	// 记录每个课程的入度（需要先修的课程数量）
 	in := make([]int, numCourses)
+	// 记录每个课程的后续课程列表
 	frees := make([][]int, numCourses)
+	// 存储可以学习的课程队列，最终也是拓扑排序的结果
 	next := make([]int, 0, numCourses)
+
+	// 构建课程依赖关系
 	for _, v := range prerequisites {
-		in[v[0]]++
-		frees[v[1]] = append(frees[v[1]], v[0])
+		in[v[0]]++                              // 增加课程的入度
+		frees[v[1]] = append(frees[v[1]], v[0]) // 将课程添加到其先修课程的后续课程列表中
 	}
+
+	// 找出所有入度为 0 的课程（可以直接学习的课程）
 	for i := 0; i < numCourses; i++ {
 		if in[i] == 0 {
 			next = append(next, i)
 		}
 	}
+
+	// 进行拓扑排序
 	for i := 0; i != len(next); i++ {
-		c := next[i]
-		v := frees[c]
+		c := next[i]  // 当前正在学习的课程
+		v := frees[c] // 获取当前课程的后续课程列表
 		for _, vv := range v {
-			in[vv]--
-			if in[vv] == 0 {
-				next = append(next, vv)
+			in[vv]--         // 将后续课程的入度减 1
+			if in[vv] == 0 { // 如果某个后续课程入度变为 0，说明其所有先修课程都已完成
+				next = append(next, vv) // 将该课程加入可学习队列
 			}
 		}
 	}
+
+	// 如果可以学完所有课程，返回学习顺序；否则返回空数组
 	if len(next) == numCourses {
 		return next
 	}
@@ -87,4 +99,5 @@ func findOrder(numCourses int, prerequisites [][]int) []int {
 func main() {
 	canFinish(3, [][]int{{0, 1}, {0, 2}, {1, 2}})
 	findOrder(3, [][]int{{0, 1}, {0, 2}, {1, 2}})
+
 }
