@@ -5,13 +5,11 @@ import (
 	"learn-go/structure/constraints"
 )
 
-// Heap heap implementation using generic.
 type Heap[T any] struct {
 	heaps    []T
 	lessFunc func(a, b T) bool
 }
 
-// New gives a new heap object.
 func New[T constraints.Ordered]() *Heap[T] {
 	less := func(a, b T) bool {
 		return a < b
@@ -20,7 +18,6 @@ func New[T constraints.Ordered]() *Heap[T] {
 	return h
 }
 
-// NewAny gives a new heap object. element can be anything, but must provide less function.
 func NewAny[T any](less func(a, b T) bool) (*Heap[T], error) {
 	if less == nil {
 		return nil, errors.New("less func is necessary")
@@ -30,21 +27,15 @@ func NewAny[T any](less func(a, b T) bool) (*Heap[T], error) {
 	}, nil
 }
 
-// Push pushes the element t onto the heap.
-// The complexity is O(log n) where n = h.Len().
 func (h *Heap[T]) Push(t T) {
 	h.heaps = append(h.heaps, t)
 	h.up(len(h.heaps) - 1)
 }
 
-// Top returns the minimum element (according to Less) from the heap.
-// Top panics if the heap is empty.
 func (h *Heap[T]) Top() T {
 	return h.heaps[0]
 }
 
-// Pop removes the minimum element (according to Less) from the heap.
-// The complexity is O(log n) where n = h.Len().
 func (h *Heap[T]) Pop() {
 	if len(h.heaps) <= 1 {
 		h.heaps = nil
@@ -55,12 +46,10 @@ func (h *Heap[T]) Pop() {
 	h.down(0)
 }
 
-// Empty returns the heap is empty or not.
 func (h *Heap[T]) Empty() bool {
 	return len(h.heaps) == 0
 }
 
-// Size returns the size of the heap
 func (h *Heap[T]) Size() int {
 	return len(h.heaps)
 }

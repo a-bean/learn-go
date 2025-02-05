@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/bits"
 )
 
@@ -330,7 +331,73 @@ func solve(board [][]byte) {
 	}
 }
 
-// 329 矩阵中的最长递增路径: https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/
+// 329 最长递增序列：https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/
+
+// longestIncreasingPath 函数计算给定矩阵中最长递增路径的长度
+func longestIncreasingPath(matrix [][]int) int {
+	// 创建缓存数组，用于存储每个位置的最长递增路径长度
+	cache, res := make([][]int, len(matrix)), 0
+	for i := 0; i < len(cache); i++ {
+		cache[i] = make([]int, len(matrix[0])) // 初始化缓存数组
+	}
+
+	// 遍历矩阵中的每个元素
+	for i, v := range matrix {
+		for j := range v {
+			// 从当前元素开始搜索最长递增路径
+			searchPath(matrix, cache, math.MinInt64, i, j)
+			// 更新结果，取当前最长路径和之前结果的最大值
+			res = max(res, cache[i][j])
+		}
+	}
+	return res // 返回最长递增路径的长度
+}
+
+// 定义四个方向的移动：上、右、下、左
+var dir = [][]int{
+	{-1, 0}, // 上
+	{0, 1},  // 右
+	{1, 0},  // 下
+	{0, -1}, // 左
+}
+
+// searchPath 函数递归地搜索从 (x, y) 开始的最长递增路径
+func searchPath(board, cache [][]int, lastNum, x, y int) int {
+	// 如果当前元素小于等于上一个元素，返回 0（不构成递增路径）
+	if board[x][y] <= lastNum {
+		return 0
+	}
+	// 如果当前元素的最长路径已经计算过，直接返回缓存值
+	if cache[x][y] > 0 {
+		return cache[x][y]
+	}
+
+	count := 1 // 初始化当前路径长度为 1（当前元素本身）
+	// 遍历四个方向
+	for i := 0; i < 4; i++ {
+		nx := x + dir[i][0] // 计算新位置的 x 坐标
+		ny := y + dir[i][1] // 计算新位置的 y 坐标
+		// 检查新位置是否在矩阵内
+		if isInIntBoard(board, nx, ny) {
+			// 递归搜索新位置的最长递增路径，并更新当前路径长度
+			count = max(count, searchPath(board, cache, board[x][y], nx, ny)+1)
+		}
+	}
+	cache[x][y] = count // 将当前元素的最长路径长度存入缓存
+	return count        // 返回当前元素的最长递增路径长度
+}
+
+func max(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// isInIntBoard 函数检查给定坐标 (x, y) 是否在矩阵的有效范围内
+func isInIntBoard(board [][]int, x, y int) bool {
+	return x >= 0 && x < len(board) && y >= 0 && y < len(board[0])
+}
 
 func main() {
 	fmt.Println(letterCombinations("234"))
@@ -347,4 +414,12 @@ func main() {
 		{'X', 'X', 'O', 'X'},
 		{'X', 'O', 'X', 'X'},
 	})
+
+	matrix := [][]int{
+		{9, 9, 4},
+		{6, 6, 8},
+		{2, 1, 1},
+	}
+	result1 := longestIncreasingPath(matrix)
+	fmt.Println(result1) // 输出 4
 }
