@@ -9,7 +9,7 @@
        // 使用 ctx
    }
    ```
-   
+
 2. **不存储 `context.Context`**：不要将 `context.Context` 存储到结构体或全局变量中，它是请求范围的临时数据，应在调用链中传递。
 
 3. **避免修改父 `context`**：使用 `WithCancel`、`WithDeadline`、`WithTimeout` 等方法创建派生 `context`，不要直接修改父 `context`。
@@ -214,7 +214,7 @@ func NewRequestContext(parent context.Context, requestID, userID string) context
 | **控制并发协程**                | 使用 `Done` 通知协程结束，避免资源浪费。                     |
 | **合理选择派生 `context` 方法** | 根据需求选择 `WithCancel`、`WithTimeout` 或 `WithDeadline`。 |
 
-## 2. switch细节
+## 2. switch 细节
 
 ### **1. 基本用法**
 
@@ -359,7 +359,7 @@ package main
 import "fmt"
 
 func main() {
-    var value interface{} = 42
+    var value any = 42
     switch v := value.(type) {
     case int:
         fmt.Println("Integer:", v)
@@ -510,7 +510,7 @@ Unknown number
 | **`case` 支持多个值**      | 一个 `case` 可以匹配多个值，逗号分隔。           |
 | **顺序匹配**               | 按从上到下顺序匹配，匹配成功后不再检查后续条件。 |
 
-## 3. defer顶层数据结构是什么样的?
+## 3. defer 顶层数据结构是什么样的?
 
 ### **1. `defer` 的底层数据结构**
 
@@ -535,7 +535,7 @@ Unknown number
 ```go
 type Defer struct {
     fn   func()        // 延迟调用的函数
-    args []interface{} // 函数的参数（值捕获）
+    args []any // 函数的参数（值捕获）
     next *Defer        // 指向下一个 Defer
 }
 ```
@@ -711,7 +711,7 @@ func main() {
      11
      ```
 
-### 8. 打开10万个文件，如何使用defer关闭资源？
+### 8. 打开 10 万个文件，如何使用 defer 关闭资源？
 
 **结合 Goroutine 并发处理**,利用 Goroutine 并发处理文件，并设置限制器控制并发数量。
 
@@ -777,7 +777,7 @@ func main() {
 | **配合闭包使用**               | 闭包的延迟调用支持动态捕获外部变量引用。                 |
 | **`panic` 和 `return` 的结合** | `defer` 可用于在异常或返回时执行清理逻辑，确保资源释放。 |
 
-## 4. 最容易被忽略的panic和recover的一些细节问题
+## 4. 最容易被忽略的 panic 和 recover 的一些细节问题
 
 ### **1. `recover` 只能在 `defer` 中生效**
 
@@ -913,7 +913,7 @@ Recovered: First panic
 
 ### **5. `recover` 返回的类型**
 
-**现象**：`recover` 返回的是 `interface{}` 类型，使用时需要进行类型断言。
+**现象**：`recover` 返回的是 `any` 类型，使用时需要进行类型断言。
 
 **示例：**
 
@@ -942,7 +942,7 @@ func main() {
 Recovered non-string: 42
 ```
 
-**原因**：`panic` 接受任何类型的值，`recover` 返回 `interface{}`，需要通过断言处理具体类型。
+**原因**：`panic` 接受任何类型的值，`recover` 返回 `any`，需要通过断言处理具体类型。
 
 ### **6. `panic` 和 `recover` 的性能开销**
 
@@ -1198,7 +1198,7 @@ Go 的 `channel` 是一种高效、线程安全的通信机制，其底层基于
 
 通过理解这些底层原理，可以更高效地使用 `channel` 并避免潜在的性能问题或错误。
 
-## 6. 如何通过interface实现鸭子类型？
+## 6. 如何通过 interface 实现鸭子类型？
 
 在 Go 语言中，**接口（interface）**是实现鸭子类型的核心工具。鸭子类型的理念是“只要对象的行为满足要求，就可以被视为某个类型”，而不需要显示地声明继承或实现关系。
 
@@ -1405,17 +1405,17 @@ func main() {
 
 鸭子类型的核心在于注重行为，而非类型声明，这种方式使得代码更具扩展性和模块化，是 Go 语言设计的一大特色。
 
-## 7. Go语言支持重载吗？如何实现重写？
+## 7. Go 语言支持重载吗？如何实现重写？
 
-### **1. Go语言是否支持重载？**
+### **1. Go 语言是否支持重载？**
 
-Go语言**不支持函数或方法的重载**。
+Go 语言**不支持函数或方法的重载**。
 
 > 重载指的是在同一个作用域中，可以定义多个函数或方法名称相同，但参数个数、类型或返回值不同的函数。
 
 #### **原因：**
 
-Go语言设计追求简洁和清晰，明确地避免了函数重载的复杂性，以减少代码歧义。例如：
+Go 语言设计追求简洁和清晰，明确地避免了函数重载的复杂性，以减少代码歧义。例如：
 
 ```go
 func Add(a int, b int) int { return a + b }
@@ -1440,7 +1440,7 @@ import (
 )
 
 // 可变参数实现模拟重载
-func PrintAll(args ...interface{}) {
+func PrintAll(args ...any) {
 	for _, arg := range args {
 		fmt.Println(arg)
 	}
@@ -1519,9 +1519,9 @@ func main() {
 }
 ```
 
-### **3. Go语言是否支持重写？**
+### **3. Go 语言是否支持重写？**
 
-Go语言**支持方法的重写**，特别是在嵌套结构体（模拟继承）的场景中。
+Go 语言**支持方法的重写**，特别是在嵌套结构体（模拟继承）的场景中。
 
 #### **重写（Override）：**
 
@@ -1616,14 +1616,14 @@ func main() {
 
 ### **5. 总结**
 
-| **功能**     | **支持情况**               | **实现方法**                                                 |
-| ------------ | -------------------------- | ------------------------------------------------------------ |
-| **函数重载** | 不支持                     | 使用变长参数、明确命名的函数、或接口来模拟重载行为。         |
+| **功能**     | **支持情况**               | **实现方法**                                                             |
+| ------------ | -------------------------- | ------------------------------------------------------------------------ |
+| **函数重载** | 不支持                     | 使用变长参数、明确命名的函数、或接口来模拟重载行为。                     |
 | **方法重写** | 支持（通过结构体嵌套实现） | 在子类（或嵌套结构体）中定义与父类（或嵌套结构体）同名的方法，即可重写。 |
 
 Go 的设计哲学是追求简单和可读性，虽然不支持重载，但通过灵活的接口和组合，可以实现类似重载的功能，而重写则可以通过嵌套结构体自然实现。
 
-## 8. Go语言中如何实现继承
+## 8. Go 语言中如何实现继承
 
 Go 语言不支持传统意义上的类继承，但可以通过 **组合（composition）** 和 **接口（interface）** 来实现类似继承的功能。Go 的继承机制是通过类型嵌套（组合）来实现的，而不是通过继承层次结构。
 
@@ -1659,13 +1659,13 @@ func (d Dog) Speak() {
 func main() {
     // 创建 Dog 类型的实例
     dog := Dog{Animal{"Buddy"}}
-    
+
     // 直接访问 Animal 类型的方法
     dog.Speak() // 输出: Buddy barks!
-    
+
     // 通过组合也能访问父类的方法
     fmt.Println(dog.Name) // 输出: Buddy
-    
+
     // 如果不重写 Speak 方法，将会调用父类的 Speak 方法
     dog2 := Dog{Animal{"Max"}}
     dog2.Speak() // 输出: Max barks!
@@ -1709,7 +1709,7 @@ func (d Dog) Speak() {
 func main() {
     dog := Dog{Animal{"Buddy"}}
     dog.Speak()  // 输出: Buddy barks!
-    
+
     // 调用父类的方法
     dog.Animal.Speak() // 输出: Buddy makes a sound!
 }
@@ -1760,7 +1760,7 @@ func introduce(speaker Speaker) {
 func main() {
     dog := Dog{Animal{"Buddy"}}
     introduce(dog)  // 输出: Buddy barks!
-    
+
     // 通过接口也可以直接调用父类的方法
     var speaker Speaker = Animal{"Generic Animal"}
     introduce(speaker) // 输出: Generic Animal makes a sound!
@@ -1773,7 +1773,7 @@ func main() {
 - 通过接口，`Dog` 和 `Animal` 类型都可以作为 `Speaker` 类型来使用。
 - 由于 Go 支持接口的隐式实现，`Dog` 类型不需要显式声明它实现了 `Speaker` 接口，只要 `Dog` 类型实现了接口中的方法，就被认为实现了该接口。
 
-### 4. **总结：Go语言中的继承**
+### 4. **总结：Go 语言中的继承**
 
 - **没有传统的继承**：Go 不支持传统面向对象语言中的继承，不能通过 `class` 和 `extends` 来继承父类。
 - **组合（Embedding）模拟继承**：通过将一个类型嵌套到另一个类型中，来模拟继承的效果。
@@ -1782,7 +1782,7 @@ func main() {
 
 Go 语言的设计理念是**简单和灵活**，通过组合、方法重写和接口等方式，能够实现多种继承和多态的效果，而避免了传统面向对象语言中复杂的继承体系。
 
-## 9. Go语言中如何实现多态？
+## 9. Go 语言中如何实现多态？
 
 在 Go 语言中，实现 **多态** 主要依赖于 **接口（interface）** 和 **方法的动态分发**。Go 语言的多态通过接口的隐式实现和类型的组合来实现。与传统面向对象语言中的继承和类多态不同，Go 语言通过接口和方法的重写实现了多态的行为。
 

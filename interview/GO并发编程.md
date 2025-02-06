@@ -1,6 +1,6 @@
-##  1. Go是怎么实现原子操作的？
+## 1. Go 是怎么实现原子操作的？
 
-Go语言通过 `sync/atomic` 包提供了一组原子操作函数，以实现线程安全的变量操作。原子操作在并发编程中尤为重要，它们在底层通过 CPU 的原子指令或其他系统原语实现，无需使用互斥锁等同步机制，从而避免了上下文切换的开销。以下是 Go 实现原子操作的原理与机制：
+Go 语言通过 `sync/atomic` 包提供了一组原子操作函数，以实现线程安全的变量操作。原子操作在并发编程中尤为重要，它们在底层通过 CPU 的原子指令或其他系统原语实现，无需使用互斥锁等同步机制，从而避免了上下文切换的开销。以下是 Go 实现原子操作的原理与机制：
 
 ### **1. `sync/atomic` 包的核心概念**
 
@@ -39,7 +39,7 @@ Go 的原子操作通过编译器支持和系统底层的 CPU 原语实现。这
   atomic.AddInt32
   ```
 
-   在 x86_64 上对应以下代码：
+  在 x86_64 上对应以下代码：
 
   ```assembly
   TEXT ·AddInt32(SB), NOSPLIT, $0-16
@@ -353,7 +353,7 @@ func main() {
 
 **选择原则**：当操作简单且频繁时，优先使用原子操作；当需要协调多个变量的复杂操作时，选择锁更为合适。
 
-## 3. Go可以限制运行时操作系统线程的数量吗？
+## 3. Go 可以限制运行时操作系统线程的数量吗？
 
 是的，Go 可以通过设置 **GOMAXPROCS** 来限制运行时可用的操作系统线程的数量。
 
@@ -368,16 +368,16 @@ func main() {
 
    ```go
    package main
-   
+
    import (
        "fmt"
        "runtime"
    )
-   
+
    func main() {
        // 限制为最多使用 2 个操作系统线程
        runtime.GOMAXPROCS(2)
-   
+
        fmt.Println("Maximum threads:", runtime.GOMAXPROCS(0))
    }
    ```
@@ -464,7 +464,7 @@ func main() {
 - 合理设置 GOMAXPROCS 的值，既能充分利用硬件资源，也能避免不必要的开销。
 - 在性能优化时，调整 GOMAXPROCS 结合实际工作负载进行测试，以找到最优设置。
 
-## 4. 如何避免Map的并发问题？
+## 4. 如何避免 Map 的并发问题？
 
 在 Go 中，原生的 `map` 类型在并发读写时不是线程安全的。如果多个 Goroutine 对 `map` 进行并发操作（例如读写或删除），会导致程序抛出 `fatal error: concurrent map writes` 或其他未定义行为。为了避免这些问题，可以采用以下方法：
 
@@ -684,7 +684,7 @@ func main() {
 3. **监控性能**：在高并发场景下，监控锁竞争和性能瓶颈。
 4. **场景决定方法**：选择适合特定场景的方法，不盲目追求通用性。
 
-## 5. Golang如何控制并发数？
+## 5. Golang 如何控制并发数？
 
 在 Golang 中，控制并发数是实现高效并发程序的重要环节，尤其是在大量任务需要并发处理但又需要限制资源使用的情况下。以下是常见的方法来控制 Goroutines 的并发数量：
 
@@ -926,7 +926,7 @@ func main() {
 | 第三方库                        | 功能丰富，代码简洁         | 需要依赖第三方库             | 大规模并发任务处理       |
 | 信号量（`x/sync/semaphore`）    | 高效灵活，资源控制方便     | 手动管理信号量，适用场景有限 | 限制资源型任务（如 I/O） |
 
-## 6. 切片类型Slice是并发安全的吗？
+## 6. 切片类型 Slice 是并发安全的吗？
 
 在 Go 语言中，切片（Slice）本身不是线程安全的。也就是说，如果多个 Goroutine 同时对同一个切片进行并发读写操作（如添加、删除、修改元素），可能会导致数据竞争、程序崩溃或未定义行为。
 
@@ -1056,7 +1056,7 @@ func main() {
 
 	wg.Wait()
 
-	sm.Range(func(key, value interface{}) bool {
+	sm.Range(func(key, value any) bool {
 		fmt.Printf("Key: %v, Value: %v\n", key, value)
 		return true
 	})
@@ -1126,18 +1126,18 @@ func main() {
 
 `sync/atomic` 包中提供了对整数类型的原子操作函数，常见的包括以下：
 
-| **函数**                                     | **说明**                                                     |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| `atomic.AddInt32(&val, delta)`               | 对 `int32` 类型变量 `val` 执行加法操作，返回新值             |
-| `atomic.AddInt64(&val, delta)`               | 对 `int64` 类型变量 `val` 执行加法操作，返回新值             |
-| `atomic.LoadInt32(&val)`                     | 以原子方式读取 `int32` 类型变量的值                          |
-| `atomic.LoadInt64(&val)`                     | 以原子方式读取 `int64` 类型变量的值                          |
-| `atomic.StoreInt32(&val, newValue)`          | 以原子方式将 `newValue` 存储到 `int32` 类型变量 `val`        |
-| `atomic.StoreInt64(&val, newValue)`          | 以原子方式将 `newValue` 存储到 `int64` 类型变量 `val`        |
+| **函数**                                     | **说明**                                                      |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `atomic.AddInt32(&val, delta)`               | 对 `int32` 类型变量 `val` 执行加法操作，返回新值              |
+| `atomic.AddInt64(&val, delta)`               | 对 `int64` 类型变量 `val` 执行加法操作，返回新值              |
+| `atomic.LoadInt32(&val)`                     | 以原子方式读取 `int32` 类型变量的值                           |
+| `atomic.LoadInt64(&val)`                     | 以原子方式读取 `int64` 类型变量的值                           |
+| `atomic.StoreInt32(&val, newValue)`          | 以原子方式将 `newValue` 存储到 `int32` 类型变量 `val`         |
+| `atomic.StoreInt64(&val, newValue)`          | 以原子方式将 `newValue` 存储到 `int64` 类型变量 `val`         |
 | `atomic.CompareAndSwapInt32(&val, old, new)` | 如果 `val` 的值等于 `old`，则将其更新为 `new`，并返回是否成功 |
 | `atomic.CompareAndSwapInt64(&val, old, new)` | 如果 `val` 的值等于 `old`，则将其更新为 `new`，并返回是否成功 |
-| `atomic.SwapInt32(&val, newValue)`           | 将 `int32` 类型变量 `val` 的值替换为 `newValue`，并返回旧值  |
-| `atomic.SwapInt64(&val, newValue)`           | 将 `int64` 类型变量 `val` 的值替换为 `newValue`，并返回旧值  |
+| `atomic.SwapInt32(&val, newValue)`           | 将 `int32` 类型变量 `val` 的值替换为 `newValue`，并返回旧值   |
+| `atomic.SwapInt64(&val, newValue)`           | 将 `int64` 类型变量 `val` 的值替换为 `newValue`，并返回旧值   |
 
 ### **示例代码**
 
@@ -1255,11 +1255,11 @@ func main() {
 
 以下是 `sync/atomic` 提供的常用指针原子操作函数：
 
-| **函数**                                       | **说明**                                                     |
-| ---------------------------------------------- | ------------------------------------------------------------ |
-| `atomic.LoadPointer(&ptr)`                     | 原子读取指针值，返回当前指针                                 |
-| `atomic.StorePointer(&ptr, newPtr)`            | 原子存储新的指针值到 `ptr`                                   |
-| `atomic.SwapPointer(&ptr, newPtr)`             | 原子交换指针值，将 `ptr` 替换为 `newPtr`，并返回旧值         |
+| **函数**                                       | **说明**                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| `atomic.LoadPointer(&ptr)`                     | 原子读取指针值，返回当前指针                                  |
+| `atomic.StorePointer(&ptr, newPtr)`            | 原子存储新的指针值到 `ptr`                                    |
+| `atomic.SwapPointer(&ptr, newPtr)`             | 原子交换指针值，将 `ptr` 替换为 `newPtr`，并返回旧值          |
 | `atomic.CompareAndSwapPointer(&ptr, old, new)` | 如果 `ptr` 的值等于 `old`，则将其更新为 `new`，并返回是否成功 |
 
 ### **注意事项**
@@ -1609,7 +1609,7 @@ func main() {
   - Goroutine 获取锁的顺序不一定严格按照等待的先后顺序。
 - 非公平性：
   - 如果一个 Goroutine 解锁后，另一个刚尝试加锁的 Goroutine 能直接抢到锁，而无需排队。
-  - 这种策略提高了锁的利用率，但可能导致等待时间较长的 Goroutine被“饿死”。
+  - 这种策略提高了锁的利用率，但可能导致等待时间较长的 Goroutine 被“饿死”。
 
 #### **适用场景**
 
@@ -1622,7 +1622,7 @@ func main() {
 
 - 偏向公平性：
   - 饥饿模式严格按照 Goroutine 的排队顺序获取锁。
-  - 解锁后会直接唤醒等待时间最长的 Goroutine，而不会让其他尝试加锁的 Goroutine插队。
+  - 解锁后会直接唤醒等待时间最长的 Goroutine，而不会让其他尝试加锁的 Goroutine 插队。
 - 降低优先级反转的风险：
   - 确保所有 Goroutine 都能在有限时间内获取锁，避免长期等待。
 
@@ -1719,7 +1719,7 @@ Goroutine 3 acquired lock
 - **饥饿模式** 保证公平性，适合高竞争场景。
 - Go 的 `sync.Mutex` 会根据锁竞争的情况动态在两种模式间切换，自动优化并发性能和公平性。
 
-## 12. 如何使用channel实现互斥锁？
+## 12. 如何使用 channel 实现互斥锁？
 
 在 Go 语言中，`channel` 本身是一种强大的同步机制，可以用来实现互斥锁的功能。通过限制 `channel` 的容量为 1，可以模拟互斥锁的行为：当一个 Goroutine 获取锁时，会占用 `channel`，其他 Goroutine 必须等待，直到锁被释放。
 
@@ -1837,7 +1837,7 @@ if mutex.TryLock() {
 - 使用 `channel` 实现互斥锁是 Go 的一种灵活实现方式，适合简单的互斥需求。
 - 对于高性能或复杂同步需求，建议使用 Go 标准库提供的 `sync.Mutex` 或 `sync.RWMutex`，它们经过高度优化并支持更多特性。
 
-## 13. 如何使用通道实现对http请求的限速？
+## 13. 如何使用通道实现对 http 请求的限速？
 
 在 Go 中，可以通过使用带缓冲的 `channel` 来实现对 HTTP 请求的限速。这种方式基于令牌桶的思想，每个 HTTP 请求需要从通道中获取一个令牌，只有获取到令牌的请求才能被处理。如果通道中没有令牌，请求会被阻塞，从而实现限速。
 
@@ -1964,7 +1964,7 @@ func (rl *RateLimiter) TryAcquire(timeout time.Duration) bool {
 
 使用带缓冲的 `channel` 实现 HTTP 请求的限速，是一种简洁高效的方式。它结合了 Go 的并发特性和通道机制，既能控制请求的速率，又能简化同步操作。根据业务需求，限速器可以进一步优化以满足更复杂的场景需求。
 
-##  14. Goroutine中闭包也有很多的“坑”，你平时注意到了吗
+## 14. Goroutine 中闭包也有很多的“坑”，你平时注意到了吗
 
 ### **1. 闭包捕获循环变量**
 
@@ -2241,7 +2241,7 @@ func main() {
 - 使用锁、`sync.WaitGroup` 或 `channel` 控制并发行为。
 - 对于资源敏感场景，使用 Goroutine 池限制并发数量。
 
-## 15.for循环中goroutine“坑”都在这里
+## 15.for 循环中 goroutine“坑”都在这里
 
 ### **1. 闭包捕获循环变量**
 
@@ -3258,7 +3258,7 @@ func main() {
 
 通过这些方法，主协程可以优雅地等待其他协程退出，确保资源的正确释放和程序的稳定运行。
 
-## 19. Go中如何实现主协程永不退出？
+## 19. Go 中如何实现主协程永不退出？
 
 在 Go 中，实现主协程（`main` 函数所在的协程）永不退出的常见方法是让主协程进入一个无限阻塞的状态。以下是几种实现方式：
 
@@ -3354,7 +3354,7 @@ func main() {
 
 在生产环境中，**`select{}`** 或 **`<-make(chan struct{})`** 是最常用的方式，因为它们阻塞效率高，不占用 CPU 资源。如果有动态管理的需求，可以使用 `sync.WaitGroup`。
 
-## 20. Singleflight的实现原理和使用场景
+## 20. Singleflight 的实现原理和使用场景
 
 ### 1. **Singleflight 的实现原理**
 
@@ -3393,7 +3393,7 @@ import (
 
 type call struct {
 	wg  sync.WaitGroup // 用于等待当前请求完成
-	val interface{}    // 请求结果
+	val any    // 请求结果
 	err error          // 请求错误
 }
 
@@ -3403,7 +3403,7 @@ type Group struct {
 }
 
 // Do 执行一个带有 key 的函数，如果相同 key 的请求正在进行，则等待结果返回
-func (g *Group) Do(key string, fn func() (interface{}, error)) (interface{}, error) {
+func (g *Group) Do(key string, fn func() (any, error)) (any, error) {
 	g.mu.Lock()
 	if g.m == nil {
 		g.m = make(map[string]*call)
@@ -3452,7 +3452,7 @@ import (
 var g singleflight.Group
 
 func fetchData(key string) (string, error) {
-	return g.Do(key, func() (interface{}, error) {
+	return g.Do(key, func() (any, error) {
 		fmt.Println("Fetching data for:", key)
 		time.Sleep(2 * time.Second) // 模拟数据库查询
 		return "data for " + key, nil

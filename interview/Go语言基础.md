@@ -1,4 +1,4 @@
-### 1. Go包管理的方式有哪些?
+### 1. Go 包管理的方式有哪些?
 
 #### 1. 使用 `go get`（早期的 Go 包管理方式）
 
@@ -491,7 +491,7 @@ Function in package2
   3. 最后执行 `main()` 函数。
 - 它提供了一种干净、自动化的初始化方式，是 Go 项目启动流程的重要组成部分。
 
-### 6. Go语言中如何获取项目的根目录？
+### 6. Go 语言中如何获取项目的根目录？
 
 #### 1. 通过 `os.Getwd()` 获取当前工作目录
 
@@ -718,9 +718,9 @@ func main() {
 1. **简单项目**：直接使用 `os.Getwd()`。
 2. **复杂项目**：结合标识文件（如 `.root`）或 `go.mod` 文件。
 3. **运行时灵活性**：通过环境变量 `PROJECT_ROOT` 动态传递。
-4. **通用**:  runtime.Caller
+4. **通用**: runtime.Caller
 
-### 7. Go输出时 %v %+v %#v 有什么区别？
+### 7. Go 输出时 %v %+v %#v 有什么区别？
 
 在 Go 中，`%v`、`%+v` 和 `%#v` 是 `fmt` 包中的格式化标志，用于打印值。它们的区别在于输出信息的详细程度和格式，特别是针对结构体。
 
@@ -876,7 +876,7 @@ func main() {
 }
 ```
 
-### 8. Go语言中new和make有什么区别？
+### 8. Go 语言中 new 和 make 有什么区别？
 
 #### **1. `new`**
 
@@ -938,7 +938,7 @@ func main() {
     // 创建切片
     slice := make([]int, 3, 5) // 长度为 3，容量为 5
     fmt.Println(slice)         // 输出 [0 0 0]
-    
+
     // 创建映射
     m := make(map[string]int)
     m["Alice"] = 25
@@ -1090,7 +1090,7 @@ func main() {
   fmt.Println(slice)          // 输出 [1 2 3 4 5]
   ```
 
-------
+---
 
 #### **5. 值传递和引用传递**
 
@@ -1104,7 +1104,7 @@ func main() {
   func modifyArray(arr [3]int) {
       arr[0] = 100
   }
-  
+
   func main() {
       arr := [3]int{1, 2, 3}
       modifyArray(arr)
@@ -1122,7 +1122,7 @@ func main() {
   func modifySlice(slice []int) {
       slice[0] = 100
   }
-  
+
   func main() {
       slice := []int{1, 2, 3}
       modifySlice(slice)
@@ -1152,7 +1152,7 @@ func main() {
 | **灵活性**   | 较低                       | 较高                             |
 | **性能**     | 较快（不需要动态分配）     | 较慢（可能涉及底层数组重新分配） |
 
-------
+---
 
 #### **示例：两者的使用差异**
 
@@ -1169,7 +1169,7 @@ func main() {
     // 切片
     slice := []int{1, 2, 3}
     fmt.Println("Slice before append:", slice)
-    
+
     slice = append(slice, 4, 5) // 扩展切片
     fmt.Println("Slice after append:", slice)
 }
@@ -1188,7 +1188,7 @@ Slice after append: [1 2 3 4 5]
 - 如果数据大小固定，使用 **数组**。
 - 如果数据大小动态变化，使用 **切片**。切片是 Go 的主力工具，用于大多数实际编程场景。
 
-### 10. Go语言中双引号和反引号有什么区别？
+### 10. Go 语言中双引号和反引号有什么区别？
 
 #### **1. 双引号 (`"`)**
 
@@ -1210,7 +1210,7 @@ func main() {
     fmt.Println(str)       // 输出：
                            // Hello
                            // World!
-    
+
     multiLine := "This is " +
                  "a multi-line string."
     fmt.Println(multiLine) // 输出：This is a multi-line string.
@@ -1243,7 +1243,7 @@ import "fmt"
 func main() {
     rawStr := `Hello\nWorld!` // 不解析转义字符
     fmt.Println(rawStr)       // 输出：Hello\nWorld!
-    
+
     multiLineRaw := `This is
 a multi-line
 raw string.`
@@ -1296,12 +1296,12 @@ raw string.
 - 多行字符串：
 
   ```go
-  
-  raw := `This isa raw string with multiple lines.` 
-  fmt.Println(raw) 
+
+  raw := `This isa raw string with multiple lines.`
+  fmt.Println(raw)
   ```
 
-~~~go
+````go
 **嵌入代码片段**：
 ```go
 html := `<html>
@@ -1310,7 +1310,7 @@ html := `<html>
 </body>
 </html>`
 fmt.Println(html)
-~~~
+````
 
 - 避免转义麻烦：
 
@@ -1343,10 +1343,10 @@ fmt.Println(html)
 
 #### **总结建议**
 
-- 使用双引号:  需要处理动态内容、转义字符或构建复杂字符串时。
+- 使用双引号: 需要处理动态内容、转义字符或构建复杂字符串时。
 - 使用反引号：表示原始内容（如多行字符串、特殊字符内容）时，避免额外的转义工作。
 
-### 11. strings.TrimRight和strings.TrimSuffix有什么区别
+### 11. strings.TrimRight 和 strings.TrimSuffix 有什么区别
 
 | 特性                 | `strings.TrimRight`                      | `strings.TrimSuffix`               |
 | -------------------- | ---------------------------------------- | ---------------------------------- |
@@ -1494,7 +1494,7 @@ func main() {
    - 在可能发生溢出的场景下，选择足够大的数据类型（如 `int64` 或 `uint64`）。
    - 编写逻辑检查溢出值，特别是在循环计数器、数组索引等场景中。
 
-### 13. Go语言中每个值在内存中只分布在一个内存块上的类型有哪些？
+### 13. Go 语言中每个值在内存中只分布在一个内存块上的类型有哪些？
 
 在 Go 语言中，有些类型的值在内存中分布在**一个连续的内存块**上。这意味着该类型的值在内存中的表示是紧凑和线性的，可以通过其地址和长度直接操作。这些类型主要包括**基本数据类型**和**一些复合类型**。以下是详细说明：
 
@@ -1526,12 +1526,12 @@ func main() {
 
    ```go
    package main
-   
+
    import (
        "fmt"
        "unsafe"
    )
-   
+
    func main() {
        arr := [4]int{1, 2, 3, 4}
        fmt.Println(unsafe.Sizeof(arr)) // 输出数组所占内存大小
@@ -1552,18 +1552,18 @@ func main() {
 
    ```go
    package main
-   
+
    import (
        "fmt"
        "unsafe"
    )
-   
+
    type MyStruct struct {
        a int8
        b int16
        c int32
    }
-   
+
    func main() {
        var s MyStruct
        fmt.Println(unsafe.Sizeof(s)) // 输出结构体所占内存大小
@@ -1611,15 +1611,15 @@ func main() {
 
 选择合适的数据类型时，可以根据是否需要连续存储来优化性能和内存布局。
 
-### 14. Go语言中哪些类型可以使用len？哪些类型可以使用cap？
+### 14. Go 语言中哪些类型可以使用 len？哪些类型可以使用 cap？
 
-| **类型**           | **支持 `len`** | **支持 `cap`** | **说明**                                                     |
-| ------------------ | -------------- | -------------- | ------------------------------------------------------------ |
-| 数组（`[N]T`）     | ✅              | ✅              | `len` 和 `cap` 返回固定值，即数组的长度。                    |
-| 切片（`[]T`）      | ✅              | ✅              | `len` 返回切片当前长度，`cap` 返回切片容量（底层数组的可用大小）。 |
-| 字符串（`string`） | ✅              | ❌              | `len` 返回字符串的字节长度。                                 |
-| 字典（`map[K]V`）  | ✅              | ❌              | `len` 返回字典中键值对的数量。                               |
-| 通道（`chan T`）   | ✅              | ✅              | `len` 返回当前缓冲区中的元素数量，`cap` 返回通道的总容量。   |
+| **类型**           | **支持 `len`** | **支持 `cap`** | **说明**                                                           |
+| ------------------ | -------------- | -------------- | ------------------------------------------------------------------ |
+| 数组（`[N]T`）     | ✅             | ✅             | `len` 和 `cap` 返回固定值，即数组的长度。                          |
+| 切片（`[]T`）      | ✅             | ✅             | `len` 返回切片当前长度，`cap` 返回切片容量（底层数组的可用大小）。 |
+| 字符串（`string`） | ✅             | ❌             | `len` 返回字符串的字节长度。                                       |
+| 字典（`map[K]V`）  | ✅             | ❌             | `len` 返回字典中键值对的数量。                                     |
+| 通道（`chan T`）   | ✅             | ✅             | `len` 返回当前缓冲区中的元素数量，`cap` 返回通道的总容量。         |
 
 #### **注意事项**
 
@@ -1630,7 +1630,7 @@ func main() {
    - 仅对支持容量的类型（如数组、切片、通道）有效。
    - 如果对不支持容量的类型调用 `cap` 会导致编译错误。
 
-### 15. Go语言的指针有哪些限制？
+### 15. Go 语言的指针有哪些限制？
 
 | **限制**                   | **说明**                                               |
 | -------------------------- | ------------------------------------------------------ |
@@ -1644,20 +1644,20 @@ func main() {
 | 反射中不能直接操作指针     | 必须通过 `reflect.Value.Elem()` 操作指针指向的值。     |
 | 指针不能直接序列化         | 需要对指针指向的值进行处理后再序列化。                 |
 
-### 16. Go语言中哪些类型的零值可以用nil来表示？
+### 16. Go 语言中哪些类型的零值可以用 nil 来表示？
 
 | **类型**                                        | **零值是否可以用 `nil` 表示** | **示例**                     |
 | ----------------------------------------------- | ----------------------------- | ---------------------------- |
-| 指针（`*T`）                                    | ✅                             | `var p *int = nil`           |
-| 切片（`[]T`）                                   | ✅                             | `var s []int = nil`          |
-| 字典（`map[K]V`）                               | ✅                             | `var m map[string]int = nil` |
-| 通道（`chan T`）                                | ✅                             | `var ch chan int = nil`      |
-| 接口（`interface{}`）                           | ✅                             | `var i interface{} = nil`    |
-| 函数（`func`）                                  | ✅                             | `var f func() = nil`         |
-| 数组（`[N]T`）                                  | ❌                             | 零值是 `[N]T{}`              |
-| 基本类型（`int`, `float`, `bool`, `string` 等） | ❌                             | 零值是 `0`, `false`, `""`    |
+| 指针（`*T`）                                    | ✅                            | `var p *int = nil`           |
+| 切片（`[]T`）                                   | ✅                            | `var s []int = nil`          |
+| 字典（`map[K]V`）                               | ✅                            | `var m map[string]int = nil` |
+| 通道（`chan T`）                                | ✅                            | `var ch chan int = nil`      |
+| 接口（`any`）                                   | ✅                            | `var i any = nil`            |
+| 函数（`func`）                                  | ✅                            | `var f func() = nil`         |
+| 数组（`[N]T`）                                  | ❌                            | 零值是 `[N]T{}`              |
+| 基本类型（`int`, `float`, `bool`, `string` 等） | ❌                            | 零值是 `0`, `false`, `""`    |
 
-### 17. Go语言中如何实现任意数值转换？
+### 17. Go 语言中如何实现任意数值转换？
 
 1. **基本数值类型之间的转换**：通过显式类型转换 `T(value)`。
 2. **字符串与数值之间的转换**：使用 `strconv` 包。
@@ -1683,7 +1683,7 @@ func main() {
    fmt.Println(p == nil) // 输出 true
    ```
 
-### 18. float或切片可以作为map类型的key吗？
+### 18. float 或切片可以作为 map 类型的 key 吗？
 
 #### **1. `map` 键的要求**
 
@@ -1921,7 +1921,7 @@ func main() {
 
 #### **5. 空接口类型的变长参数**
 
-如果需要接收任意类型的参数，可以使用 `...interface{}` 作为变长参数的类型。
+如果需要接收任意类型的参数，可以使用 `...any` 作为变长参数的类型。
 
 **示例**
 
@@ -1931,7 +1931,7 @@ package main
 import "fmt"
 
 // 接收任意类型参数
-func printAll(args ...interface{}) {
+func printAll(args ...any) {
     for _, arg := range args {
         fmt.Println(arg)
     }
@@ -1961,7 +1961,7 @@ import (
     "reflect"
 )
 
-func printWithType(args ...interface{}) {
+func printWithType(args ...any) {
     for _, arg := range args {
         fmt.Printf("Value: %v, Type: %s\n", arg, reflect.TypeOf(arg))
     }
@@ -2034,7 +2034,7 @@ package main
 import "fmt"
 
 func main() {
-    var i1, i2 interface{}
+    var i1, i2 any
 
     i1 = 42
     i2 = 42
@@ -2063,7 +2063,7 @@ func main() {
 package main
 
 func main() {
-    var i1, i2 interface{}
+    var i1, i2 any
 
     i1 = []int{1, 2, 3} // 动态值是切片，切片不可比较
     i2 = []int{1, 2, 3}
@@ -2075,7 +2075,7 @@ func main() {
 }
 ```
 
-**避免运行时错误的方式**:  
+**避免运行时错误的方式**:
 
 在比较接口值前，可以通过类型断言或反射检查动态值是否可比较。
 
@@ -2087,7 +2087,7 @@ import (
     "reflect"
 )
 
-func safeCompare(i1, i2 interface{}) bool {
+func safeCompare(i1, i2 any) bool {
     // 检查动态值是否可比较
     if reflect.TypeOf(i1).Comparable() && reflect.TypeOf(i2).Comparable() {
         return i1 == i2
@@ -2119,7 +2119,7 @@ package main
 import "fmt"
 
 func main() {
-    var i1 interface{} // 未赋值，完全为 nil
+    var i1 any // 未赋值，完全为 nil
     fmt.Println(i1 == nil) // true
 
     var p *int = nil       // 动态类型为 *int，动态值为 nil
@@ -2135,7 +2135,7 @@ func main() {
 - 判断接口是否为完全的 `nil`（动态类型和动态值均为 `nil`）。
 
 ```go
-var i interface{}
+var i any
 fmt.Println(i == nil) // true
 ```
 
@@ -2144,7 +2144,7 @@ fmt.Println(i == nil) // true
 - 常见于动态类型和值均可比较的场景，例如 `int`、`string`。
 
 ```go
-var i1, i2 interface{}
+var i1, i2 any
 i1 = "hello"
 i2 = "hello"
 fmt.Println(i1 == i2) // true
@@ -2155,7 +2155,7 @@ fmt.Println(i1 == i2) // true
 - 类型断言后，直接比较底层值。
 
 ```go
-var i1, i2 interface{}
+var i1, i2 any
 i1 = 42
 i2 = 42
 
@@ -2380,7 +2380,7 @@ func main() {
 
 通过合理利用空结构体，可以实现更高效、更语义化的代码设计。
 
-### 23. 处理Go语言中的错误，怎么才算最优雅？
+### 23. 处理 Go 语言中的错误，怎么才算最优雅？
 
 #### **1. 遵循 Go 的惯例**
 
@@ -2667,7 +2667,7 @@ func main() {
   ```go
   var x []int = nil
   y := []int{}
-  
+
   fmt.Println(reflect.DeepEqual(x, y)) // false
   ```
 
@@ -2779,11 +2779,11 @@ func main() {
 
 #### **5. 选择合适的比较方法**
 
-| **方法**                | **适用场景**                                                 |
-| ----------------------- | ------------------------------------------------------------ |
-| **`reflect.DeepEqual`** | 任意类型的深度比较，包括嵌套结构。                           |
-| **显式比较（`==`）**    | 基本类型、结构体等固定类型，且不包含切片、映射等动态类型。   |
-| **自定义比较函数**      | 自定义类型或复杂逻辑场景，例如嵌套的切片、映射、指针等。     |
+| **方法**                | **适用场景**                                                     |
+| ----------------------- | ---------------------------------------------------------------- |
+| **`reflect.DeepEqual`** | 任意类型的深度比较，包括嵌套结构。                               |
+| **显式比较（`==`）**    | 基本类型、结构体等固定类型，且不包含切片、映射等动态类型。       |
+| **自定义比较函数**      | 自定义类型或复杂逻辑场景，例如嵌套的切片、映射、指针等。         |
 | **比较指针地址和值**    | 判断对象是否为同一实例（指针相等），或判断指针指向的值是否相等。 |
 
 #### **6. 特别注意点**
@@ -2825,7 +2825,7 @@ func (m MyStruct) MyMethod() {
 	fmt.Println("MyMethod called")
 }
 
-func hasMethod(obj interface{}, methodName string) bool {
+func hasMethod(obj any, methodName string) bool {
 	v := reflect.ValueOf(obj)
 	method := v.MethodByName(methodName)
 	return method.IsValid()
@@ -2867,7 +2867,7 @@ func (m MyStruct) MyMethod() {
 	fmt.Println("MyMethod called")
 }
 
-func hasMethodViaInterface(obj interface{}) bool {
+func hasMethodViaInterface(obj any) bool {
 	_, ok := obj.(MethodChecker)
 	return ok
 }
@@ -2889,9 +2889,9 @@ func main() {
 
 #### **对比两种方法**
 
-| **方法**                | **优点**                                                     | **缺点**                                                   |
-| ----------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| **`reflect` 方法**      | - 可以动态判断任意方法，适用于灵活、动态的场景。             | - 性能开销较大，不推荐在高频场景中使用。                   |
+| **方法**                | **优点**                                                         | **缺点**                                                   |
+| ----------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| **`reflect` 方法**      | - 可以动态判断任意方法，适用于灵活、动态的场景。                 | - 性能开销较大，不推荐在高频场景中使用。                   |
 | **接口 + 类型断言方法** | - 更高效，编译时检查，避免运行时错误；明确接口声明，代码更易读。 | - 只能检查预先定义的接口方法，无法动态判断任意方法的存在。 |
 
 **适用场景**
@@ -2899,7 +2899,7 @@ func main() {
 - **动态场景**（例如插件系统或反射需求）：使用 `reflect`。
 - **静态、编译期检查场景**：使用接口和类型断言。
 
-### 26. for range闭坑
+### 26. for range 闭坑
 
 #### **坑 1：循环变量的复用问题**
 
@@ -3027,7 +3027,7 @@ func main() {
 }
 ```
 
-------
+---
 
 #### **坑 4：`for range` 的值类型是副本**
 
