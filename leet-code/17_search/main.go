@@ -183,6 +183,7 @@ func main() {
 	searchLastEqualElement([]int{5, 7, 7, 8, 8, 10}, 8)
 	fmt.Println(mySqrt(9), mySqrt(8))
 	findPeakElement([]int{1, 2, 3, 1})
+	findPeakElement2([]int{1, 2, 3, 1})
 
 	splitArray([]int{7, 2, 5, 10, 8}, 2)
 }
