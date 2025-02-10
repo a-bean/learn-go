@@ -8,20 +8,52 @@ import (
 // 它将数组 arr 中的元素根据 pivotElement 进行分区，
 // 并返回新的 pivot 索引，使得左侧的元素都小于等于 pivot，右侧的元素都大于 pivot。
 func Partition[T constraints.Ordered](arr []T, low, high int) int {
-	index := low - 1          // 初始化索引，指向小于等于 pivot 的最后一个元素
-	pivotElement := arr[high] // 选择最后一个元素作为 pivot
+	index := low - 1
+	pivotElement := arr[high]
 
 	// 遍历数组，将小于等于 pivot 的元素移动到左侧
 	for i := low; i < high; i++ {
-		if arr[i] <= pivotElement { // 如果当前元素小于等于 pivot
-			index += 1                              // 增加索引
-			arr[index], arr[i] = arr[i], arr[index] // 交换元素
+		if arr[i] <= pivotElement {
+			index += 1
+			arr[index], arr[i] = arr[i], arr[index]
 		}
 	}
 
 	// 将 pivot 元素放到正确的位置
 	arr[index+1], arr[high] = arr[high], arr[index+1]
 	return index + 1 // 返回 pivot 的新索引
+}
+
+func Partition1[T constraints.Ordered](arr []T, low, high int) int {
+	// 使用三数取中法选择 pivot
+	mid := low + (high-low)/2
+	if arr[low] > arr[mid] {
+		arr[low], arr[mid] = arr[mid], arr[low]
+	}
+	if arr[low] > arr[high] {
+		arr[low], arr[high] = arr[high], arr[low]
+	}
+	if arr[mid] > arr[high] {
+		arr[mid], arr[high] = arr[high], arr[mid]
+	}
+
+	// 将 pivot 放到最后
+	pivotIndex := mid
+	pivotValue := arr[pivotIndex]
+	arr[pivotIndex], arr[high] = arr[high], arr[pivotIndex]
+
+	// 双指针法进行分区
+	storeIndex := low
+	for i := low; i < high; i++ {
+		if arr[i] < pivotValue {
+			arr[storeIndex], arr[i] = arr[i], arr[storeIndex]
+			storeIndex++
+		}
+	}
+
+	// 将 pivot 放到正确的位置
+	arr[storeIndex], arr[high] = arr[high], arr[storeIndex]
+	return storeIndex // 返回 pivot 的新索引
 }
 
 // QuicksortRange 函数实现了快速排序的递归逻辑。
