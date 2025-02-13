@@ -75,7 +75,7 @@ func hasCycle(head *ListNode) bool {
 	return false
 }
 
-// 142: https://leetcode.cn/problems/linked-list-cycle-ii/description/
+// 142  : https://leetcode.cn/problems/linked-list-cycle-ii/description/
 // 解法1: 快慢指针
 func detectCycle(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {

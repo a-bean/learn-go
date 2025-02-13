@@ -175,6 +175,8 @@ func check(nums []int, m int, target int) bool {
 	return true // 如果子数组的数量不超过 m，返回 true
 }
 
+// 287 寻找重复数 https://leetcode.cn/problems/find-the-duplicate-number/
+
 func main() {
 	findMin([]int{4, 5, 6, 1, 2, 3})
 	findMin2([]int{4, 5, 6, 1, 2, 3})

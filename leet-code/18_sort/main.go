@@ -1,7 +1,9 @@
 package main
 
 import (
+	"math"
 	"sort"
+	"strconv"
 )
 
 // 1122 数组的相对排序 https://leetcode.cn/problems/relative-sort-array/
@@ -58,14 +60,6 @@ func relativeSortArray1(arr1 []int, arr2 []int) []int {
 }
 
 // 56 合并区间 https://leetcode.cn/problems/merge-intervals/
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-// merge 函数合并重叠的区间
 func merge(intervals [][]int) [][]int {
 	// 如果输入的区间为空，直接返回空切片
 	if len(intervals) == 0 {
@@ -96,74 +90,260 @@ func merge(intervals [][]int) [][]int {
 
 	return result // 返回合并后的区间
 }
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 
 // 493 翻转对 https://leetcode.cn/problems/reverse-pairs/
 // reversePairs 函数计算数组中逆序对的数量
 func reversePairs(nums []int) int {
-	if len(nums) < 2 { // 如果数组长度小于2，直接返回0
-		return 0
-	}
-	return mergeSort(nums, 0, len(nums)-1) // 调用归并排序并返回逆序对的数量
+	buf := make([]int, len(nums))    // 创建一个缓冲数组用于合并
+	return mergeSortCount(nums, buf) // 调用归并排序并返回逆序对的数量
 }
-
-// mergeSort 函数使用归并排序算法计算逆序对的数量
-func mergeSort(nums []int, left, right int) int {
-	if left >= right { // 如果左索引大于或等于右索引，返回0
+func mergeSortCount(nums, buf []int) int {
+	if len(nums) <= 1 { // 如果数组长度小于等于1，返回0，因为没有逆序对
 		return 0
 	}
-	mid := left + (right-left)/2                                        // 计算中间索引
-	count := mergeSort(nums, left, mid) + mergeSort(nums, mid+1, right) // 递归计算左右部分的逆序对数量
+	mid := (len(nums) - 1) / 2               // 计算中间索引
+	cnt := mergeSortCount(nums[:mid+1], buf) // 递归计算左半部分的逆序对数量
+	cnt += mergeSortCount(nums[mid+1:], buf) // 递归计算右半部分的逆序对数量
 
-	j := mid + 1 // 初始化右侧数组的指针
 	// 计算逆序对
-	for i := left; i <= mid; i++ {
-		// 找到 nums[i] > 2 * nums[j] 的所有 j
-		for j <= right && nums[i] > 2*nums[j] {
-			j++ // 移动 j 指针
+	for i, j := 0, mid+1; i < mid+1; i++ { // 遍历左半部分
+		// Note!!! j 是递增的
+		for ; j < len(nums) && nums[i] <= 2*nums[j]; j++ { // 找到 nums[i] > 2 * nums[j] 的所有 j
 		}
-		count += j - (mid + 1) // 统计逆序对数量
+		cnt += len(nums) - j // 统计逆序对数量
 	}
 
-	merge1(nums, left, mid, right) // 合并两个已排序的子数组
-	return count                   // 返回逆序对的数量
-}
-
-// merge1 函数合并两个已排序的子数组
-func merge1(nums []int, left, mid, right int) {
-	temp := make([]int, right-left+1) // 创建临时数组用于存储合并结果
-	i, j, k := left, mid+1, 0         // 初始化指针
-
-	// 合并两个子数组
-	for i <= mid && j <= right {
-		if nums[i] <= nums[j] {
-			temp[k] = nums[i] // 将较小的元素放入临时数组
-			i++
+	copy(buf, nums) // 将当前数组复制到缓冲数组中
+	// 合并两个已排序的子数组
+	for i, j, k := 0, mid+1, 0; k < len(nums); {
+		if j >= len(nums) || i < mid+1 && buf[i] > buf[j] { // 如果左侧元素大于右侧元素
+			nums[k] = buf[i] // 将左侧元素放入原数组
+			i++              // 移动左侧指针
 		} else {
-			temp[k] = nums[j]
-			j++
+			nums[k] = buf[j] // 将右侧元素放入原数组
+			j++              // 移动右侧指针
 		}
-		k++
+		k++ // 移动合并数组指针
 	}
-
-	// 处理左侧剩余元素
-	for i <= mid {
-		temp[k] = nums[i]
-		i++
-		k++
-	}
-
-	// 处理右侧剩余元素
-	for j <= right {
-		temp[k] = nums[j]
-		j++
-		k++
-	}
-
-	// 将合并后的结果复制回原数组
-	for i := 0; i < len(temp); i++ {
-		nums[left+i] = temp[i]
-	}
+	return cnt // 返回逆序对的数量
 }
+
+// 327 区间和的个数 https://leetcode.cn/problems/count-of-range-sum/
+
+// 147 对链表进行插入排序 https://leetcode.cn/problems/insertion-sort-list/
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func insertionSortList(head *ListNode) *ListNode {
+	if head == nil {
+		return head
+	}
+	newHead := &ListNode{Val: 0, Next: nil} // 这里初始化不要直接指向 head，为了下面循环可以统一处理
+	cur, pre := head, newHead
+	for cur != nil {
+		next := cur.Next
+		for pre.Next != nil && pre.Next.Val < cur.Val {
+			pre = pre.Next
+		}
+		cur.Next = pre.Next
+		pre.Next = cur
+		cur = next
+
+		pre = newHead // 归位，重头开始
+	}
+	return newHead.Next
+}
+
+// 148 排序链表 https://leetcode.cn/problems/sort-list/
+// merge1 函数合并两个已排序的链表并返回合并后的链表
+func merge1(head1, head2 *ListNode) *ListNode {
+	dummyHead := &ListNode{}                      // 创建一个虚拟头节点
+	temp, temp1, temp2 := dummyHead, head1, head2 // 初始化指针
+
+	// 遍历两个链表，合并它们
+	for temp1 != nil && temp2 != nil {
+		if temp1.Val <= temp2.Val { // 比较当前节点的值
+			temp.Next = temp1  // 将较小的节点连接到合并链表
+			temp1 = temp1.Next // 移动到下一个节点
+		} else {
+			temp.Next = temp2  // 将较小的节点连接到合并链表
+			temp2 = temp2.Next // 移动到下一个节点
+		}
+		temp = temp.Next // 移动合并链表的指针
+	}
+
+	// 处理剩余节点
+	if temp1 != nil {
+		temp.Next = temp1 // 如果链表1还有剩余节点，直接连接
+	} else if temp2 != nil {
+		temp.Next = temp2 // 如果链表2还有剩余节点，直接连接
+	}
+	return dummyHead.Next // 返回合并后的链表，跳过虚拟头节点
+}
+
+// sort1 函数使用归并排序算法对链表进行排序
+func sort1(head, tail *ListNode) *ListNode {
+	if head == nil { // 如果链表为空，返回空
+		return head
+	}
+
+	if head.Next == tail { // 如果链表只有一个节点，返回该节点
+		head.Next = nil
+		return head
+	}
+
+	// 使用快慢指针找到链表的中间节点
+	slow, fast := head, head
+	for fast != tail {
+		slow = slow.Next // 慢指针每次移动一步
+		fast = fast.Next // 快指针每次移动两步
+		if fast != tail {
+			fast = fast.Next // 确保快指针不越界
+		}
+	}
+
+	mid := slow // 中间节点
+	// 递归排序左右两部分并合并
+	return merge1(sort1(head, mid), sort1(mid, tail))
+}
+
+// sortList 函数是对外接口，调用 sort1 进行排序
+func sortList(head *ListNode) *ListNode {
+	return sort1(head, nil) // 从头节点开始排序
+}
+
+// 164 最大间距 https://leetcode.cn/problems/maximum-gap/
+func maximumGap(nums []int) int {
+	if len(nums) < 2 {
+		return 0 // 如果元素少于2，返回0
+	}
+
+	minVal, maxVal := math.MaxInt32, math.MinInt32
+	for _, num := range nums {
+		if num < minVal {
+			minVal = num // 找到最小值
+		}
+		if num > maxVal {
+			maxVal = num // 找到最大值
+		}
+	}
+
+	// 计算桶的大小
+	bucketSize := max(1, (maxVal-minVal)/(len(nums)-1)) // 每个桶的大小
+	bucketCount := (maxVal-minVal)/bucketSize + 1       // 桶的数量
+
+	// 创建桶
+	buckets := make([][2]int, bucketCount) // 每个桶保存[min, max]
+	for i := range buckets {
+		buckets[i][0] = math.MaxInt32 // 初始化最小值为最大整数
+		buckets[i][1] = math.MinInt32 // 初始化最大值为最小整数
+	}
+
+	// 将数字分配到桶中
+	for _, num := range nums {
+		idx := (num - minVal) / bucketSize // 确定桶的索引
+		if num < buckets[idx][0] {
+			buckets[idx][0] = num // 更新桶的最小值
+		}
+		if num > buckets[idx][1] {
+			buckets[idx][1] = num // 更新桶的最大值
+		}
+	}
+
+	// 计算最大间隔
+	maxGap := 0
+	previousMax := buckets[0][1] // 从第一个桶的最大值开始
+	for i := 1; i < bucketCount; i++ {
+		if buckets[i][0] == math.MaxInt32 { // 跳过空桶
+			continue
+		}
+		maxGap = max(maxGap, buckets[i][0]-previousMax) // 更新最大间隔
+		previousMax = buckets[i][1]                     // 更新前一个桶的最大值
+	}
+
+	return maxGap // 返回找到的最大间隔
+}
+
+// 179 最大数 https://leetcode.cn/problems/largest-number/
+func largestNumber(nums []int) string {
+	sort.Slice(nums, func(i, j int) bool {
+		x, y := nums[i], nums[j]
+		sx, sy := 10, 10
+		for sx <= x {
+			sx *= 10
+		}
+		for sy <= y {
+			sy *= 10
+		}
+		return sy*x+y > sx*y+x
+	})
+	if nums[0] == 0 {
+		return "0"
+	}
+	ans := []byte{}
+	for _, x := range nums {
+		ans = append(ans, strconv.Itoa(x)...)
+	}
+	return string(ans)
+}
+
+// 220 存在重复元素 III https://leetcode.cn/problems/contains-duplicate-iii/
+// containsNearbyAlmostDuplicate 函数检查数组中是否存在两个不同的索引 i 和 j，使得
+// |nums[i] - nums[j]| <= t 且 |i - j| <= k。
+// 该函数使用桶排序的思想来实现高效查找。
+func containsNearbyAlmostDuplicate(nums []int, k int, t int) bool {
+	// 检查边界条件
+	if k <= 0 || t < 0 || len(nums) < 2 {
+		return false // 如果 k <= 0 或 t < 0 或数组长度小于2，返回 false
+	}
+
+	buckets := map[int]int{} // 创建一个桶，用于存储元素及其值
+
+	for i := 0; i < len(nums); i++ {
+		// 计算当前元素的桶索引
+		key := nums[i] / (t + 1) // 使用 (t + 1) 来避免桶重叠
+		if nums[i] < 0 {
+			key-- // 如果元素为负数，调整桶索引
+		}
+
+		// 检查当前桶是否已存在
+		if _, ok := buckets[key]; ok {
+			return true // 如果当前桶已存在，说明找到了满足条件的元素
+		}
+
+		// 检查左侧桶
+		if v, ok := buckets[key-1]; ok && nums[i]-v <= t {
+			return true // 如果左侧桶存在且满足条件，返回 true
+		}
+
+		// 检查右侧桶
+		if v, ok := buckets[key+1]; ok && v-nums[i] <= t {
+			return true // 如果右侧桶存在且满足条件，返回 true
+		}
+
+		// 如果桶的数量超过 k，删除最旧的桶
+		if len(buckets) >= k {
+			delete(buckets, nums[i-k]/(t+1)) // 删除超出范围的桶
+		}
+
+		// 将当前元素放入桶中
+		buckets[key] = nums[i]
+	}
+	return false // 如果没有找到满足条件的元素，返回 false
+}
+
+// 324 摆动排序 II https://leetcode.cn/problems/wiggle-sort-ii/
+// 767 重构字符串 https://leetcode.cn/problems/reorganize-string/
+// 969 灯泡开关 https://leetcode.cn/problems/pancake-sorting/
+// 1054 距离相等的数组对 https://leetcode.cn/problems/distinct-echo-substrings/
 
 func main() {
 	relativeSortArray([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6})
@@ -171,4 +351,13 @@ func main() {
 	merge([][]int{{1, 3}, {2, 6}, {8, 10}, {15, 18}})
 	reversePairs([]int{7, 5, 6, 4})
 
+	insertionSortList(&ListNode{Val: 4, Next: &ListNode{Val: 2, Next: &ListNode{Val: 1, Next: &ListNode{Val: 3, Next: nil}}}})
+
+	sortList(&ListNode{Val: 4, Next: &ListNode{Val: 2, Next: &ListNode{Val: 1, Next: &ListNode{Val: 3, Next: nil}}}})
+
+	maximumGap([]int{3, 6, 9, 1})
+
+	largestNumber([]int{3, 30, 34, 5, 9})
+
+	containsNearbyAlmostDuplicate([]int{1, 2, 3, 1}, 3, 0)
 }
