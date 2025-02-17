@@ -59,6 +59,7 @@ func lemonadeChange1(bills []int) bool {
 }
 
 // 455 分发饼干 https://leetcode.cn/problems/assign-cookies/
+// 决策包容性原则：优先满足胃口
 func findContentChildren(g []int, s []int) int {
 	sort.Ints(g) // 对孩子的胃口进行排序
 	sort.Ints(s) // 对饼干的大小进行排序
@@ -76,6 +77,9 @@ func findContentChildren(g []int, s []int) int {
 
 	return childIndex // 返回满足的孩子数量
 }
+
+// 122 买卖股票的最佳时机 II https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+// 决策范围扩展
 
 // 45 跳跃游戏 https://leetcode.cn/problems/jump-game/
 func canJump(nums []int) bool {
