@@ -22,7 +22,6 @@ func main() {
 		3. 当前的goroutine中的panic会被defer中的panic覆盖
 		4. 多个defer中的panic执行顺序
 		5. 多个调用链中捕获panic,会优先被当前的协程的recover捕获
-		6.
 	*/
 	recover1()
 	fmt.Println("继续执行")

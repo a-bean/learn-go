@@ -33,10 +33,10 @@ func main() {
 
 	fmt.Println(rune1, reflect.TypeOf(rune1), rune2)
 	fmt.Println(rune3, reflect.TypeOf(rune1), rune4)
-	// 双引号跟反引号本质区别是双引号的字符串支持转义,而反应好的字符串不支持
+	// 双引号跟反引号本质区别是双引号的字符串支持转义,而反引号的字符串不支持
 	// 转义符
 	curseName := "faf\"efa\""
-	curseName1 := `faf"efa"`
+	curseName1 := `faf\"efa\"`
 	fmt.Println(curseName)
 	fmt.Println(curseName1)
 

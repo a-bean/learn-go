@@ -46,6 +46,7 @@ import (
 // 3. 未处理的退出条件：没有正确处理 goroutine 需要退出的条件，导致其继续运行。
 // 4. goroutine 被遗忘：开启了 goroutine 后，未能在合适的时机对它进行管理或清理，导致其一直运行。
 // 5. 等待外部事件：goroutine 在等待某些外部资源（例如网络连接、文件 I/O）时没有超时机制，导致它们一直处于挂起状态。
+
 // Goroutine 泄漏的预防措施：
 // 1. 合理使用 channel 和 select：
 // 如果 goroutine 依赖于 channel 进行通信，确保 channel 能够按预期关闭或发出消息，

@@ -75,4 +75,5 @@ func print(data []int) {
 	data[0] = 100          // 确实改变了外面的变量
 	data = append(data, 3) // 改变不了外面的变量，因为扩容了
 	//data = append(data[:2], 3) // 改变了外面的变量,因为没有扩容
+	fmt.Println(data)
 }
