@@ -80,8 +80,17 @@ func findContentChildren(g []int, s []int) int {
 
 // 122 买卖股票的最佳时机 II https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
 // 决策范围扩展
+func maxProfit(prices []int) int {
+	profit := 0 // 初始化利润
+	for i := 1; i < len(prices); i++ {
+		if prices[i] > prices[i-1] { // 如果当前价格大于前一天价格
+			profit += prices[i] - prices[i-1] // 买入卖出，计算利润
+		}
+	}
+	return profit // 返回最大利润
+}
 
-// 45 跳跃游戏 https://leetcode.cn/problems/jump-game/
+// 55 跳跃游戏 https://leetcode.cn/problems/jump-game/
 func canJump(nums []int) bool {
 	maxReach := 0 // 记录当前能达到的最大索引
 	for i := 0; i < len(nums); i++ {
@@ -100,7 +109,21 @@ func canJump(nums []int) bool {
 	return false // 遍历结束后仍无法到达最后一个索引
 }
 
+// 45 跳跃游戏 II https://leetcode-cn.com/problems/jump-game-ii/
+func jump(nums []int) int {
+	end, maxPos, steps := 0, 0, 0 // 初始化终点、最大位置和步数
+	for i := 0; i < len(nums)-1; i++ {
+		maxPos = max(maxPos, i+nums[i]) // 更新最大位置
+		if i == end {                   // 如果到达了当前的终点
+			end = maxPos // 更新终点为最大位置
+			steps++      // 步数加一
+		}
+	}
+	return steps // 返回步数
+}
+
 // 1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
+// 临项交换
 func minimumEffort(tasks [][]int) int {
 	// 按照任务的最小努力值和最大努力值的差值进行排序
 	sort.Slice(tasks, func(i, j int) bool {
@@ -135,5 +158,7 @@ func main() {
 
 	findContentChildren([]int{1, 2, 3}, []int{1, 1})
 	findContentChildren([]int{1, 2}, []int{1, 2, 3})
+
+	jump([]int{2, 3, 1, 1, 4})
 
 }
