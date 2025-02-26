@@ -1,9 +1,5 @@
-// package set implements a Set using a golang map.
-// This implies that only the types that are accepted as valid map keys can be used as set elements.
-// For instance, do not try to Add a slice, or the program will panic.
 package set
 
-// New gives new set.
 func New(items ...any) Set {
 	st := set{
 		elements: make(map[any]bool),
@@ -14,7 +10,6 @@ func New(items ...any) Set {
 	return &st
 }
 
-// Set is an interface of possible methods on 'set'.
 type Set interface {
 	Add(item any)
 	Delete(item any)

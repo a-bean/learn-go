@@ -2,24 +2,10 @@ package linkedlist
 
 import "fmt"
 
-// Doubly structure with just the Head Node
-// We call it `Doubly` to make it easier to
-// understand when calling this in peoples
-// own local code to understand and experiment
-// with this easily.
-// For example, we can use gotools `go get` command to get
-// this repository cloned inside the
-// $GOPATH/src/github.com/TheAlgorithms/Go (you can do this
-// manually as well) and use the import statement as follows:
-//
-// `import "github.com/TheAlgorithms/Go/structure/linkedlist"`
-//
-// and call linkedlist.Doubly to create a new doubly linked list.
 type Doubly[T any] struct {
 	Head *Node[T]
 }
 
-// Init initializes double linked list
 func (ll *Doubly[T]) Init() *Doubly[T] {
 	ll.Head = &Node[T]{}
 	ll.Head.Next = ll.Head
@@ -32,7 +18,6 @@ func NewDoubly[T any]() *Doubly[T] {
 	return new(Doubly[T]).Init()
 }
 
-// lazyInit lazily initializes a zero List value.
 func (ll *Doubly[T]) lazyInit() {
 	if ll.Head.Next == nil {
 		ll.Init()
@@ -52,13 +37,11 @@ func (ll *Doubly[T]) insertValue(val T, at *Node[T]) *Node[T] {
 	return ll.insert(NewNode(val), at)
 }
 
-// AddAtBeg Add a node to the beginning of the linkedlist
 func (ll *Doubly[T]) AddAtBeg(val T) {
 	ll.lazyInit()
 	ll.insertValue(val, ll.Head)
 }
 
-// AddAtEnd Add a node at the end of the linkedlist
 func (ll *Doubly[T]) AddAtEnd(val T) {
 	ll.lazyInit()
 	ll.insertValue(val, ll.Head.Prev)
@@ -73,7 +56,6 @@ func (ll *Doubly[T]) Remove(n *Node[T]) T {
 	return n.Val
 }
 
-// DelAtBeg Delete the node at the beginning of the linkedlist
 func (ll *Doubly[T]) DelAtBeg() (T, bool) {
 	// no item
 	if ll.Head.Next == nil {
@@ -87,7 +69,6 @@ func (ll *Doubly[T]) DelAtBeg() (T, bool) {
 	return val, true
 }
 
-// DetAtEnd Delete a node at the end of the linkedlist
 func (ll *Doubly[T]) DelAtEnd() (T, bool) {
 	// no item
 	if ll.Head.Prev == nil {
@@ -101,8 +82,6 @@ func (ll *Doubly[T]) DelAtEnd() (T, bool) {
 	return val, true
 }
 
-// DelByPos deletes node at middle based on position in list
-// and returns value. If empty or position of node is less than linked list length, returns false
 func (ll *Doubly[T]) DelByPos(pos int) (T, bool) {
 
 	switch {
@@ -134,7 +113,6 @@ func (ll *Doubly[T]) DelByPos(pos int) (T, bool) {
 	return val, true
 }
 
-// Count Number of nodes in the linkedlist
 func (ll *Doubly[T]) Count() int {
 	var ctr int = 0
 
@@ -149,7 +127,6 @@ func (ll *Doubly[T]) Count() int {
 	return ctr
 }
 
-// Reverse Reverse the order of the linkedlist
 func (ll *Doubly[T]) Reverse() {
 	var Prev, Next *Node[T]
 	cur := ll.Head
@@ -165,7 +142,6 @@ func (ll *Doubly[T]) Reverse() {
 	ll.Head = Prev
 }
 
-// Display display the linked list
 func (ll *Doubly[T]) Display() {
 	for cur := ll.Head.Next; cur != ll.Head; cur = cur.Next {
 		fmt.Print(cur.Val, " ")
@@ -174,7 +150,6 @@ func (ll *Doubly[T]) Display() {
 	fmt.Print("\n")
 }
 
-// DisplayReverse Display the linkedlist in reverse order
 func (ll *Doubly[T]) DisplayReverse() {
 	if ll.Head == nil {
 		return

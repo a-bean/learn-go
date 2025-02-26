@@ -13,14 +13,12 @@ type node struct {
 	next  *node
 }
 
-// HashMap is golang implementation of hashmap
 type HashMap struct {
 	capacity uint64
 	size     uint64
 	table    []*node
 }
 
-// New return new HashMap instance
 func New() *HashMap {
 	return &HashMap{
 		capacity: defaultCapacity,
@@ -28,7 +26,6 @@ func New() *HashMap {
 	}
 }
 
-// Make creates a new HashMap instance with input size and capacity
 func Make(size, capacity uint64) HashMap {
 	return HashMap{
 		size:     size,
@@ -37,7 +34,6 @@ func Make(size, capacity uint64) HashMap {
 	}
 }
 
-// Get returns value associated with given key
 func (hm *HashMap) Get(key any) any {
 	node := hm.getNodeByHash(hm.hash(key))
 
@@ -48,12 +44,10 @@ func (hm *HashMap) Get(key any) any {
 	return nil
 }
 
-// Put puts new key value in hashmap
 func (hm *HashMap) Put(key any, value any) any {
 	return hm.putValue(hm.hash(key), key, value)
 }
 
-// Contains checks if given key is stored in hashmap
 func (hm *HashMap) Contains(key any) bool {
 	node := hm.getNodeByHash(hm.hash(key))
 	return node != nil

@@ -1,26 +1,20 @@
 package linkedlist
 
-// demonstration of singly linked list in golang
 import (
 	"errors"
 	"fmt"
 )
 
-// Singly structure with length of the list and its head
 type Singly[T any] struct {
 	length int
 
-	// Note that Node here holds both Next and Prev Node
-	// however only the Next node is used in Singly methods.
 	Head *Node[T]
 }
 
-// NewSingly returns a new instance of a linked list
 func NewSingly[T any]() *Singly[T] {
 	return &Singly[T]{}
 }
 
-// AddAtBeg adds a new snode with given value at the beginning of the list.
 func (ll *Singly[T]) AddAtBeg(val T) {
 	n := NewNode(val)
 	n.Next = ll.Head
@@ -28,7 +22,6 @@ func (ll *Singly[T]) AddAtBeg(val T) {
 	ll.length++
 }
 
-// AddAtEnd adds a new snode with given value at the end of the list.
 func (ll *Singly[T]) AddAtEnd(val T) {
 	n := NewNode(val)
 
@@ -45,8 +38,6 @@ func (ll *Singly[T]) AddAtEnd(val T) {
 	ll.length++
 }
 
-// DelAtBeg deletes the snode at the head(beginning) of the list
-// and returns its value. Returns false if the list is empty.
 func (ll *Singly[T]) DelAtBeg() (T, bool) {
 	if ll.Head == nil {
 		var r T
@@ -60,8 +51,6 @@ func (ll *Singly[T]) DelAtBeg() (T, bool) {
 	return cur.Val, true
 }
 
-// DelAtEnd deletes the snode at the tail(end) of the list
-// and returns its value. Returns false if the list is empty.
 func (ll *Singly[T]) DelAtEnd() (T, bool) {
 	if ll.Head == nil {
 		var r T
@@ -84,8 +73,6 @@ func (ll *Singly[T]) DelAtEnd() (T, bool) {
 
 }
 
-// DelByPos deletes the node at the middle based on position in the list
-// and returns its value. Returns false if the list is empty or length is not more than given position
 func (ll *Singly[T]) DelByPos(pos int) (T, bool) {
 	switch {
 	case ll.Head == nil:
@@ -118,12 +105,10 @@ func (ll *Singly[T]) DelByPos(pos int) (T, bool) {
 	return val, true
 }
 
-// Count returns the current size of the list.
 func (ll *Singly[T]) Count() int {
 	return ll.length
 }
 
-// Reverse reverses the list.
 func (ll *Singly[T]) Reverse() {
 	var prev, Next *Node[T]
 	cur := ll.Head
@@ -138,7 +123,6 @@ func (ll *Singly[T]) Reverse() {
 	ll.Head = prev
 }
 
-// ReversePartition Reverse the linked list from the ath to the bth node
 func (ll *Singly[T]) ReversePartition(left, right int) error {
 	err := ll.CheckRangeFromIndex(left, right)
 	if err != nil {
@@ -172,7 +156,6 @@ func (ll *Singly[T]) CheckRangeFromIndex(left, right int) error {
 	return nil
 }
 
-// Display prints out the elements of the list.
 func (ll *Singly[T]) Display() {
 	for cur := ll.Head; cur != nil; cur = cur.Next {
 		fmt.Print(cur.Val, " ")
