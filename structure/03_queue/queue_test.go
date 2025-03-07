@@ -1,12 +1,3 @@
-// Queue Test
-// description: based on `geeksforgeeks` description A Queue is a linear structure which follows a particular order in which the operations are performed.
-// 	The order is First In First Out (FIFO).
-// details:
-// 	Queue Data Structure : https://www.geeksforgeeks.org/queue-data-structure/
-//  Queue (abstract data type) : https://en.wikipedia.org/wiki/Queue_(abstract_data_type)
-// author [Milad](https://github.com/miraddo)
-// see queuearray.go, queuelinkedlist.go, queuelinkedlistwithlist.go
-
 package queue
 
 import (

@@ -1,12 +1,3 @@
-// Red-Black Tree is a kind of self-balancing binary search tree.
-// Each node stores "color" ("red" or "black"), used to ensure that the tree remains balanced during insertions and deletions.
-//
-// For more details check out those links below here:
-// Programiz article : https://www.programiz.com/dsa/red-black-tree
-// Wikipedia article: https://en.wikipedia.org/wiki/Red_black_tree
-// authors [guuzaa](https://github.com/guuzaa)
-// see rbtree.go
-
 package tree
 
 import "learn-go/structure/constraints"
