@@ -34,20 +34,20 @@ EXPLAIN FORMAT=JSON SELECT * FROM students WHERE name = '张三';
 
 执行 `EXPLAIN` 后，返回的结果包括多个重要字段，如下：
 
-| 字段            | 含义             | 影响查询优化                                                 |
-| --------------- | ---------------- | :----------------------------------------------------------- |
-| `id`            | 查询的唯一标识符 | `id` 值相同时，从上到下执行。`id` 值不同，值越大优先执行。`id` 差值较大时，表示子查询。 |
-| `select_type`   | 查询类型         | SIMPLE（简单查询（无 `JOIN`、子查询））、PRIMARY（最外层查询）、SUBQUERY（子查询）、DERIVED（派生表）、 UNION（`UNION` 语句的第二个及之后的查询）、UNION RESULT（`UNION` 结果存放的临时表） |
-| `table`         | 查询涉及的表     | 表名                                                         |
-| `partitions`    | 使用的分区       | 仅适用于分区表                                               |
+| 字段            | 含义             | 影响查询优化                                                                                                                                                                                                                                            |
+| --------------- | ---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`            | 查询的唯一标识符 | `id` 值相同时，从上到下执行。`id` 值不同，值越大优先执行。`id` 差值较大时，表示子查询。                                                                                                                                                                 |
+| `select_type`   | 查询类型         | SIMPLE（简单查询（无 `JOIN`、子查询））、PRIMARY（最外层查询）、SUBQUERY（子查询）、DERIVED（派生表）、 UNION（`UNION` 语句的第二个及之后的查询）、UNION RESULT（`UNION` 结果存放的临时表）                                                             |
+| `table`         | 查询涉及的表     | 表名                                                                                                                                                                                                                                                    |
+| `partitions`    | 使用的分区       | 仅适用于分区表                                                                                                                                                                                                                                          |
 | `type`          | 访问类型         | 1. system：表只有 1 行数据（最优）、2. const：主键/唯一索引等值查询（最优）、3. eq_ref：主键/唯一索引关联查询（较优）、4. ref：普通索引等值查询、5. range：索引范围查询、6. index：全索引扫描（不如 `range`）7. ALL：全表扫描（最差）【越靠后性能越差】 |
-| `possible_keys` | 可能使用的索引   | 但不一定真的用                                               |
-| `key`           | 实际使用的索引   | 若为 NULL，则未使用索引                                      |
-| `key_len`       | 索引字段长度     | 越短越好                                                     |
-| `ref`           | 索引比较的列     | 主要用于 `ref` 访问类型                                      |
-| `rows`          | 预计扫描的行数   | 数值越小越好                                                 |
-| `filtered`      | 结果过滤百分比   | 100% 表示所有行都符合条件                                    |
-| `extra`         | 额外信息         | 是否使用临时表、排序等                                       |
+| `possible_keys` | 可能使用的索引   | 但不一定真的用                                                                                                                                                                                                                                          |
+| `key`           | 实际使用的索引   | 若为 NULL，则未使用索引                                                                                                                                                                                                                                 |
+| `key_len`       | 索引字段长度     | 越短越好                                                                                                                                                                                                                                                |
+| `ref`           | 索引比较的列     | 主要用于 `ref` 访问类型                                                                                                                                                                                                                                 |
+| `rows`          | 预计扫描的行数   | 数值越小越好                                                                                                                                                                                                                                            |
+| `filtered`      | 结果过滤百分比   | 100% 表示所有行都符合条件                                                                                                                                                                                                                               |
+| `extra`         | 额外信息         | 是否使用临时表、排序等                                                                                                                                                                                                                                  |
 
 **优化目标**：让 `type` 尽量接近 `const`、`ref`，避免 `ALL`（全表扫描）。
 
@@ -110,7 +110,7 @@ LIMIT 10;
 
 > 该查询用于 **分析 SQL 语句的等待瓶颈**（锁、磁盘 IO 等）。
 
-4. SHOW STATUS（MySQL 运行状态监控）**
+4. SHOW STATUS（MySQL 运行状态监控）\*\*
 
 `SHOW STATUS` 监控 MySQL 服务器状态，常用的指标如下：
 
@@ -212,7 +212,7 @@ SHOW [GLOBAL | SESSION] STATUS [LIKE 'pattern'];
 - `Handler_read_key` 过低 → **检查是否使用索引** (`EXPLAIN`)；
 - `Qcache_hits` 低（8.0 以前）→ **考虑调整 `query_cache_size`**。
 
-------
+---
 
 #### **5. 事务 & InnoDB 相关**
 
@@ -313,10 +313,10 @@ SHOW PROCESSLIST;
 
 **输出**
 
-| ID   | 用户  | 进程  | 状态         | 执行时间 | SQL 语句                       |
-| ---- | ----- | ----- | ------------ | -------- | ------------------------------ |
-| 123  | root  | Query | Sending data | 10s      | SELECT * FROM orders WHERE ... |
-| 124  | user1 | Sleep | 0            |          |                                |
+| ID  | 用户  | 进程  | 状态         | 执行时间 | SQL 语句                        |
+| --- | ----- | ----- | ------------ | -------- | ------------------------------- |
+| 123 | root  | Query | Sending data | 10s      | SELECT \* FROM orders WHERE ... |
+| 124 | user1 | Sleep | 0            |          |                                 |
 
 > **优化目标**：找出长时间运行的 SQL，优化索引或分解查询。
 
@@ -360,44 +360,139 @@ LIMIT 10;
 
 > **优化目标**：找出等待时间长的 SQL，优化事务或索引。
 
-## **三、性能优化策略**
+## 三、索引优化策略
 
-### **1. 索引优化**
+### 1. 选择合适的索引
 
-- **合理使用索引**，避免全表扫描；
-- **最左匹配原则**，确保索引列顺序正确；
-- **避免索引失效**（如 `LIKE '%xx'`、`OR` 条件）。
+✅ **主键（`PRIMARY KEY`）**
 
-### **2. SQL 语句优化**
+```sql
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50)
+);
+```
 
-- **减少 `SELECT \*`**，只查询必要字段；
-- **优化 `JOIN` 语句**，确保关联列有索引；
-- **使用 `EXISTS` 代替 `IN`**，提升子查询性能。
+✅ **唯一索引（`UNIQUE INDEX`）**
 
-### **3. 缓存优化**
+```sql
+CREATE UNIQUE INDEX idx_email ON users(email);
+```
 
-- **使用 InnoDB Buffer Pool**，提高缓存命中率；
-- **使用 Redis/Memcached**，减少数据库查询压力。
+✅ **普通索引（`INDEX`）**
 
-### **4. 连接管理**
+```sql
+CREATE INDEX idx_name ON users(name);
+```
 
-- **优化 `max_connections`**，避免过多连接导致资源耗尽；
-- **使用连接池**（如 `MySQL-Pool`、`HikariCP`）。
+✅ **联合索引（`COMPOSITE INDEX`）**
 
-### **5. 事务优化**
+```sql
+CREATE INDEX idx_name_age ON users(name, age);
+```
 
-- **避免长事务**，减少锁竞争；
-- **使用合适的隔离级别**，降低死锁风险。
+✅ **全文索引（`FULLTEXT INDEX`）**
 
-## **四、总结**
+```sql
+CREATE FULLTEXT INDEX idx_content ON articles(content);
+```
 
-1. **SQL 执行计划分析**（`EXPLAIN`、`SHOW PROFILE`）。
-2. **服务器状态监控**（`SHOW STATUS`、`SHOW PROCESSLIST`）。
-3. **日志分析**（慢查询日志 `Slow Query Log`）。
-4. **高级性能分析**（`PERFORMANCE_SCHEMA`）。
-5. 优化策略：
-   - **索引优化**（最左匹配原则、避免索引失效）。
-   - **SQL 语句优化**（避免 `SELECT *`、优化 `JOIN`）。
-   - **缓存优化**（InnoDB Buffer Pool、Redis）。
-   - **连接管理**（连接池、优化 `max_connections`）。
-   - **事务优化**（避免长事务、降低锁竞争）。
+### 2. 最左前缀匹配原则
+
+**联合索引 `(name, age)` 只能匹配以下查询：**
+
+```sql
+SELECT * FROM users WHERE name = 'Tom';  ✅ 命中索引
+SELECT * FROM users WHERE name = 'Tom' AND age = 25; ✅ 命中索引
+SELECT * FROM users WHERE age = 25; ❌ 索引失效
+```
+
+**解决方案**：
+如果需要 `age` 独立查询，单独创建索引：
+
+```sql
+CREATE INDEX idx_age ON users(age);
+```
+
+### 3. 索引覆盖（Covering Index）
+
+**索引覆盖 = 查询的数据列全部在索引中，无需回表**
+
+```sql
+CREATE INDEX idx_email ON users(email);
+SELECT email FROM users WHERE email = 'test@example.com';  ✅ 覆盖索引
+```
+
+**`EXPLAIN` 显示 `Using index`，表示索引覆盖生效**
+
+### 4. 减少索引大小（前缀索引）
+
+对于长字符串字段，如 `VARCHAR(255)`，可以使用**前缀索引**：
+
+```sql
+CREATE INDEX idx_email ON users(email(10));
+```
+
+- ✅ **节省存储空间**
+- ✅ **提高查询效率**
+- ❗ **可能会增加重复值，需权衡长度**
+
+### 5. 避免索引失效
+
+✅ **使用相同的数据类型**
+
+```sql
+SELECT * FROM users WHERE id = '100';  ❌ 索引失效
+SELECT * FROM users WHERE id = 100;  ✅ 索引生效
+```
+
+✅ **避免 `OR` 导致索引失效**
+
+```sql
+SELECT * FROM users WHERE name = 'Tom' OR age = 25;  ❌ 索引失效
+```
+
+✅ **优化 `OR` 语句**
+
+```sql
+SELECT * FROM users WHERE name = 'Tom'
+UNION ALL
+SELECT * FROM users WHERE age = 25;
+```
+
+✅ **避免 `LIKE '%xxx%'`**
+
+```sql
+SELECT * FROM users WHERE name LIKE '%Tom%';  ❌ 索引失效
+SELECT * FROM users WHERE name LIKE 'Tom%';  ✅ 索引生效
+```
+
+✅ **避免对索引列使用函数、列运算**,
+
+```sql
+SELECT * FROM users WHERE LEFT(name, 3) = 'Tom';  ❌ 索引失效
+SELECT * FROM users WHERE name LIKE 'Tom%';  ✅ 索引生效
+```
+
+✅ **避免隐式类型转换**
+
+```sql
+SELECT * FROM users WHERE phone = 13800001234;  ❌ 索引失效
+SELECT * FROM users WHERE phone = '13800001234';  ✅ 索引生效
+```
+
+## 四. 索引设计原则 
+
+1. 针对于数据量较大，且查询比较频繁的表建立索引。 
+
+2. 针对于常作为查询条件（where）、排序（order by）、分组（group by）操作的字段建立索 引。
+
+3. 尽量选择区分度高的列作为索引，尽量建立唯一索引，区分度越高，使用索引的效率越高。 
+
+4. 如果是字符串类型的字段，字段的长度较长，可以针对于字段的特点，建立前缀索引。
+
+5. 尽量使用联合索引，减少单列索引，查询时，联合索引很多时候可以覆盖索引，节省存储空间， 避免回表，提高查询效率。 
+
+6. 要控制索引的数量，索引并不是多多益善，索引越多，维护索引结构的代价也就越大，会影响增 删改的效率。 1 create unique index idx_user_phone_name on tb_user(phone,name); 
+
+7. 如果索引列不能存储NULL值，请在创建表时使用NOT NULL约束它。当优化器知道每列是否包含 NULL值时，它可以更好地确定哪个索引最有效地用于查询。
