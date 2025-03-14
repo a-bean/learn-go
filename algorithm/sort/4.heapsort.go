@@ -2,6 +2,10 @@ package sort
 
 import "learn-go/structure/constraints"
 
+type Comparable interface {
+	Idx() int
+	More(any) bool
+}
 type MaxHeap struct {
 	slice    []Comparable
 	heapSize int
@@ -106,11 +110,6 @@ func heapifyDown[T any](slice []T, N, i int, moreFunc func(i, j int) bool, swapF
 
 		heapifyDown(slice, N, max, moreFunc, swapFunc)
 	}
-}
-
-type Comparable interface {
-	Idx() int
-	More(any) bool
 }
 
 // 对选择排序的优化

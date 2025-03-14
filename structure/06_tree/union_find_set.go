@@ -1,4 +1,4 @@
-package set
+package tree
 
 // UnionFind 并查集接口
 type UnionFind interface {
@@ -29,14 +29,14 @@ func NewUnionFind(n int) UnionFind {
 
 	// 初始化，每个节点的父节点都是自己
 	for i := 0; i < n; i++ {
-		uf.parent[i] = i
+		uf.parent[i] = i // 设置i(左)的父节点i
 		uf.rank[i] = 1
 	}
 
 	return uf
 }
 
-// Find 查找元素所属的集合（路径压缩优化）
+// Find 查找元素所属的集合（路径压缩优化）:找到p的祖先
 func (uf *unionFind) Find(p int) int {
 	if p != uf.parent[p] {
 		// 路径压缩：将节点直接连接到根节点
