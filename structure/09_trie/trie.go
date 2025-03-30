@@ -31,6 +31,7 @@ type ITrie interface {
 	Remove(s ...string)
 	Compact() bool
 }
+
 type Node struct {
 	children map[rune]*Node // 孩子节点的映射
 	isWord   bool           // 代表一个完整的字符串。
