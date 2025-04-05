@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
-// 206: https://leetcode.cn/problems/reverse-linked-list/
+// 206: 反转链表 https://leetcode.cn/problems/reverse-linked-list/
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -19,7 +22,7 @@ func reverseList(head *ListNode) *ListNode {
 	return behind
 }
 
-// 25: https://leetcode.cn/problems/reverse-nodes-in-k-group/description/
+// 25: K 个一组翻转链表 https://leetcode.cn/problems/reverse-nodes-in-k-group/description/
 func getEnd(head *ListNode, k int) *ListNode {
 	for head != nil {
 		k--
@@ -62,7 +65,8 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	return protect.Next
 }
 
-// 141: https://leetcode.cn/problems/linked-list-cycle/
+// 141: 环形链表 https://leetcode.cn/problems/linked-list-cycle/
+// 解法1: 快慢指针
 func hasCycle(head *ListNode) bool {
 	first := head
 	for first != nil && first.Next != nil {
@@ -75,7 +79,20 @@ func hasCycle(head *ListNode) bool {
 	return false
 }
 
-// 142  : https://leetcode.cn/problems/linked-list-cycle-ii/description/
+// 解法2: 哈希表
+func hasCycle2(head *ListNode) bool {
+	seen := map[*ListNode]struct{}{}
+	for head != nil {
+		if _, ok := seen[head]; ok {
+			return true
+		}
+		seen[head] = struct{}{}
+		head = head.Next
+	}
+	return false
+}
+
+// 142 环形链表 II : https://leetcode.cn/problems/linked-list-cycle-ii/description/
 // 解法1: 快慢指针
 func detectCycle(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
@@ -120,7 +137,7 @@ func detectCycle1(head *ListNode) *ListNode {
 	return nil
 }
 
-// 21: https://leetcode.cn/problems/merge-two-sorted-lists/description/
+// 21: 合并两个有序链表 https://leetcode.cn/problems/merge-two-sorted-lists/description/
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	if list1 == nil {
 		return list2
@@ -137,7 +154,7 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	return list2
 }
 
-// 23: https://leetcode.cn/problems/merge-k-sorted-lists/description/
+// 23: 合并 K 个升序链表 https://leetcode.cn/problems/merge-k-sorted-lists/description/
 func mergeKLists(lists []*ListNode) *ListNode {
 	length := len(lists)
 	if length == 0 {
@@ -187,6 +204,7 @@ func reverseBetween(head *ListNode, m int, n int) *ListNode {
 	for count := 0; pre.Next != nil && count < m-1; count++ {
 		pre = pre.Next
 	}
+
 	if pre.Next == nil {
 		return head
 	}
@@ -221,6 +239,28 @@ func insertionSortList(head *ListNode) *ListNode {
 }
 
 // 148. 排序链表 https://leetcode.cn/problems/sort-list/description/
+
+func sortList1(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	vec := make([]int, 0)
+	cur := head
+	for cur != nil {
+		vec = append(vec, cur.Val)
+		cur = cur.Next
+	}
+	sort.Ints(vec)
+	cur = head
+	cnt := 0
+	for cur != nil {
+		cur.Val = vec[cnt]
+		cur = cur.Next
+		cnt++
+	}
+	return head
+}
+
 func sortList(head *ListNode) *ListNode {
 	length := 0
 	cur := head
@@ -317,6 +357,14 @@ func main() {
 	}, 1)
 
 	sortList(&ListNode{
+		Val: 1,
+		Next: &ListNode{
+			Val:  0,
+			Next: nil,
+		},
+	})
+
+	detectCycle(&ListNode{
 		Val: 1,
 		Next: &ListNode{
 			Val:  0,

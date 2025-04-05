@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	var slice1 []int
-	//slice1[0] = 2 不能怎么做,因为空间还没分配好
+	// slice1[0] = 2 不能怎么做,因为空间还没分配好
 	slice1 = append(slice1, 1)
 	fmt.Println(slice1[0])
 	fmt.Println(slice1)

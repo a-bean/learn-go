@@ -17,7 +17,7 @@ func main() {
 		2.对于函数调用着而言,调用发生panic跟直接panic类似
 
 		panic和recover一些细节点
-		1. recover必须在defer生命的匿名函数中执行
+		1. recover必须在defer声明的匿名函数中执行
 		2. recover只能捕获同一个协程的panic
 		3. 当前的goroutine中的panic会被defer中的panic覆盖
 		4. 多个defer中的panic执行顺序
