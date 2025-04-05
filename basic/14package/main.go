@@ -4,17 +4,21 @@ package main
 import (
 	"fmt"
 	user "learn-go/basic/14package/user" // 别名，默认就是package名
-)
 
-// 引入不用
-import (
+	// 引入不用
+
 	_ "learn-go/basic/14package/user"
-)
 
-// 不用前缀直接使用（尽量少用）
-import (
+	// 不用前缀直接使用（尽量少用）
+
 	. "learn-go/basic/14package/user"
 )
+
+var a = 13
+
+func init() {
+	fmt.Println("33", a)
+}
 
 func main() {
 	// package 用来组织源码，是多个go源码的集合，代码复用的基础
