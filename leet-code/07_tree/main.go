@@ -34,7 +34,7 @@ func isValid(root *TreeNode, min, max float64) bool {
 		return true
 	}
 	v := float64(root.Val)
-	return v > min && v < max && isValid(root.Left, min, v) && isValid(root.Left, v, max)
+	return v > min && v < max && isValid(root.Left, min, v) && isValid(root.Right, v, max)
 }
 
 func isValidBST1(root *TreeNode) bool {
