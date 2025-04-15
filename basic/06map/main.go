@@ -49,4 +49,5 @@ func main() {
 	delete(map1, "age")
 
 	// map不是线程安全的，多个go routine进行操作会报错的
+
 }

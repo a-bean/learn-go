@@ -13,16 +13,11 @@ func isValid(s string) bool {
 	}
 
 	stack := make([]rune, 0)
-
-	for _, value := range s {
-		if value == '(' || value == '[' || value == '{' {
-
-			stack = append(stack, value)
-
-		} else if len(stack) > 0 && value == ')' && stack[len(stack)-1] == '(' || len(stack) > 0 && value == ']' && stack[len(stack)-1] == '[' || len(stack) > 0 && value == '}' && stack[len(stack)-1] == '{' {
-
-			stack = stack[:len(stack)-1]
-
+	for _, v := range s {
+		if v == '(' || v == '[' || v == '{' {
+			stack = append([]rune{v}, stack...)
+		} else if len(stack) > 0 && v == ')' && stack[0] == '(' || len(stack) > 0 && v == ']' && stack[0] == '[' || len(stack) > 0 && v == '}' && stack[0] == '{' {
+			stack = stack[1:]
 		} else {
 			return false
 		}
@@ -34,7 +29,6 @@ func isValid(s string) bool {
 func simplifyPath(path string) string {
 	arr := strings.Split(path, "/")
 	stack := make([]string, 0)
-	var res string
 	for i := 0; i < len(arr); i++ {
 		cur := arr[i]
 		if cur == ".." {
@@ -48,8 +42,7 @@ func simplifyPath(path string) string {
 	if len(stack) == 0 {
 		return "/"
 	}
-	res = strings.Join(stack, "/")
-	return res
+	return "/" + strings.Join(stack, "/")
 }
 
 // 150: 逆波兰表达式求值（后缀表达式） https://leetcode.cn/problems/evaluate-reverse-polish-notation/
@@ -210,6 +203,7 @@ func min(a int, b int) int {
 	}
 	return b
 }
+
 func trap(height []int) int {
 	area := 0
 	stack := make([]rect, 0)

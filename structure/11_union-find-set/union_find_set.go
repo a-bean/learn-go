@@ -1,4 +1,4 @@
-package tree
+package unionfindset
 
 // UnionFind 并查集接口
 type UnionFind interface {

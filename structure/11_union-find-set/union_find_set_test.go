@@ -1,4 +1,4 @@
-package tree
+package unionfindset
 
 import (
 	"testing"

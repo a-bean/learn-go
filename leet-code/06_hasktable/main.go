@@ -27,6 +27,21 @@ func lengthOfLongestSubstring(s string) int {
 	return res
 }
 
+func lengthOfLongestSubstring1(s string) int {
+	r, l, res := 0, 0, 0
+	m := make(map[byte]int, len(s))
+	for r < len(s) {
+		if idx, ok := m[s[r]]; ok && idx >= l {
+			l = idx + 1
+		}
+
+		m[s[r]] = r
+		r++
+		res = max(res, r-l)
+	}
+	return res
+}
+
 // 146: LRU 缓存机制 https://leetcode.cn/problems/lru-cache/description/
 type Node struct {
 	Key, Val   int
@@ -218,5 +233,6 @@ func groupAnagrams(strs []string) [][]string {
 func main() {
 	fmt.Println(lengthOfLongestSubstring("abcabcbb"))
 	fmt.Println(groupAnagrams([]string{"eat", "tea", "tan", "ate", "nat", "bat"}))
-
+	s := []rune{'a', 'b', 'c'}
+	fmt.Println(string(s))
 }
