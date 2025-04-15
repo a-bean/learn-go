@@ -165,17 +165,11 @@ func buildTree1(preorder []int, inorder []int) *TreeNode {
 		}
 
 		val := preorder[preLeft]
-
 		node := &TreeNode{Val: val}
-
 		inMid := mp[val]
-
 		length := inMid - inLeft + 1
-
 		node.Left = build(preLeft+1, inLeft, inMid-1)
-
 		node.Right = build(preLeft+length, inMid+1, inRight)
-
 		return node
 	}
 
