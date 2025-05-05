@@ -2,7 +2,7 @@ package graph
 
 import "fmt"
 
-/* 基于邻接矩阵实现的无向图类 */
+// 基于邻接矩阵实现的无向图类
 type graphAdjMat struct {
 	// 顶点列表，元素代表“顶点值”，索引代表“顶点索引”
 	vertices []int
@@ -10,7 +10,7 @@ type graphAdjMat struct {
 	adjMat [][]int
 }
 
-/* 构造函数 */
+// 构造函数
 func newGraphAdjMat(vertices []int, edges [][]int) *graphAdjMat {
 	// 添加顶点
 	n := len(vertices)
@@ -31,12 +31,12 @@ func newGraphAdjMat(vertices []int, edges [][]int) *graphAdjMat {
 	return g
 }
 
-/* 获取顶点数量 */
+// 获取顶点数量
 func (g *graphAdjMat) size() int {
 	return len(g.vertices)
 }
 
-/* 添加顶点 */
+// 添加顶点
 func (g *graphAdjMat) addVertex(val int) {
 	n := g.size()
 	// 向顶点列表中添加新顶点的值
@@ -50,7 +50,7 @@ func (g *graphAdjMat) addVertex(val int) {
 	}
 }
 
-/* 删除顶点 */
+// 删除顶点
 func (g *graphAdjMat) removeVertex(index int) {
 	if index >= g.size() {
 		return
@@ -65,7 +65,7 @@ func (g *graphAdjMat) removeVertex(index int) {
 	}
 }
 
-/* 添加边 */
+// 添加边
 // 参数 i, j 对应 vertices 元素索引
 func (g *graphAdjMat) addEdge(i, j int) {
 	// 索引越界与相等处理
@@ -77,7 +77,7 @@ func (g *graphAdjMat) addEdge(i, j int) {
 	g.adjMat[j][i] = 1
 }
 
-/* 删除边 */
+// 删除边
 // 参数 i, j 对应 vertices 元素索引
 func (g *graphAdjMat) removeEdge(i, j int) {
 	// 索引越界与相等处理
@@ -88,7 +88,7 @@ func (g *graphAdjMat) removeEdge(i, j int) {
 	g.adjMat[j][i] = 0
 }
 
-/* 打印邻接矩阵 */
+// 打印邻接矩阵
 func (g *graphAdjMat) print() {
 	fmt.Printf("\t顶点列表 = %v\n", g.vertices)
 	fmt.Printf("\t邻接矩阵 = \n")

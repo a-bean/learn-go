@@ -34,7 +34,7 @@ func main() {
 	const (
 		PI1 = 1
 		PI2 = 2
-		PI3
+		PI3 // 沿用上面的值
 		PI4 = "ab"
 		PI5 // 沿用上面的值
 	)
