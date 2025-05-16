@@ -69,6 +69,10 @@ func minDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
+	//为什么要特别处理单边为空的情况？
+	// 因为最小深度定义是到"叶子节点"的最短路径
+	// 叶子节点定义：没有任何子节点的节点
+	// 如果一个节点只有左子树或只有右子树，我们必须走到那个非空的子树去找叶子节点
 	if root.Left == nil {
 		return minDepth(root.Right) + 1
 	}

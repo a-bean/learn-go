@@ -33,7 +33,7 @@ func main() {
 	fmt.Println(s4)
 
 	// 访问 单个和多个
-	fmt.Println(slice3[0], slice3[0:3], slice3[:2], slice3[1:], slice3[:])
+	fmt.Println("slice3", slice3[1:len(slice3)-1], slice3[0], slice3[0:3], slice3[:2], slice3[1:], slice3[:])
 
 	// ...
 	slice4 = append(slice4, slice3...)

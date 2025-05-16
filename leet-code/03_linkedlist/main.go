@@ -68,11 +68,11 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 // 141: 环形链表 https://leetcode.cn/problems/linked-list-cycle/
 // 解法1: 快慢指针
 func hasCycle(head *ListNode) bool {
-	first := head
-	for first != nil && first.Next != nil {
-		first = first.Next.Next
+	fast := head
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
 		head = head.Next
-		if first == head {
+		if fast == head {
 			return true
 		}
 	}
@@ -232,7 +232,7 @@ func insertionSortList(head *ListNode) *ListNode {
 		}
 		cur.Next = pre.Next
 		pre.Next = cur
-		pre = newHead // 归位，重头开始
+		pre = newHead // 归位，重头开始 TODO:
 		cur = next
 	}
 	return newHead.Next

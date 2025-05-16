@@ -8,18 +8,23 @@ import (
 
 // 20: 有效的括号 https://leetcode.cn/problems/valid-parentheses/
 func isValid(s string) bool {
-	if len(s) == 0 {
-		return true
+	stack := []byte{}
+	m := map[byte]byte{
+		')': '(',
+		']': '[',
+		'}': '{',
 	}
-
-	stack := make([]rune, 0)
-	for _, v := range s {
-		if v == '(' || v == '[' || v == '{' {
-			stack = append([]rune{v}, stack...)
-		} else if len(stack) > 0 && v == ')' && stack[0] == '(' || len(stack) > 0 && v == ']' && stack[0] == '[' || len(stack) > 0 && v == '}' && stack[0] == '{' {
-			stack = stack[1:]
+	for i := 0; i < len(s); i++ {
+		if v, ok := m[s[i]]; ok {
+			if len(stack) == 0 {
+				return false
+			}
+			if stack[len(stack)-1] != v {
+				return false
+			}
+			stack = stack[:len(stack)-1]
 		} else {
-			return false
+			stack = append(stack, s[i])
 		}
 	}
 	return len(stack) == 0
@@ -225,30 +230,27 @@ func trap(height []int) int {
 }
 
 // 496: 下一个更大元素 I https://leetcode.cn/problems/next-greater-element-i/
-func nextGreaterElement(nums1 []int, nums2 []int) []int {
-	if len(nums1) == 0 || len(nums2) == 0 {
-		return []int{}
-	}
+func nextGreaterElement(nums1, nums2 []int) []int {
+	mp := map[int]int{}
+	stack := []int{}
 
-	res, record := []int{}, map[int]int{}
-	for k, v := range nums2 {
-		record[v] = k
-	}
-
-	for i := 0; i < len(nums1); i++ {
-		flag := false
-		for j := record[nums1[i]]; j < len(nums2); j++ {
-			if nums2[j] > nums1[i] {
-				res = append(res, nums2[j])
-				flag = true
-				break
-			}
+	for i := len(nums2) - 1; i >= 0; i-- {
+		num := nums2[i]
+		for len(stack) > 0 && num >= stack[len(stack)-1] {
+			stack = stack[:len(stack)-1]
 		}
-		if !flag {
-			res = append(res, -1)
+		if len(stack) > 0 {
+			mp[num] = stack[len(stack)-1]
+		} else {
+			mp[num] = -1
 		}
+		stack = append(stack, num)
 	}
 
+	res := make([]int, len(nums1))
+	for i, num := range nums1 {
+		res[i] = mp[num]
+	}
 	return res
 }
 
