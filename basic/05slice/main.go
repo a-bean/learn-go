@@ -58,7 +58,7 @@ func main() {
 	fmt.Println(copySlice2) //[2 100 112]
 
 	// slice 原理 本质是一个结构体
-	// 1. go的slice在函数参数传递的时候是值传递还是引用传递：值传递，效果又呈现引用传递的效果（不完全是）
+	// 1. go的slice在函数参数传递的时候是值传递还是引用传递：引用传递
 	slice5 := []int{1, 3, 65}
 	print(slice5)
 	fmt.Println(slice5)

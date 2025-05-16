@@ -47,6 +47,7 @@ func isValidBST1(root *TreeNode) bool {
 	}
 	return true
 }
+
 func inOrder(root *TreeNode, arr *[]int) {
 	if root == nil {
 		return
@@ -112,28 +113,26 @@ func preorder(root *Node) []int {
 //429 层序遍历 https://leetcode.cn/problems/n-ary-tree-level-order-traversal/description/
 
 func levelOrder(root *Node) [][]int {
-	var res [][]int
-	var temp []int
 	if root == nil {
-		return res
+		return nil
 	}
-	queue := []*Node{root, nil}
-	for len(queue) > 1 {
-		node := queue[0]
-		queue = queue[1:]
-		if node == nil {
-			queue = append(queue, nil)
-			res = append(res, temp)
-			temp = []int{}
-		} else {
-			temp = append(temp, node.Val)
-			if len(node.Children) > 0 {
-				queue = append(queue, node.Children...)
-			}
+
+	result := [][]int{}
+	queue := []*Node{root}
+
+	for len(queue) > 0 {
+		size := len(queue)         // 当前层的节点数
+		level := make([]int, size) // 当前层的节点值
+		for i := 0; i < size; i++ {
+			node := queue[0]  // 取出队列头部的节点
+			queue = queue[1:] // 移除队列头部的节点
+			level[i] = node.Val
+			queue = append(queue, node.Children...)
 		}
+		result = append(result, level)
 	}
-	res = append(res, temp)
-	return res
+
+	return result
 }
 
 // 105. 从前序与中序遍历序列构造二叉树 https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/

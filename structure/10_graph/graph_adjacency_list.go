@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-/* 基于邻接表实现的无向图类 */
+// 基于邻接表实现的无向图类
 type graphAdjList struct {
 	// 邻接表，key：顶点，value：该顶点的所有邻接顶点
 	adjList map[Vertex][]Vertex
 }
 
-/* 构造函数 */
+// 构造函数
 func newGraphAdjList(edges [][]Vertex) *graphAdjList {
 	g := &graphAdjList{
 		adjList: make(map[Vertex][]Vertex),
@@ -26,12 +26,12 @@ func newGraphAdjList(edges [][]Vertex) *graphAdjList {
 	return g
 }
 
-/* 获取顶点数量 */
+// 获取顶点数量
 func (g *graphAdjList) size() int {
 	return len(g.adjList)
 }
 
-/* 添加边 */
+// 添加边
 func (g *graphAdjList) addEdge(vet1 Vertex, vet2 Vertex) {
 	_, ok1 := g.adjList[vet1]
 	_, ok2 := g.adjList[vet2]
@@ -43,7 +43,7 @@ func (g *graphAdjList) addEdge(vet1 Vertex, vet2 Vertex) {
 	g.adjList[vet2] = append(g.adjList[vet2], vet1)
 }
 
-/* 删除边 */
+// 删除边
 func (g *graphAdjList) removeEdge(vet1 Vertex, vet2 Vertex) {
 	_, ok1 := g.adjList[vet1]
 	_, ok2 := g.adjList[vet2]
@@ -55,7 +55,7 @@ func (g *graphAdjList) removeEdge(vet1 Vertex, vet2 Vertex) {
 	g.adjList[vet2] = DeleteSliceElms(g.adjList[vet2], vet1)
 }
 
-/* 添加顶点 */
+// 添加顶点
 func (g *graphAdjList) addVertex(vet Vertex) {
 	_, ok := g.adjList[vet]
 	if ok {
@@ -65,7 +65,7 @@ func (g *graphAdjList) addVertex(vet Vertex) {
 	g.adjList[vet] = make([]Vertex, 0)
 }
 
-/* 删除顶点 */
+// 删除顶点
 func (g *graphAdjList) removeVertex(vet Vertex) {
 	_, ok := g.adjList[vet]
 	if !ok {
@@ -79,7 +79,7 @@ func (g *graphAdjList) removeVertex(vet Vertex) {
 	}
 }
 
-/* 打印邻接表 */
+// 打印邻接表
 func (g *graphAdjList) print() {
 	var builder strings.Builder
 	fmt.Printf("邻接表 = \n")

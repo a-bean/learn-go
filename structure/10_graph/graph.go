@@ -1,7 +1,3 @@
-// File: vertex.go
-// Created Time: 2023-02-18
-// Author: Reanon (793584285@qq.com)
-
 package graph
 
 // Vertex 顶点类
