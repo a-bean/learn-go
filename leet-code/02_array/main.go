@@ -62,10 +62,105 @@ func twoSum(nums []int, target int) []int {
 	return nil
 }
 
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// 53. 最大子数组和 https://leetcode.cn/problems/maximum-subarray/
+func maxSubArray(nums []int) int {
+	maxSum := nums[0]
+	curSum := 0
+	for i := 0; i < len(nums); i++ {
+		if curSum < 0 {
+			curSum = 0
+		}
+		curSum += nums[i]
+		maxSum = max(maxSum, curSum)
+	}
+	return maxSum
+}
+
+// 73. 矩阵置零 https://leetcode.cn/problems/set-matrix-zeroes/description/
+func setZeroes(matrix [][]int) {
+	row := make([]bool, len(matrix))
+	col := make([]bool, len(matrix[0]))
+	for i, r := range matrix {
+		for j, v := range r {
+			if v == 0 {
+				row[i] = true
+				col[j] = true
+			}
+		}
+	}
+
+	for i, r := range matrix {
+		for j := range r {
+			if row[i] || col[j] {
+				r[j] = 0
+			}
+		}
+	}
+}
+
+// 54. 螺旋矩阵 https://leetcode.cn/problems/spiral-matrix/description/
+func spiralOrder(matrix [][]int) []int {
+	if len(matrix) == 0 {
+		return nil
+	}
+	res := []int{}
+	left, right, top, bottom := 0, len(matrix[0])-1, 0, len(matrix)-1
+	for left <= right && top <= bottom {
+		for i := left; i <= right; i++ {
+			res = append(res, matrix[top][i])
+		}
+
+		top++
+		for i := top; i <= bottom; i++ {
+			res = append(res, matrix[i][right])
+		}
+
+		right--
+		if top <= bottom {
+			for i := right; i >= left; i-- {
+				res = append(res, matrix[bottom][i])
+			}
+			bottom--
+		}
+
+		if left <= right {
+			for i := bottom; i >= top; i-- {
+				res = append(res, matrix[i][left])
+			}
+			left++
+		}
+	}
+	return res
+}
+
+// 48. 旋转图像 https://leetcode.cn/problems/rotate-image/description/
+func rotate(matrix [][]int) {
+	n := len(matrix)
+	// 先沿着对角线翻转
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < n; j++ {
+			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+		}
+	}
+	// 再沿着中线翻转
+	for i := 0; i < n; i++ {
+		for j := 0; j < n/2; j++ {
+			matrix[i][j], matrix[i][n-j-1] = matrix[i][n-j-1], matrix[i][j]
+		}
+	}
+}
+
 func main() {
 	fmt.Print(removeDuplicates([]int{1, 1, 1, 2, 2, 3}))
 	moveZeroes([]int{1, 1, 1, 0, 2, 2, 3})
 	merge([]int{1, 2, 3, 0, 0, 0}, 3, []int{2, 5, 6}, 3)
 	fmt.Print(twoSum([]int{1, 2, 3, 4}, 5))
-
+	fmt.Print(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
 }

@@ -99,5 +99,4 @@ func findOrder(numCourses int, prerequisites [][]int) []int {
 func main() {
 	canFinish(3, [][]int{{0, 1}, {0, 2}, {1, 2}})
 	findOrder(3, [][]int{{0, 1}, {0, 2}, {1, 2}})
-
 }
