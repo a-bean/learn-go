@@ -73,7 +73,7 @@ func main() {
 	fmt.Println("Result:", result, "Error:", err)
 	// 输出: Result:  Error: context deadline exceeded
 
-	// 3. 设置截止时间
+	// 3. 设置截止时间 WithDeadline
 	deadline := time.Now().Add(2 * time.Second)
 	ctx2, cancel2 := context.WithDeadline(context.Background(), deadline)
 	defer cancel2()
@@ -84,7 +84,7 @@ func main() {
 		fmt.Println("Deadline exceeded:", ctx2.Err())
 	}
 
-	// 4. 传递数据
+	// 4. 传递数据 WithValue
 	ctx3 := context.WithValue(context.Background(), "userID", "12345")
 	handler(ctx3)
 	// 输出: Handling request for user: 12345

@@ -340,6 +340,22 @@ func containsNearbyAlmostDuplicate(nums []int, k int, t int) bool {
 	return false // 如果没有找到满足条件的元素，返回 false
 }
 
+// 189. 轮转数组 https://leetcode.cn/problems/rotate-array/
+func rotate(nums []int, k int) {
+	n := len(nums)
+	k = k % n             // 处理 k 大于 n 的情况
+	reverse(nums, 0, n-1) // 反转整个数组
+	reverse(nums, 0, k-1) // 反转前 k 个元素
+	reverse(nums, k, n-1) // 反转后 n-k 个元素
+}
+func reverse(nums []int, start, end int) {
+	for start < end {
+		nums[start], nums[end] = nums[end], nums[start] // 交换元素
+		start++                                         // 移动指针
+		end--                                           // 移动指针
+	}
+}
+
 // 324 摆动排序 II https://leetcode.cn/problems/wiggle-sort-ii/
 // 767 重构字符串 https://leetcode.cn/problems/reorganize-string/
 // 969 灯泡开关 https://leetcode.cn/problems/pancake-sorting/

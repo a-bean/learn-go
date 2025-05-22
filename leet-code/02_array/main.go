@@ -144,17 +144,56 @@ func spiralOrder(matrix [][]int) []int {
 func rotate(matrix [][]int) {
 	n := len(matrix)
 	// 先沿着对角线翻转
+	//[[1, 2, 3],				[[1, 4, 7],
+	// [4, 5, 6],  ==>   [2, 5, 8],
+	// [7, 8, 9]]        [3, 6, 9]]
+	//
 	for i := 0; i < n; i++ {
 		for j := i + 1; j < n; j++ {
 			matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 		}
 	}
 	// 再沿着中线翻转
+	//[[1, 4, 7],				[[7, 4, 1],
+	// [2, 5, 8],  ==>   [8, 5, 2],
+	// [3, 6, 9]]        [9, 6, 3]]
 	for i := 0; i < n; i++ {
 		for j := 0; j < n/2; j++ {
 			matrix[i][j], matrix[i][n-j-1] = matrix[i][n-j-1], matrix[i][j]
 		}
 	}
+}
+
+// 240. 搜索二维矩阵 II https://leetcode.cn/problems/search-a-2d-matrix-ii/description/
+// 思路 是从右上角开始搜索，当前元素大于目标值则向左移动，当前元素小于目标值则向下移动
+// 直到找到目标值或者越界
+// 复杂度分析：时间复杂度 O(m+n) 空间复杂度 O(1)
+func searchMatrix(matrix [][]int, target int) bool {
+	n, m := len(matrix), len(matrix[0])
+	x, y := 0, m-1
+	for x < n && y >= 0 {
+		if matrix[x][y] > target {
+			y--
+		} else if matrix[x][y] < target {
+			x++
+		} else {
+			return true
+		}
+	}
+	return false
+}
+
+// 暴力破解法
+// 复杂度分析：时间复杂度 O(m*n) 空间复杂度 O(1)
+func searchMatrix1(matrix [][]int, target int) bool {
+	for i := 0; i < len(matrix); i++ {
+		for j := 0; j < len(matrix[i]); j++ {
+			if matrix[i][j] == target {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func main() {
@@ -163,4 +202,5 @@ func main() {
 	merge([]int{1, 2, 3, 0, 0, 0}, 3, []int{2, 5, 6}, 3)
 	fmt.Print(twoSum([]int{1, 2, 3, 4}, 5))
 	fmt.Print(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
+	rotate([][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}})
 }
