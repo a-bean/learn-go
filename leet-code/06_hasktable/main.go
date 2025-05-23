@@ -27,21 +27,6 @@ func lengthOfLongestSubstring(s string) int {
 	return res
 }
 
-func lengthOfLongestSubstring1(s string) int {
-	r, l, res := 0, 0, 0
-	m := make(map[byte]int, len(s))
-	for r < len(s) {
-		if idx, ok := m[s[r]]; ok && idx >= l {
-			l = idx + 1
-		}
-
-		m[s[r]] = r
-		r++
-		res = max(res, r-l)
-	}
-	return res
-}
-
 // 146: LRU 缓存机制 https://leetcode.cn/problems/lru-cache/description/
 type Node struct {
 	Key, Val   int
@@ -230,9 +215,64 @@ func groupAnagrams(strs []string) [][]string {
 	return res
 }
 
+// 128. 最长连续序列 https://leetcode.cn/problems/longest-consecutive-sequence/description/
+// Input: nums = [100,4,200,1,3,2]
+// Output: 4
+func longestConsecutive(nums []int) int {
+	numSet := map[int]bool{}
+	for _, num := range nums {
+		numSet[num] = true
+	}
+	longestStreak := 0
+	for num := range numSet {
+		if !numSet[num-1] {
+			currentNum := num
+			currentStreak := 1
+			for numSet[currentNum+1] {
+				currentNum++
+				currentStreak++
+			}
+			if longestStreak < currentStreak {
+				longestStreak = currentStreak
+			}
+		}
+	}
+	return longestStreak
+}
+
+func longestConsecutive1(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	if len(nums) == 1 {
+		return 1
+	}
+	// 排序
+	sort.Ints(nums)
+
+	longest := 0
+	cur := 1
+	for i := 1; i < len(nums); i++ {
+		if nums[i] == nums[i-1]+1 {
+			cur++
+		} else if nums[i] == nums[i-1] {
+
+		} else {
+			cur = 1
+		}
+
+		if cur > longest {
+			longest = cur
+		}
+	}
+
+	return longest
+}
+
 func main() {
 	fmt.Println(lengthOfLongestSubstring("abcabcbb"))
 	fmt.Println(groupAnagrams([]string{"eat", "tea", "tan", "ate", "nat", "bat"}))
 	s := []rune{'a', 'b', 'c'}
 	fmt.Println(string(s))
+
 }

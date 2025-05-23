@@ -110,6 +110,29 @@ func threeSum2(nums []int) [][]int {
 	return res
 }
 
+func threeSum(nums []int) [][]int {
+	if len(nums) == 0 {
+		return [][]int{}
+	}
+	sort.Ints(nums)
+
+	ans := make([][]int, 0)
+	for i := 0; i < len(nums)-2; i++ {
+		l, r := i+1, len(nums)-1
+		for l < r {
+			if nums[i]+nums[l]+nums[r] > 0 {
+				r--
+			} else if nums[i]+nums[l]+nums[r] < 0 {
+				l++
+			} else {
+				ans = append(ans, []int{i, l, r})
+			}
+
+		}
+	}
+	return ans
+}
+
 func abs(a int) int {
 	if a > 0 {
 		return a
@@ -304,6 +327,7 @@ func findDuplicate1(nums []int) int {
 func main() {
 	threeSum1([]int{-1, 0, 1, 2, -1, -4})
 	threeSum2([]int{-1, 0, 1, 2, -1, -4})
+	threeSum([]int{-1, 0, 1, 2, -1, -4})
 	fmt.Print(threeSumClosest([]int{1, 1, 1, 2, 3}, 3))
 	fmt.Print(fourSum([]int{1, 1, 1, 2, 3}, 3))
 	fmt.Print(fourSum1([]int{1, 1, 1, 2, 3}, 3))

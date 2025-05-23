@@ -350,6 +350,52 @@ func middleNode1(head *ListNode) *ListNode {
 	return slow
 }
 
+// 2. 两数相加 https://leetcode.cn/problems/add-two-numbers/description/
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+	dummy := &ListNode{Val: 0}
+	cur := dummy
+	carry := 0
+
+	for l1 != nil || l2 != nil || carry > 0 {
+		sum := carry
+		if l1 != nil {
+			sum += l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			sum += l2.Val
+			l2 = l2.Next
+		}
+		carry = sum / 10
+		cur.Next = &ListNode{Val: sum % 10}
+		cur = cur.Next
+	}
+
+	return dummy.Next
+}
+
+// 24. 两两交换链表中的节点 https://leetcode.cn/problems/swap-nodes-in-pairs/description/
+func swapPairs(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	dummy := &ListNode{Val: 0, Next: head}
+	cur := dummy
+
+	for cur.Next != nil && cur.Next.Next != nil {
+		first := cur.Next
+		second := cur.Next.Next
+
+		first.Next = second.Next
+		second.Next = first
+		cur.Next = second
+
+		cur = first
+	}
+
+	return dummy.Next
+}
+
 func main() {
 	reverseKGroup(&ListNode{
 		Val:  1,

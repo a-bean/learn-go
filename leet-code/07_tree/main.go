@@ -110,7 +110,34 @@ func preorder(root *Node) []int {
 	return list
 }
 
-//429 层序遍历 https://leetcode.cn/problems/n-ary-tree-level-order-traversal/description/
+// 102. 二叉树的层序遍历 https://leetcode.cn/problems/binary-tree-level-order-traversal/description/
+func levelOrder1(root *TreeNode) [][]int {
+	if root == nil {
+		return nil
+	}
+
+	result := [][]int{}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		size := len(queue)
+		level := make([]int, size)
+		for i := 0; i < size; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			level[i] = node.Val
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+		result = append(result, level)
+	}
+	return result
+}
+
+// 429 层序遍历 https://leetcode.cn/problems/n-ary-tree-level-order-traversal/description/
 
 func levelOrder(root *Node) [][]int {
 	if root == nil {
@@ -137,7 +164,7 @@ func levelOrder(root *Node) [][]int {
 
 // 105. 从前序与中序遍历序列构造二叉树 https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
 func build(preorder []int, inorder []int, l1, r1, l2, r2 int) *TreeNode {
-	if l1 > r2 {
+	if l1 > r1 {
 		return nil
 	}
 	root := &TreeNode{Val: preorder[l1]}
@@ -225,6 +252,7 @@ func (this *Codec) deserializeHelper() *TreeNode {
 
 // 1245 树的直径 https://leetcode.cn/problems/tree-diameter/description/
 // 树的直径是树中任意两个节点之间的最长路径的长度
+// 543. 二叉树的直径 https://leetcode.cn/problems/diameter-of-binary-tree/description/?envType=study-plan-v2&envId=top-100-liked
 
 var diameter int
 
@@ -260,18 +288,25 @@ func max(a, b int) int {
 }
 
 // 236 最近公共祖先 https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	if root == nil || root == q || root == p {
+	// 递归来做
+	if root == nil || root == p || root == q {
 		return root
 	}
+
 	left := lowestCommonAncestor(root.Left, p, q)
 	right := lowestCommonAncestor(root.Right, p, q)
+
+	// 当左右子树均不为空时，返回当前节点
+	if left != nil && right != nil {
+		return root
+	}
+
 	if left != nil {
-		if right != nil {
-			return root
-		}
 		return left
 	}
+
 	return right
 }
 

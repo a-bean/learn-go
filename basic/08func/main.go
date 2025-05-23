@@ -141,3 +141,27 @@ func deferDemo3() {
 	x = 1
 	fmt.Println(x)
 }
+
+// 函数内定义函数
+func outerFunction() {
+	// 定义内部函数
+	innerFunction := func() {
+		// 函数体
+	}
+	// 调用内部函数
+	innerFunction()
+}
+
+// 递归调用闭包函数需要先声明变量。
+func outerFunction1() int {
+	ans := 0
+	// 先声明变量
+	var innerFunction func() int
+
+	// 然后定义函数
+	innerFunction = func() int {
+		return 0
+	}
+	innerFunction()
+	return ans - 1
+}

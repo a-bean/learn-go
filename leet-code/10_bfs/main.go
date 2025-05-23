@@ -26,7 +26,12 @@ func numIslands(grid [][]byte) int {
 // bfs 实现广度优先搜索
 func bfs(grid [][]byte, i, j int) {
 	// 定义方向数组，表示上下左右的移动
-	directions := [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+	directions := [][2]int{
+		{1, 0},
+		{-1, 0},
+		{0, 1},
+		{0, -1},
+	}
 	queue := [][2]int{{i, j}} // 使用队列来存储待处理的坐标
 
 	// 将当前陆地单元标记为水
@@ -217,6 +222,70 @@ func inorder(root *TreeNode, arr *[]int) {
 	inorder(root.Right, arr)
 }
 
+// 994. 腐烂的橘子 https://leetcode.cn/problems/rotting-oranges/description/
+func orangesRotting(grid [][]int) int {
+	// 获取网格的行数和列数
+	R, C := len(grid), len(grid[0])
+	// 定义四个方向的移动：上、左、下、右
+	dr := []int{-1, 0, 1, 0}
+	dc := []int{0, -1, 0, 1}
+	// 用于BFS的队列，存储腐烂橘子的位置（编码后的）
+	queue := []int{}
+	// 记录每个腐烂橘子被感染的时间
+	depth := make(map[int]int)
+
+	// 第一步：找到所有初始腐烂的橘子，将它们加入队列
+	for r := 0; r < R; r++ {
+		for c := 0; c < C; c++ {
+			if grid[r][c] == 2 {
+				// 将二维坐标编码为一维，方便存储
+				code := r*C + c
+				queue = append(queue, code)
+				depth[code] = 0 // 初始腐烂橘子的时间为0
+			}
+		}
+	}
+
+	// 记录最后一个橘子腐烂的时间
+	ans := 0
+	// 第二步：BFS 过程
+	for len(queue) > 0 {
+		// 取出队首元素
+		code := queue[0]
+		queue = queue[1:]
+		// 将一维编码解码回二维坐标
+		r, c := code/C, code%C
+		// 检查四个方向的相邻橘子
+		for k := 0; k < 4; k++ {
+			nr, nc := r+dr[k], c+dc[k]
+			// 如果相邻位置有新鲜橘子（值为1）且在网格范围内
+			if nr >= 0 && nr < R && nc >= 0 && nc < C && grid[nr][nc] == 1 {
+				// 将这个橘子标记为腐烂
+				grid[nr][nc] = 2
+				// 编码新位置
+				ncode := nr*C + nc
+				// 将新腐烂的橘子加入队列
+				queue = append(queue, ncode)
+				// 更新这个橘子腐烂的时间（当前橘子的时间+1）
+				depth[ncode] = depth[code] + 1
+				ans = depth[ncode]
+			}
+		}
+	}
+
+	// 第三步：检查是否还有新鲜橘子
+	for _, row := range grid {
+		for _, v := range row {
+			if v == 1 {
+				// 如果还有新鲜橘子，返回-1表示无法使所有橘子腐烂
+				return -1
+			}
+		}
+	}
+	// 返回使所有橘子腐烂所需的分钟数
+	return ans
+}
+
 func main() {
 	grid := [][]byte{
 		{'1', '1', '0', '0', '0'},
@@ -240,4 +309,10 @@ func main() {
 	}
 	result1 := longestIncreasingPath(matrix)
 	fmt.Println(result1) // 输出 4
+
+	orangesRotting([][]int{
+		{2, 1, 1},
+		{1, 1, 0},
+		{0, 1, 1},
+	}) // 输出 4
 }
