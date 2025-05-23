@@ -199,6 +199,24 @@ func longestIncreasingPath(matrix [][]int) int {
 	return maxLen
 }
 
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func inorderTraversal(root *TreeNode) []int {
+	arr := make([]int, 0)
+	inorder(root, &arr)
+	return arr
+}
+
+func inorder(root *TreeNode, arr *[]int) {
+	inorder(root.Left, arr)
+	*arr = append(*arr, root.Val)
+	inorder(root.Right, arr)
+}
+
 func main() {
 	grid := [][]byte{
 		{'1', '1', '0', '0', '0'},
