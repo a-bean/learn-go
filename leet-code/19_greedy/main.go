@@ -33,6 +33,7 @@ func lemonadeChange(bills []int) bool {
 	}
 	return true // 如果所有交易都能找零，返回 true
 }
+
 func lemonadeChange1(bills []int) bool {
 	five, ten := 0, 0
 	for _, bill := range bills {
@@ -79,15 +80,31 @@ func findContentChildren(g []int, s []int) int {
 }
 
 // 122 买卖股票的最佳时机 II https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
-// 决策范围扩展
-func maxProfit(prices []int) int {
-	profit := 0 // 初始化利润
+func maxProfit2(prices []int) int {
+	profit := 0 // 初始化利润为0
 	for i := 1; i < len(prices); i++ {
-		if prices[i] > prices[i-1] { // 如果当前价格大于前一天价格
-			profit += prices[i] - prices[i-1] // 买入卖出，计算利润
+		if prices[i] > prices[i-1] { // 如果当前价格大于前一个价格
+			profit += prices[i] - prices[i-1] // 累加利润
 		}
 	}
-	return profit // 返回最大利润
+	return profit // 返回总利润
+}
+
+// 121 买卖股票的最佳时机 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+func maxProfit(prices []int) int {
+	max := 0
+	min := 10000
+	for _, price := range prices {
+		if price < min {
+			min = price
+		}
+		if price-min > max {
+			max = price - min
+		}
+	}
+
+	return max
+
 }
 
 // 55 跳跃游戏 https://leetcode.cn/problems/jump-game/
@@ -144,6 +161,27 @@ func max(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// 763 划分字母区间 https://leetcode.cn/problems/partition-labels/
+func partitionLabels(s string) []int {
+	lastIndex := make([]int, 26) // 记录每个字母最后出现的位置
+	for i, c := range s {
+		lastIndex[c-'a'] = i // 更新字母的最后位置
+	}
+
+	start, end := 0, 0 // 初始化起始和结束位置
+	result := []int{}  // 存储结果
+
+	for i, c := range s {
+		end = max(end, lastIndex[c-'a']) // 更新当前区间的结束位置
+		if i == end {                    // 如果当前索引等于结束位置
+			result = append(result, end-start+1) // 添加区间长度到结果
+			start = i + 1                        // 更新起始位置为下一个字符
+		}
+	}
+
+	return result // 返回划分的区间长度列表
 }
 
 func main() {

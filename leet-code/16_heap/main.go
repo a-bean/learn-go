@@ -147,6 +147,64 @@ func maxSlidingWindow(nums []int, k int) []int {
 	return result
 }
 
+// 215: 数组中的第 K 个最大元素 https://leetcode.cn/problems/kth-largest-element-in-an-array/description/
+func findKthLargest(nums []int, k int) int {
+	// 初始化堆的大小为数组长度
+	heapSize := len(nums)
+	// 构建最大堆
+	buildMaxHeap(nums, heapSize)
+
+	// 执行 k-1 次删除堆顶操作
+	// 每次将堆顶（最大值）放到数组末尾，并减小堆的大小
+	for i := len(nums) - 1; i >= len(nums)-k+1; i-- {
+		// 交换堆顶元素和当前位置的元素
+		nums[0], nums[i] = nums[i], nums[0]
+		// 减小堆的大小
+		heapSize--
+		// 对新的堆顶元素进行下沉操作，维护最大堆性质
+		maxHeapify(nums, 0, heapSize)
+	}
+	// 返回当前堆顶元素，即第k个最大元素
+	return nums[0]
+}
+
+// buildMaxHeap 构建最大堆
+// a: 要构建堆的数组
+// heapSize: 堆的大小
+func buildMaxHeap(a []int, heapSize int) {
+	// 从最后一个非叶子节点开始，自底向上构建最大堆
+	// 最后一个非叶子节点的索引是 heapSize/2 - 1
+	for i := heapSize/2 - 1; i >= 0; i-- {
+		maxHeapify(a, i, heapSize)
+	}
+}
+
+// maxHeapify 维护最大堆的性质
+// a: 堆数组
+// i: 当前需要维护的节点索引
+// heapSize: 堆的大小
+func maxHeapify(a []int, i, heapSize int) {
+	// 计算左子节点(2i+1)、右子节点(2i+2)的索引，初始化最大值索引为当前节点
+	l, r, largest := i*2+1, i*2+2, i
+
+	// 如果左子节点存在且大于当前最大值，更新最大值索引
+	if l < heapSize && a[l] > a[largest] {
+		largest = l
+	}
+	// 如果右子节点存在且大于当前最大值，更新最大值索引
+	if r < heapSize && a[r] > a[largest] {
+		largest = r
+	}
+
+	// 如果最大值不是当前节点，需要交换并继续维护堆的性质
+	if largest != i {
+		// 交换当前节点和最大值节点
+		a[i], a[largest] = a[largest], a[i]
+		// 递归维护被交换的子树
+		maxHeapify(a, largest, heapSize)
+	}
+}
+
 func main() {
 	mergeKLists([]*ListNode{
 		{Val: 1, Next: &ListNode{Val: 4, Next: &ListNode{Val: 5}}},
@@ -155,4 +213,5 @@ func main() {
 	})
 
 	fmt.Println(maxSlidingWindow([]int{1, -1}, 1))
+	findKthLargest([]int{3, 2, 1, 5, 6, 4}, 2) // 输出 5
 }

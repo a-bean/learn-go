@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // 153 寻找旋转排序数组中的最小值 https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/
 func findMin(nums []int) int {
@@ -176,6 +179,152 @@ func check(nums []int, m int, target int) bool {
 }
 
 // 287 寻找重复数 https://leetcode.cn/problems/find-the-duplicate-number/
+
+// 35 搜索插入位置 https://leetcode.cn/problems/search-insert-position/
+func searchInsert(nums []int, target int) int {
+	left, right := 0, len(nums)-1
+	for left <= right {
+		mid := left + (right-left)>>1
+		if nums[mid] == target {
+			return mid
+		} else if nums[mid] < target {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+	return left // 如果没有找到，返回插入位置
+}
+
+// 33 搜索旋转排序数组 https://leetcode.cn/problems/search-in-rotated-sorted-array/
+func search(nums []int, target int) int {
+	left, right := 0, len(nums)-1
+	for left <= right {
+		mid := left + (right-left)>>1
+		if nums[mid] == target {
+			return mid
+		}
+
+		if nums[left] <= nums[mid] { // 左半部分有序
+			if nums[left] <= target && target < nums[mid] {
+				right = mid - 1 // 在左半部分继续查找
+			} else {
+				left = mid + 1 // 在右半部分继续查找
+			}
+		} else { // 右半部分有序
+			if nums[mid] < target && target <= nums[right] {
+				left = mid + 1 // 在右半部分继续查找
+			} else {
+				right = mid - 1 // 在左半部分继续查找
+			}
+		}
+	}
+	return -1 // 如果没有找到，返回 -1
+}
+
+// 74. 搜索二维矩阵 https://leetcode.cn/problems/search-a-2d-matrix/
+func searchMatrix(matrix [][]int, target int) bool {
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return false
+	}
+
+	rows, cols := len(matrix), len(matrix[0])
+	left, right := 0, rows*cols-1
+
+	for left <= right {
+		mid := left + (right-left)>>1
+		midValue := matrix[mid/cols][mid%cols]
+
+		if midValue == target {
+			return true
+		} else if midValue < target {
+			left = mid + 1
+		} else {
+			right = mid - 1
+		}
+	}
+	return false
+}
+
+// 4. 寻找两个正序数组的中位数 https://leetcode.cn/problems/median-of-two-sorted-arrays/
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	totalLength := len(nums1) + len(nums2)
+	if totalLength%2 == 1 {
+		midIndex := totalLength / 2
+		return float64(getKthElement(nums1, nums2, midIndex+1))
+	} else {
+		midIndex1, midIndex2 := totalLength/2-1, totalLength/2
+		return float64(getKthElement(nums1, nums2, midIndex1+1)+getKthElement(nums1, nums2, midIndex2+1)) / 2.0
+	}
+	return 0
+}
+
+func getKthElement(nums1, nums2 []int, k int) int {
+	index1, index2 := 0, 0
+	for {
+		if index1 == len(nums1) {
+			return nums2[index2+k-1]
+		}
+		if index2 == len(nums2) {
+			return nums1[index1+k-1]
+		}
+		if k == 1 {
+			return min(nums1[index1], nums2[index2])
+		}
+		half := k / 2
+		newIndex1 := min(index1+half, len(nums1)) - 1
+		newIndex2 := min(index2+half, len(nums2)) - 1
+		pivot1, pivot2 := nums1[newIndex1], nums2[newIndex2]
+		if pivot1 <= pivot2 {
+			k -= (newIndex1 - index1 + 1)
+			index1 = newIndex1 + 1
+		} else {
+			k -= (newIndex2 - index2 + 1)
+			index2 = newIndex2 + 1
+		}
+	}
+	return 0
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func findMedianSortedArrays1(a, b []int) float64 {
+	if len(a) > len(b) {
+		a, b = b, a // 保证下面的 i 可以从 0 开始枚举， 确保 a 是较短的数组，以减少二分查找的复杂度
+	}
+
+	m, n := len(a), len(b)
+	a = append([]int{math.MinInt}, append(a, math.MaxInt)...)
+	b = append([]int{math.MinInt}, append(b, math.MaxInt)...)
+
+	// 枚举 nums1 有 i 个数在第一组
+	// 那么 nums2 有 j = (m+n+1)/2 - i 个数在第一组
+	i, j := 0, (m+n+1)/2
+	for {
+		if a[i] <= b[j+1] && a[i+1] > b[j] { // 写 >= 也可以
+			max1 := max(a[i], b[j])     // 第一组的最大值
+			min2 := min(a[i+1], b[j+1]) // 第二组的最小值
+			if (m+n)%2 > 0 {
+				return float64(max1)
+			}
+			return float64(max1+min2) / 2
+		}
+		i++ // 继续枚举
+		j--
+	}
+}
 
 func main() {
 	findMin([]int{4, 5, 6, 1, 2, 3})
