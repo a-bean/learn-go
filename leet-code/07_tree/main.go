@@ -310,6 +310,40 @@ func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
 	return right
 }
 
+// 437 路径总和 III https://leetcode.cn/problems/path-sum-iii/description/
+func pathSum(root *TreeNode, targetSum int) int {
+	if root == nil {
+		return 0
+	}
+
+	// 计算以当前节点为起点的路径和
+	count := countPaths(root, targetSum)
+
+	// 递归计算左子树和右子树的路径和
+	count += pathSum(root.Left, targetSum)
+	count += pathSum(root.Right, targetSum)
+
+	return count
+}
+
+func countPaths(node *TreeNode, targetSum int) int {
+	if node == nil {
+		return 0
+	}
+
+	// 检查当前节点是否等于目标值
+	count := 0
+	if node.Val == targetSum {
+		count = 1
+	}
+
+	// 递归计算左子树和右子树的路径和
+	count += countPaths(node.Left, targetSum-node.Val)
+	count += countPaths(node.Right, targetSum-node.Val)
+
+	return count
+}
+
 func main() {
 
 	// 构建一个示例树
@@ -324,4 +358,5 @@ func main() {
 	fmt.Println("树的直径是:", result) // 输出树的直径
 
 	lowestCommonAncestor(root, root.Left, root.Right)
+	pathSum(root, 8)
 }

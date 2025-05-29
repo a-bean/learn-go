@@ -162,42 +162,52 @@ func findSubstring1(s string, words []string) []int {
 
 // 76 最小覆盖子串 https://leetcode.cn/problems/minimum-window-substring/
 // s = "ADOBECODEBANC", t = "ABC"
+// minWindow 查找字符串 s 中包含字符串 t 的所有字符的最小窗口子串
+// s: 源字符串
+// t: 目标字符串（要查找的字符集合）
+// 返回: 最小窗口子串，如果不存在则返回空字符串
 func minWindow(s string, t string) string {
+	// 处理边界情况：如果源字符串或目标字符串为空，返回空字符串
 	if len(s) == 0 || len(t) == 0 {
 		return ""
 	}
 
-	// 创建字符计数器
+	// 创建数组记录目标字符串中每个字符的出现次数
+	// 使用 ASCII 码作为索引，数组大小为 128
 	countT := [128]int{}
 	for _, char := range t {
 		countT[char]++
 	}
 
-	// 初始化指针和变量
-	left, right, minLen, start := 0, 0, len(s)+1, 0
-	required := len(t)
-	windowCounts := [128]int{}
+	// 初始化滑动窗口的参数
+	left, right := 0, 0        // 窗口的左右边界
+	minLen := len(s) + 1       // 最小窗口长度（初始化为一个不可能的大值）
+	start := 0                 // 最小窗口的起始位置
+	required := len(t)         // 还需要匹配的字符数量
+	windowCounts := [128]int{} // 当前窗口中每个字符的出现次数
 
-	// 开始滑动窗口
+	// 移动右边界，扩展窗口
 	for right < len(s) {
 		char := s[right]
 		windowCounts[char]++
 
-		// 如果当前字符在 t 中且计数匹配
+		// 如果当前字符是目标字符串中的字符，且数量未超过需求，减少待匹配数
 		if windowCounts[char] <= countT[char] {
 			required--
 		}
 
-		// 尝试收缩窗口
+		// 当所有字符都匹配后，尝试收缩左边界
 		for left <= right && required == 0 {
-			// 更新最小窗口
+			// 更新最小窗口信息
 			if right-left+1 < minLen {
 				minLen = right - left + 1
 				start = left
 			}
 
+			// 移除左边界字符
 			leftChar := s[left]
 			windowCounts[leftChar]--
+			// 如果移除的是必需字符，增加待匹配数
 			if windowCounts[leftChar] < countT[leftChar] {
 				required++
 			}
@@ -206,10 +216,11 @@ func minWindow(s string, t string) string {
 		right++
 	}
 
-	// 返回结果
+	// 如果未找到符合条件的窗口，返回空字符串
 	if minLen == len(s)+1 {
 		return ""
 	}
+	// 返回最小窗口子串
 	return s[start : start+minLen]
 }
 

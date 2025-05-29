@@ -419,6 +419,7 @@ func main() {
 	relativeSortArray([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6})
 	relativeSortArray1([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6})
 	merge([][]int{{1, 3}, {2, 6}, {8, 10}, {15, 18}})
+	merge([][]int{{2, 4}, {1, 5}})
 	reversePairs([]int{7, 5, 6, 4})
 
 	insertionSortList(&ListNode{Val: 4, Next: &ListNode{Val: 2, Next: &ListNode{Val: 1, Next: &ListNode{Val: 3, Next: nil}}}})

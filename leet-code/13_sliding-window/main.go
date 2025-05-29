@@ -214,6 +214,45 @@ func max(a int, b int) int {
 	return b
 }
 
+// 438 找到字符串中所有字母异位词 https://leetcode.cn/problems/find-all-anagrams-in-a-string/description/
+// findAnagrams 查找字符串 s 中所有 p 的字母异位词的起始索引
+// s: 源字符串
+// p: 目标字符串（要查找的异位词模式）
+// 返回：所有异位词在 s 中的起始索引数组
+func findAnagrams(s, p string) []int {
+	// 初始化结果数组
+	ans := make([]int, 0)
+	sLen, pLen := len(s), len(p)
+
+	// 如果源字符串长度小于目标字符串，无法找到异位词
+	if sLen < pLen {
+		return nil
+	}
+
+	// 使用大小为 26 的数组记录字符出现次数（仅小写字母）
+	var sCount, pCount [26]int
+	// 初始化第一个窗口和目标字符串的字符计数
+	for i, ch := range p {
+		sCount[s[i]-'a']++ // 统计 s 中前 pLen 个字符的出现次数
+		pCount[ch-'a']++   // 统计 p 中所有字符的出现次数
+	}
+	// 检查第一个窗口是否是异位词
+	if sCount == pCount {
+		ans = append(ans, 0)
+	}
+
+	// 滑动窗口遍历剩余字符
+	// 注意这里遍历到 sLen-pLen，因为要留出 pLen 长度的空间
+	for i, ch := range s[:sLen-pLen] {
+		sCount[ch-'a']--        // 移除窗口左边的字符
+		sCount[s[i+pLen]-'a']++ // 添加窗口右边的新字符
+		if sCount == pCount {   // 比较当前窗口和目标字符串的字符计数
+			ans = append(ans, i+1) // 找到一个异位词，记录其起始位置
+		}
+	}
+	return ans
+}
+
 func main() {
 	checkInclusion("ab", "eidbaooo")
 	partitionLabels("ababcbacadefegdehijhklij")
@@ -224,4 +263,5 @@ func main() {
 	fmt.Println(result) // 输出滑动窗口的中位数
 
 	maxTurbulenceSize([]int{9, 4, 2, 10, 7, 8, 8, 1, 9})
+	findAnagrams("cbaebabacd", "abc")
 }

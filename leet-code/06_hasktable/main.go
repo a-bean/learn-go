@@ -274,5 +274,6 @@ func main() {
 	fmt.Println(groupAnagrams([]string{"eat", "tea", "tan", "ate", "nat", "bat"}))
 	s := []rune{'a', 'b', 'c'}
 	fmt.Println(string(s))
+	longestConsecutive([]int{100, 4, 200, 1, 3, 2})
 
 }
