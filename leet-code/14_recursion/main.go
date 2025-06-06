@@ -204,6 +204,38 @@ func combine(n int, k int) [][]int {
 	return result
 }
 
+// 39 组合总和 https://leetcode.cn/problems/combination-sum/description/
+// combinationSum 返回给定整数数组中所有和为 target 的组合
+func combinationSum(candidates []int, target int) [][]int {
+	result := [][]int{} // 存放所有组合的结果
+	path := []int{}     // 当前组合路径
+
+	var backtrack func(start int, remaining int)
+
+	backtrack = func(start int, remaining int) {
+		// 如果剩余值为0，说明找到一个组合
+		if remaining == 0 {
+			result = append(result, append([]int{}, path...)) // 复制当前路径
+			return
+		}
+
+		// 如果剩余值小于0，说明当前路径不合法
+		if remaining < 0 {
+			return
+		}
+
+		// 遍历候选数字
+		for i := start; i < len(candidates); i++ {
+			path = append(path, candidates[i])    // 选择当前数字
+			backtrack(i, remaining-candidates[i]) // 递归调用，允许重复使用同一数字
+			path = path[:len(path)-1]             // 撤销选择
+		}
+	}
+
+	backtrack(0, target) // 从第一个数字开始生成组合
+	return result
+}
+
 // 46 全排列 https://leetcode.cn/problems/permutations/description/
 // permute 返回给定整数数组的所有全排列
 // 输入：nums = [1,2,3]
@@ -290,8 +322,53 @@ func permuteUnique(nums []int) [][]int {
 	return result
 }
 
+// 131 分割回文串 https://leetcode.cn/problems/palindrome-partitioning/description/
+func partition(s string) [][]string {
+	result := [][]string{} // 存放所有分割结果
+	path := []string{}     // 当前分割路径
+
+	var backtrack func(start int)
+
+	backtrack = func(start int) {
+		// 如果起始位置到字符串末尾，说明找到一个分割
+		if start == len(s) {
+			result = append(result, append([]string{}, path...)) // 复制当前路径
+			return
+		}
+
+		// 遍历可能的分割位置
+		for end := start + 1; end <= len(s); end++ {
+			substr := s[start:end]    // 当前子串
+			if isPalindrome(substr) { // 检查是否为回文串
+				path = append(path, substr) // 选择当前子串
+				backtrack(end)              // 递归调用，继续分割后续部分
+				path = path[:len(path)-1]   // 撤销选择
+			}
+		}
+	}
+
+	backtrack(0) // 从起始位置开始分割
+	return result
+}
+
+// 辅助函数，检查字符串是否为回文串
+func isPalindrome(s string) bool {
+	left, right := 0, len(s)-1
+	for left < right {
+		if s[left] != s[right] {
+			return false // 如果不相等，则不是回文串
+		}
+		left++
+		right--
+	}
+	return true // 如果所有字符都相等，则是回文串
+}
+
 func main() {
 	fmt.Println(numberOfSubarrays([]int{1, 1, 2, 1, 1}, 3))
 	fmt.Println(subsets([]int{1, 2, 3}))
-
+	permute := permute([]int{1, 2, 3})
+	fmt.Println(permute)
+	partition := partition("aab")
+	fmt.Println(partition)
 }

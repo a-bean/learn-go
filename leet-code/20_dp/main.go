@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 // 322 零钱兑换问题 https://leetcode-cn.com/problems/coin-change/
@@ -274,26 +273,6 @@ func generatePascalTriangle(numRows int) [][]int {
 	return triangle
 }
 
-// 198 打家劫舍 https://leetcode-cn.com/problems/house-robber/
-func rob(nums []int) int {
-	if len(nums) == 0 {
-		return 0
-	}
-	if len(nums) == 1 {
-		return nums[0]
-	}
-
-	dp := make([]int, len(nums))
-	dp[0] = nums[0]
-	dp[1] = max(nums[0], nums[1])
-
-	for i := 2; i < len(nums); i++ {
-		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
-	}
-
-	return dp[len(nums)-1]
-}
-
 // 279 完全平方数 https://leetcode-cn.com/problems/perfect-squares/
 func numSquares(n int) int {
 	if n <= 0 {
@@ -353,6 +332,7 @@ func minimumTotal(triangle [][]int) int {
 }
 
 // 416 分割等和子集 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+// 01背包问题变种
 func canPartition(nums []int) bool {
 	if len(nums) == 0 {
 		return false
@@ -380,41 +360,472 @@ func canPartition(nums []int) bool {
 	return dp[target]
 }
 
-func threeSum(nums []int) [][]int {
-	if len(nums) < 3 {
-		return [][]int{}
-	}
+// 518 零钱兑换 II https://leetcode-cn.com/problems/coin-change-2/
+// 组合数问题，计算不同的硬币组合数
+func change(amount int, coins []int) int {
+	dp := make([]int, amount+1)
+	dp[0] = 1 // 组合数初始化为1
 
-	sort.Ints(nums)
-	if nums[0] > 0 {
-		return [][]int{}
-	}
-
-	left, right := 1, len(nums)-1
-	res := [][]int{}
-	for i := 0; i < len(nums); i++ {
-		if nums[i] > 0 {
-			break
+	for _, coin := range coins {
+		for j := coin; j <= amount; j++ {
+			dp[j] += dp[j-coin]
 		}
-		for left < right {
-			if nums[i]+nums[left]+nums[right] > 0 {
-				right--
-			} else if nums[i]+nums[left]+nums[right] < 0 {
-				left++
+	}
+
+	return dp[amount]
+}
+
+// 32 最长有效括号 https://leetcode-cn.com/problems/longest-valid-parentheses/
+func longestValidParentheses(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+
+	maxLen := 0
+	stack := []int{-1} // 初始化栈，-1 用于处理边界情况
+
+	for i, char := range s {
+		if char == '(' {
+			stack = append(stack, i) // 遇到左括号，入栈
+		} else {
+			stack = stack[:len(stack)-1] // 遇到右括号，出栈
+			if len(stack) == 0 {
+				stack = append(stack, i) // 如果栈空了，入栈当前索引
 			} else {
-				res = append(res, []int{i, left, right})
+				maxLen = max(maxLen, i-stack[len(stack)-1]) // 更新最大长度
 			}
 		}
-
 	}
-	return res
+
+	return maxLen
 }
+
+// dp解法
+func longestValidParenthesesDP(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+
+	n := len(s)
+	dp := make([]int, n)
+	maxLen := 0
+
+	for i := 1; i < n; i++ {
+		if s[i] == ')' {
+
+			if s[i-1] == '(' {
+				if i >= 2 {
+					dp[i] = dp[i-2] + 2 // 匹配到一对括号
+				} else {
+					dp[i] = 2 // 匹配到一对括号
+				}
+
+			} else if i-dp[i-1]-1 >= 0 && s[i-dp[i-1]-1] == '(' {
+
+				if i-dp[i-1]-2 >= 0 {
+					dp[i] = dp[i-1] + 2 + dp[i-dp[i-1]-2] // 匹配到嵌套括号
+				} else {
+					dp[i] = dp[i-1] + 2 // 匹配到嵌套括号
+				}
+
+			}
+			maxLen = max(maxLen, dp[i])
+		}
+	}
+
+	return maxLen
+}
+
+// 62 不同路径 https://leetcode-cn.com/problems/unique-paths/
+func uniquePaths(m int, n int) int {
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	// 初始化第一行和第一列
+	for i := 0; i < m; i++ {
+		dp[i][0] = 1
+	}
+	for j := 0; j < n; j++ {
+		dp[0][j] = 1
+	}
+
+	// 填充 dp 数组
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			dp[i][j] = dp[i-1][j] + dp[i][j-1]
+		}
+	}
+
+	return dp[m-1][n-1]
+}
+
+// 64 最小路径和 https://leetcode-cn.com/problems/minimum-path-sum/
+func minPathSum(grid [][]int) int {
+	if len(grid) == 0 || len(grid[0]) == 0 {
+		return 0
+	}
+
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	dp[0][0] = grid[0][0] // 起点
+
+	// 初始化第一行和第一列
+	for i := 1; i < m; i++ {
+		dp[i][0] = dp[i-1][0] + grid[i][0]
+	}
+	for j := 1; j < n; j++ {
+		dp[0][j] = dp[0][j-1] + grid[0][j]
+	}
+
+	// 填充 dp 数组
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+		}
+	}
+
+	return dp[m-1][n-1]
+}
+
+// 5 最长回文子串 https://leetcode-cn.com/problems/longest-palindromic-substring/
+// longestPalindrome 查找字符串中最长的回文子串
+// 使用中心扩展法：对每个可能的中心点，向两边扩展检查回文
+// s: 输入字符串
+// 返回: 最长回文子串
+func longestPalindrome(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	start, end := 0, 0 // 记录最长回文子串的起始和结束位置
+
+	// 遍历每个可能的中心点
+	for i := 0; i < len(s); i++ {
+		len1 := expandAroundCenter(s, i, i)   // 以单个字符为中心（奇数长度回文）
+		len2 := expandAroundCenter(s, i, i+1) // 以两个字符之间为中心（偶数长度回文）
+		maxLen := max(len1, len2)             // 取两种情况的较大值
+
+		// 如果找到更长的回文子串，更新起始和结束位置
+		if maxLen > end-start {
+			start = i - (maxLen-1)/2 // 计算回文串的起始位置
+			end = i + maxLen/2       // 计算回文串的结束位置
+		}
+	}
+
+	return s[start : end+1] // 返回最长回文子串
+}
+
+// expandAroundCenter 从中心向两边扩展检查回文
+// s: 原字符串
+// left: 左边界起始位置
+// right: 右边界起始位置
+// 返回: 以该中心点扩展得到的回文串的长度
+func expandAroundCenter(s string, left int, right int) int {
+	// 当左右指针都在有效范围内且对应字符相等时，继续扩展
+	for left >= 0 && right < len(s) && s[left] == s[right] {
+		left--  // 向左扩展
+		right++ // 向右扩展
+	}
+	// 返回回文长度：right-left-1
+	// 因为最后一次循环会多执行一次left--和right++
+	return right - left - 1
+}
+
+// dp解法
+// longestPalindromeDP 使用动态规划方法查找最长回文子串
+// s: 输入字符串
+// 返回: 最长回文子串
+func longestPalindromeDP(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	n := len(s)
+	// dp[i][j] 表示从索引i到j的子串是否为回文
+	dp := make([][]bool, n)
+	for i := range dp {
+		dp[i] = make([]bool, n)
+	}
+
+	start, maxLength := 0, 1 // 记录最长回文子串的起始位置和长度
+
+	// 初始化：所有长度为1的子串都是回文
+	for i := 0; i < n; i++ {
+		dp[i][i] = true
+	}
+
+	// 检查长度为2的子串
+	// 如果相邻字符相同，则形成回文
+	for i := 0; i < n-1; i++ {
+		if s[i] == s[i+1] {
+			dp[i][i+1] = true
+			start = i
+			maxLength = 2
+		}
+	}
+
+	// 检查长度大于2的子串
+	// 状态转移方程：dp[i][j] = (s[i] == s[j]) && dp[i+1][j-1]
+	for length := 3; length <= n; length++ {
+		for i := 0; i <= n-length; i++ {
+			j := i + length - 1 // 子串的结束位置
+			// 当前子串是回文的条件：
+			// 1. 首尾字符相同
+			// 2. 去掉首尾后的子串也是回文
+			if s[i] == s[j] && dp[i+1][j-1] {
+				dp[i][j] = true
+				if length > maxLength {
+					start = i
+					maxLength = length
+				}
+			}
+		}
+	}
+
+	return s[start : start+maxLength]
+}
+
+// 121 	买卖股票的最佳时机 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+func maxProfit(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+
+	dp := make([]int, len(prices))
+	minPrice := prices[0] // 初始化最小价格为第一个价格
+	for i := 1; i < len(prices); i++ {
+		// 计算当前价格与之前的最小价格的差值
+		dp[i] = max(dp[i-1], prices[i]-minPrice)
+		// 更新最小价格
+		minPrice = min(minPrice, prices[i])
+	}
+	return dp[len(prices)-1] // 返回最大利润
+}
+
+// 122 买卖股票的最佳时机 II https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+func maxProfitII(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+
+	dp := make([]int, len(prices))
+	maxProfit := 0
+	for i := 1; i < len(prices); i++ {
+		if prices[i] > prices[i-1] {
+			// 如果当前价格大于前一个价格，则可以卖出
+			dp[i] = dp[i-1] + (prices[i] - prices[i-1])
+		} else {
+			// 否则保持之前的利润
+			dp[i] = dp[i-1]
+		}
+		maxProfit = max(maxProfit, dp[i])
+	}
+	return maxProfit
+}
+
+// 123 买卖股票的最佳时机 III https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/
+func maxProfitIII(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+
+	n := len(prices)
+	if n < 2 {
+		return 0
+	}
+
+	// dp[i][j] 表示在第 i 天，最多进行 j 次交易时的最大利润
+	dp := make([][]int, n)
+	for i := range dp {
+		dp[i] = make([]int, 3) // 最多两次交易
+	}
+
+	for j := 1; j <= 2; j++ {
+		maxDiff := -prices[0] // 初始化最大差值
+		for i := 1; i < n; i++ {
+			dp[i][j] = max(dp[i-1][j], prices[i]+maxDiff) // 当前利润与之前的利润比较
+			maxDiff = max(maxDiff, dp[i][j-1]-prices[i])  // 更新最大差值
+		}
+	}
+
+	return dp[n-1][2] // 返回最多两次交易的最大利润
+}
+
+// 188 买卖股票的最佳时机 IV https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/
+func maxProfitIV(k int, prices []int) int {
+	if len(prices) == 0 || k <= 0 {
+		return 0
+	}
+
+	n := len(prices)
+	if k >= n/2 { // 如果交易次数大于等于天数的一半，直接使用贪心算法
+		maxProfit := 0
+		for i := 1; i < n; i++ {
+			if prices[i] > prices[i-1] {
+				maxProfit += prices[i] - prices[i-1]
+			}
+		}
+		return maxProfit
+	}
+
+	// dp[i][j] 表示在第 i 天，最多进行 j 次交易时的最大利润
+	dp := make([][]int, n)
+	for i := range dp {
+		dp[i] = make([]int, k+1)
+	}
+
+	for j := 1; j <= k; j++ {
+		maxDiff := -prices[0] // 初始化最大差值
+		for i := 1; i < n; i++ {
+			// dp[i-1][j]: 第 i 天不进行交易，沿用之前的利润
+			// prices[i]+maxDiff: 第 i 天进行卖出操作
+			// 										maxDiff 代表前面某一天买入的最大收益可能性
+			// 										prices[i] 是当天的卖出价格
+			dp[i][j] = max(dp[i-1][j], prices[i]+maxDiff)
+
+			//dp[i][j-1]: 进行了 j-1 次交易到第 i 天的最大利润
+			// -prices[i]: 在第 i 天买入的成本
+			maxDiff = max(maxDiff, dp[i][j-1]-prices[i]) // 更新最大差值
+		}
+	}
+
+	return dp[n-1][k] // 返回最多 k 次交易的最大利润
+}
+
+// 714 买卖股票的最佳时机含手续费 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+func maxProfitWithFee(prices []int, fee int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+
+	n := len(prices)
+	dp := make([][]int, n)
+	for i := range dp {
+		dp[i] = make([]int, 2) // dp[i][0] 表示第 i 天不持有股票的最大利润，dp[i][1] 表示第 i 天持有股票的最大利润
+	}
+
+	dp[0][0] = 0                // 第一天不持有股票，利润为0
+	dp[0][1] = -prices[0] - fee // 第一天持有股票，利润为负的买入价格加手续费
+
+	for i := 1; i < n; i++ {
+		dp[i][0] = max(dp[i-1][0], dp[i-1][1]+prices[i])     // 今天不持有股票，可以是昨天就不持有，或者今天卖出
+		dp[i][1] = max(dp[i-1][1], dp[i-1][0]-prices[i]-fee) // 今天持有股票，可以是昨天就持有，或者今天买入
+	}
+
+	return dp[n-1][0] // 返回最后一天不持有股票的最大利润
+}
+
+// 309 买卖股票的最佳时机含冷冻期 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+func maxProfitWithCooldown(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+
+	n := len(prices)
+	dp := make([][]int, n)
+	for i := range dp {
+		dp[i] = make([]int, 2) // dp[i][0] 表示第 i 天不持有股票的最大利润，dp[i][1] 表示第 i 天持有股票的最大利润
+	}
+
+	dp[0][0] = 0          // 第一天不持有股票，利润为0
+	dp[0][1] = -prices[0] // 第一天持有股票，利润为负的买入价格
+
+	for i := 1; i < n; i++ {
+		dp[i][0] = max(dp[i-1][0], dp[i-1][1]+prices[i]) // 今天不持有股票，可以是昨天就不持有，或者今天卖出
+		if i > 1 {
+			dp[i][1] = max(dp[i-1][1], dp[i-2][0]-prices[i]) // 今天持有股票，可以是昨天就持有，或者今天买入（考虑冷冻期）
+		} else {
+			dp[i][1] = max(dp[i-1][1], -prices[i]) // 第一天或第二天没有冷冻期限制
+		}
+	}
+
+	return dp[n-1][0] // 返回最后一天不持有股票的最大利润
+}
+
+// 198 打家劫舍 https://leetcode-cn.com/problems/house-robber/
+func rob(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	if len(nums) == 1 {
+		return nums[0]
+	}
+
+	dp := make([]int, len(nums))
+	dp[0] = nums[0]
+	dp[1] = max(nums[0], nums[1])
+
+	for i := 2; i < len(nums); i++ {
+		dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+	}
+
+	return dp[len(nums)-1]
+}
+
+// 213 打家劫舍 II https://leetcode-cn.com/problems/house-robber-ii/
+func robII(nums []int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	if len(nums) == 1 {
+		return nums[0]
+	}
+
+	// 分两种情况：不偷第一个房子或不偷最后一个房子
+	return max(rob(nums[:len(nums)-1]), rob(nums[1:]))
+}
+
+// 72 编辑距离 https://leetcode-cn.com/problems/edit-distance/
+func minDistance(word1 string, word2 string) int {
+	m, n := len(word1), len(word2)
+	if m == 0 {
+		return n // 如果第一个字符串为空，返回第二个字符串的长度
+	}
+	if n == 0 {
+		return m // 如果第二个字符串为空，返回第一个字符串的长度
+	}
+
+	dp := make([][]int, m+1)
+	for i := range dp {
+		dp[i] = make([]int, n+1)
+	}
+
+	// 初始化第一行和第一列
+	for i := 0; i <= m; i++ {
+		dp[i][0] = i // 删除操作
+	}
+	for j := 0; j <= n; j++ {
+		dp[0][j] = j // 插入操作
+	}
+
+	// 填充 dp 数组
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if word1[i-1] == word2[j-1] {
+				dp[i][j] = dp[i-1][j-1] // 字符相同，不需要操作
+			} else {
+				dp[i][j] = min(dp[i-1][j]+1, min(dp[i][j-1]+1, dp[i-1][j-1]+1)) // 删除、插入、替换操作
+			}
+		}
+	}
+
+	return dp[m][n]
+}
+
+// 01背包问题 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 
 func main() {
 	// 示例用法
 	coins := []int{1, 2, 5}
 	amount := 11
 	result := coinChange(coins, amount)
+	coinChange([]int{5, 2, 1}, amount)
 	fmt.Println("最少硬币数:", result) // 输出: 最少硬币数: 3
 
 	obstacleGrid := [][]int{
@@ -435,5 +846,17 @@ func main() {
 	maxProduct([]int{2, 3, -2, 4})
 	canPartition([]int{1, 5, 11, 5})
 	canPartition([]int{1, 2, 3, 5})
-	fmt.Println(threeSum([]int{-1, 0, 1, 2, -1, -4}))
+	fmt.Print("最长有效括号长度: ")
+	fmt.Println(longestValidParentheses(`(()))())(`)) // 输出: 4
+	minPathSum([][]int{
+		{1, 3, 1},
+		{1, 5, 1},
+		{4, 2, 1},
+	})
+
+	fmt.Println("最长回文子串:", longestPalindrome(`babad`))  // 输出: bab 或者 aba
+	fmt.Println("最长回文子串:", longestPalindromeDP(`cbbd`)) // 输出: bb
+
+	// minDistance(`intention`, `execution`)
+	minDistance(`horse`, `ros`)
 }

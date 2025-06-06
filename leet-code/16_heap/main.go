@@ -205,6 +205,87 @@ func maxHeapify(a []int, i, heapSize int) {
 	}
 }
 
+// 347 前 K 个高频元素 https://leetcode.cn/problems/top-k-frequent-elements/description/
+
+type Heap struct {
+	heaps  [][2]int
+	lessFn func(a, b int) bool
+}
+
+func (this *Heap) swap(i, j int) {
+	this.heaps[i], this.heaps[j] = this.heaps[j], this.heaps[i]
+}
+
+func (this *Heap) up(child int) {
+	if child <= 0 {
+		return
+	}
+
+	parent := (child - 1) >> 1
+	if this.lessFn(this.heaps[parent][1], this.heaps[child][1]) {
+		return
+	}
+	this.swap(parent, child)
+	this.up(parent)
+}
+
+func (this *Heap) Push(val [2]int) {
+	this.heaps = append(this.heaps, val)
+	this.up(len(this.heaps) - 1)
+}
+
+func (this *Heap) down(parent int) {
+	lessIdx := parent
+	lChild, rChild := parent<<1+1, parent<<1+2
+	if lChild < len(this.heaps) && this.lessFn(this.heaps[lChild][1], this.heaps[lessIdx][1]) {
+		lessIdx = lChild
+	}
+
+	if rChild < len(this.heaps) && this.lessFn(this.heaps[rChild][1], this.heaps[lessIdx][1]) {
+		lessIdx = rChild
+	}
+
+	if lessIdx == parent {
+		return
+	}
+
+	this.swap(lessIdx, parent)
+	this.down(lessIdx)
+}
+
+func (this *Heap) Pop() int {
+	val := this.heaps[0]
+	this.swap(0, len(this.heaps)-1)
+	this.heaps = this.heaps[:len(this.heaps)-1]
+	this.down(0)
+	return val[0]
+}
+
+func topKFrequent(nums []int, k int) []int {
+	m := make(map[int]int, 0)
+	for _, val := range nums {
+		m[val]++
+	}
+
+	less := func(a, b int) bool {
+		return a < b
+	}
+	heap := &Heap{lessFn: less}
+
+	for key, value := range m {
+		heap.Push([2]int{key, value})
+		if len(heap.heaps) > k {
+			heap.Pop()
+		}
+	}
+	ret := make([]int, k)
+	for i := 0; i < k; i++ {
+		ret[k-i-1] = heap.Pop()
+	}
+	return ret
+
+}
+
 func main() {
 	mergeKLists([]*ListNode{
 		{Val: 1, Next: &ListNode{Val: 4, Next: &ListNode{Val: 5}}},

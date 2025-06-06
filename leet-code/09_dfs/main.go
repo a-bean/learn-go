@@ -46,6 +46,46 @@ func findCombination(digits *string, index int, s string) {
 	}
 }
 
+// 79 单词搜索 https://leetcode.cn/problems/word-search/description/
+func exist(board [][]byte, word string) bool {
+	m, n := len(board), len(board[0])
+	directions := []struct{ dx, dy int }{
+		{1, 0}, {0, 1}, {-1, 0}, {0, -1},
+	}
+
+	var dfs func(x, y, index int) bool
+	dfs = func(x, y, index int) bool {
+		if index == len(word) {
+			return true // 找到完整单词
+		}
+		if x < 0 || x >= m || y < 0 || y >= n || board[x][y] != word[index] {
+			return false // 越界或字符不匹配
+		}
+
+		temp := board[x][y] // 保存当前字符
+		board[x][y] = '#'   // 标记为已访问
+
+		for _, dir := range directions {
+			if dfs(x+dir.dx, y+dir.dy, index+1) {
+				return true // 如果找到单词，返回 true
+			}
+		}
+
+		board[x][y] = temp // 恢复原字符
+		return false       // 未找到单词
+	}
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if dfs(i, j, 0) {
+				return true // 如果从任意位置找到单词，返回 true
+			}
+		}
+	}
+
+	return false // 未找到单词
+}
+
 // 112 路径总和 : https://leetcode.cn/problems/path-sum/
 type TreeNode struct {
 	Val   int

@@ -344,6 +344,64 @@ func countPaths(node *TreeNode, targetSum int) int {
 	return count
 }
 
+func pathSum1(root *TreeNode, targetSum int) (ans int) {
+	// 存储前缀和的出现次数，初始化时前缀和 0 出现 1 次
+	preSum := map[int64]int{0: 1}
+
+	// 定义 DFS 函数，node 是当前节点，curr 是从根到当前节点的路径和
+	var dfs func(*TreeNode, int64)
+	dfs = func(node *TreeNode, curr int64) {
+		if node == nil {
+			return
+		}
+
+		// 将当前节点的值加到路径和中
+		curr += int64(node.Val)
+
+		// 如果存在一个前缀和，使得 curr - 该前缀和 = targetSum
+		// 说明找到了一条符合要求的路径
+		ans += preSum[curr-int64(targetSum)]
+
+		// 将当前前缀和加入 map
+		preSum[curr]++
+
+		// 递归遍历左右子树
+		dfs(node.Left, curr)
+		dfs(node.Right, curr)
+
+		// 回溯：将当前前缀和从 map 中删除
+		preSum[curr]--
+	}
+
+	dfs(root, 0)
+	return
+}
+
+// 124 二叉树中的最大路径和 https://leetcode.cn/problems/binary-tree-maximum-path-sum/description/
+func maxPathSum(root *TreeNode) int {
+	maxSum := math.MinInt64
+
+	var dfs func(*TreeNode) int
+	dfs = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+
+		// 计算左子树和右子树的最大路径和
+		left := max(0, dfs(node.Left))   // 如果左子树的路径和为负，则不考虑它
+		right := max(0, dfs(node.Right)) // 同理
+
+		// 更新全局最大路径和
+		maxSum = max(maxSum, node.Val+left+right)
+
+		// 返回当前节点的最大路径和
+		return node.Val + max(left, right)
+	}
+
+	dfs(root)
+	return maxSum
+}
+
 func main() {
 
 	// 构建一个示例树
