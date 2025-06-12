@@ -28,7 +28,7 @@ func reverseList(head *ListNode) *ListNode {
 // k: 要查找的位置
 // 返回: 第k个节点，如果链表长度小于k则返回nil
 func getEnd(head *ListNode, k int) *ListNode {
-	for head != nil {
+	for head != nil && k != 0 {
 		k--
 		if k == 0 {
 			return head
@@ -41,13 +41,13 @@ func getEnd(head *ListNode, k int) *ListNode {
 // reverse 反转从头节点到stop节点之前的链表
 // head: 要反转的链表头节点
 // stop: 反转的终止节点（不包含在反转范围内）
-func reverse(head *ListNode, stop *ListNode) {
-	last := head // last指向当前反转部分的最后一个节点
+func reverse(head, stop *ListNode) {
+	var last *ListNode
 	for head != stop {
-		nextHead := head.Next // 保存下一个要处理的节点
-		head.Next = last      // 当前节点指向前一个节点
-		last = head           // last向后移动
-		head = nextHead       // head指向下一个要处理的节点
+		next := head.Next
+		head.Next = last
+		last = head
+		head = next
 	}
 }
 
@@ -460,6 +460,62 @@ func copyRandomList(head *Node) *Node {
 
 	return headNew
 }
+
+// 19. 删除链表的倒数第 N 个结点 https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	if head == nil || n <= 0 {
+		return head
+	}
+
+	dummy := &ListNode{Next: head}
+	slow, fast := dummy, dummy
+
+	// 快指针先走 n+1 步
+	for i := 0; i < n+1; i++ {
+		if fast != nil {
+			fast = fast.Next
+		}
+	}
+
+	// 快慢指针一起走，直到快指针到达链表末尾
+	for fast != nil {
+		slow = slow.Next
+		fast = fast.Next
+	}
+
+	// 删除倒数第 n 个节点
+	slow.Next = slow.Next.Next
+
+	return dummy.Next
+}
+
+func removeNthFromEnd1(head *ListNode, n int) *ListNode {
+
+	length := getListLen(head)
+	dummy := &ListNode{0, head}
+	cur := dummy
+	for i := 0; i < length-n; i++ {
+		cur = cur.Next
+	}
+	cur.Next = cur.Next.Next
+	return dummy.Next
+
+}
+
+func getListLen(head *ListNode) int {
+	count := 0
+	if head == nil {
+		return count
+	}
+
+	for head != nil {
+		count += 1
+		head = head.Next
+	}
+
+	return count
+}
+
 func main() {
 	reverseKGroup(&ListNode{
 		Val:  1,

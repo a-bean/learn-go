@@ -282,4 +282,5 @@ func main() {
 	fmt.Println(findSubstring1("barfoothefoobarman", []string{"foo", "bar"}))
 	fmt.Println(minWindow("ADOBECODEBANC", "ABC"))
 	restoreIpAddresses("25525511135")
+	fmt.Println([]rune{'z'})
 }

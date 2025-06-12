@@ -188,7 +188,7 @@ func maxSubArray(nums []int) int {
 	return maxSum
 }
 
-// 153 乘积最大数组 https://leetcode-cn.com/problems/maximum-product-subarray/
+// 152 乘积最大数组 https://leetcode-cn.com/problems/maximum-product-subarray/
 // maxProduct 计算数组中连续子数组的最大乘积
 // 由于负数的存在，需要同时维护最大值和最小值
 // nums: 输入的整数数组
@@ -837,7 +837,7 @@ func main() {
 	fmt.Println("不同路径数:", result1) // 输出: 不同路径数: 2
 
 	longestCommonSubsequence(`abcde`, `ace`)
-	lengthOfLIS([]int{1, 3, 6, 7, 9, 4, 10, 5, 6})
+	lengthOfLIS([]int{10, 9, 2, 5, 3, 7, 101, 18})
 	length, sequence := lengthOfLISWithSequence([]int{10, 9, 2, 5, 3, 7, 101, 18})
 	fmt.Println("最长递增子序列长度:", length) // 输出: 最长递增子序列长度: 4
 	fmt.Println("最长递增子序列:", sequence) // 输出: 最长递增子序列: [2 3 7 101]
@@ -847,7 +847,7 @@ func main() {
 	canPartition([]int{1, 5, 11, 5})
 	canPartition([]int{1, 2, 3, 5})
 	fmt.Print("最长有效括号长度: ")
-	fmt.Println(longestValidParentheses(`(()))())(`)) // 输出: 4
+	fmt.Println(longestValidParentheses(`(())(())`)) // 输出: 4
 	minPathSum([][]int{
 		{1, 3, 1},
 		{1, 5, 1},
@@ -859,4 +859,9 @@ func main() {
 
 	// minDistance(`intention`, `execution`)
 	minDistance(`horse`, `ros`)
+
+	numSquares(13)
+
+	a := "catsandog"
+	fmt.Println(a[3:6])
 }

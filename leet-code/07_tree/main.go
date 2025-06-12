@@ -290,24 +290,19 @@ func max(a, b int) int {
 // 236 最近公共祖先 https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
 
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	// 递归来做
-	if root == nil || root == p || root == q {
+	if root == nil || p == root || q == root {
 		return root
 	}
 
-	left := lowestCommonAncestor(root.Left, p, q)
-	right := lowestCommonAncestor(root.Right, p, q)
-
-	// 当左右子树均不为空时，返回当前节点
-	if left != nil && right != nil {
-		return root
+	l := lowestCommonAncestor(root.Left, p, q)
+	r := lowestCommonAncestor(root.Right, p, q)
+	if l == nil {
+		return r
 	}
-
-	if left != nil {
-		return left
+	if r == nil {
+		return l
 	}
-
-	return right
+	return root
 }
 
 // 437 路径总和 III https://leetcode.cn/problems/path-sum-iii/description/
@@ -400,6 +395,49 @@ func maxPathSum(root *TreeNode) int {
 
 	dfs(root)
 	return maxSum
+}
+
+// 101. 对称二叉树 https://leetcode.cn/problems/symmetric-tree/description/
+func isSymmetric(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	return isMirror(root.Left, root.Right)
+}
+
+func isMirror(left, right *TreeNode) bool {
+	if left == nil && right == nil {
+		return true
+	}
+	if left == nil || right == nil {
+		return false
+	}
+	return left.Val == right.Val && isMirror(left.Left, right.Right) && isMirror(left.Right, right.Left)
+}
+
+// 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/description/
+func flatten(root *TreeNode) {
+	if root == nil {
+		return
+	}
+
+	// 先递归处理左子树和右子树
+	flatten(root.Left)
+	flatten(root.Right)
+
+	// 将左子树接到右子树上
+	if root.Left != nil {
+		right := root.Right // 保存右子树
+		root.Right = root.Left
+		root.Left = nil // 清空左子树
+
+		// 找到新的右子树的最右节点，将原来的右子树接到它的右边
+		current := root.Right
+		for current.Right != nil {
+			current = current.Right
+		}
+		current.Right = right
+	}
 }
 
 func main() {

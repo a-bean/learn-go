@@ -265,5 +265,10 @@ func main() {
 
 	productExceptSelf([]int{1, 2, 3, 4})
 	firstMissingPositive([]int{1, 2, 0})
-	firstMissingPositive([]int{3, 4, -1, 1})
+	firstMissingPositive([]int{-1, 4, 2, 1, 9, 10})
+	spiralOrder([][]int{
+		{1, 2, 3},
+		{4, 5, 6},
+		{7, 8, 9},
+	})
 }

@@ -205,7 +205,63 @@ func maxHeapify(a []int, i, heapSize int) {
 	}
 }
 
-// 347 前 K 个高频元素 https://leetcode.cn/problems/top-k-frequent-elements/description/
+// IntHeap 是一个由 int 组成的最小堆
+type IntHeap []int
+
+func (h IntHeap) Len() int            { return len(h) }
+func (h IntHeap) Less(i, j int) bool  { return h[i] < h[j] }
+func (h IntHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *IntHeap) Push(x interface{}) { *h = append(*h, x.(int)) }
+func (h *IntHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+// 295 数据流的中位数 https://leetcode.cn/problems/find-median-from-data-stream/description/
+
+// 维护两个堆：最大堆和最小堆
+type MedianFinder struct {
+	maxHeap *IntHeap // 最大堆，存储较小的一半
+	minHeap *IntHeap // 最小堆，存储较大的一半
+}
+
+func Constructor() MedianFinder {
+	return MedianFinder{
+		maxHeap: &IntHeap{},
+		minHeap: &IntHeap{},
+	}
+}
+func (this *MedianFinder) AddNum(num int) {
+	// 将新数添加到最大堆
+	heap.Push(this.maxHeap, num)
+	// 确保最大堆的最大值不大于最小堆的最小值
+	if this.maxHeap.Len() > 0 && this.minHeap.Len() > 0 && (*this.maxHeap)[0] > (*this.minHeap)[0] {
+		maxVal := heap.Pop(this.maxHeap).(int)
+		minVal := heap.Pop(this.minHeap).(int)
+		heap.Push(this.maxHeap, minVal)
+		heap.Push(this.minHeap, maxVal)
+	}
+
+	// 平衡两个堆的大小，最大堆可以多一个元素
+	if this.maxHeap.Len() > this.minHeap.Len()+1 {
+		val := heap.Pop(this.maxHeap).(int)
+		heap.Push(this.minHeap, val)
+	} else if this.minHeap.Len() > this.maxHeap.Len() {
+		val := heap.Pop(this.minHeap).(int)
+		heap.Push(this.maxHeap, val)
+	}
+}
+
+// FindMedian 返回当前数据流的中位数
+func (this *MedianFinder) FindMedian() float64 {
+	if this.maxHeap.Len() > this.minHeap.Len() {
+		return float64((*this.maxHeap)[0])
+	}
+	return float64((*this.maxHeap)[0]+(*this.minHeap)[0]) / 2.0
+}
 
 type Heap struct {
 	heaps  [][2]int

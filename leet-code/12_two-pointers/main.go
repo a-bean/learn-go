@@ -324,6 +324,40 @@ func findDuplicate1(nums []int) int {
 	return low
 }
 
+// 31 下一个排列 https://leetcode.cn/problems/next-permutation/description/
+func nextPermutation(nums []int) {
+	n := len(nums)
+	if n <= 1 {
+		return
+	}
+
+	// 从后向前找到第一个升序对
+	i := n - 2
+	for i >= 0 && nums[i] >= nums[i+1] {
+		i--
+	}
+
+	if i >= 0 {
+		// 从后向前找到第一个大于 nums[i] 的元素
+		j := n - 1
+		for j >= 0 && nums[j] <= nums[i] {
+			j--
+		}
+		// 交换这两个元素
+		nums[i], nums[j] = nums[j], nums[i]
+	}
+
+	// 反转 i 后面的部分
+	reverse(nums, i+1, n-1)
+}
+func reverse(nums []int, start, end int) {
+	for start < end {
+		nums[start], nums[end] = nums[end], nums[start]
+		start++
+		end--
+	}
+}
+
 func main() {
 	threeSum1([]int{-1, 0, 1, 2, -1, -4})
 	threeSum2([]int{-1, 0, 1, 2, -1, -4})

@@ -252,11 +252,9 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 	if totalLength%2 == 1 {
 		midIndex := totalLength / 2
 		return float64(getKthElement(nums1, nums2, midIndex+1))
-	} else {
-		midIndex1, midIndex2 := totalLength/2-1, totalLength/2
-		return float64(getKthElement(nums1, nums2, midIndex1+1)+getKthElement(nums1, nums2, midIndex2+1)) / 2.0
 	}
-	return 0
+	midIndex1, midIndex2 := totalLength/2-1, totalLength/2
+	return float64(getKthElement(nums1, nums2, midIndex1+1)+getKthElement(nums1, nums2, midIndex2+1)) / 2.0
 }
 
 func getKthElement(nums1, nums2 []int, k int) int {
@@ -283,7 +281,6 @@ func getKthElement(nums1, nums2 []int, k int) int {
 			index2 = newIndex2 + 1
 		}
 	}
-	return 0
 }
 
 func min(x, y int) int {
@@ -337,4 +334,6 @@ func main() {
 	findPeakElement2([]int{1, 2, 3, 1})
 
 	splitArray([]int{7, 2, 5, 10, 8}, 2)
+	findMedianSortedArrays1([]int{1, 2}, []int{3, 4})
+
 }
