@@ -344,6 +344,64 @@ func countPaths(node *TreeNode, targetSum int) int {
 	return count
 }
 
+// 101 对称二叉树 https://leetcode.cn/problems/symmetric-tree/description/?envType=study-plan-v2&envId=top-100-liked
+func isSymmetric(root *TreeNode) bool {
+	return check(root.Left, root.Right)
+}
+
+func check(p, q *TreeNode) bool {
+	if p == nil && q == nil {
+		return true
+	}
+	if p == nil || q == nil {
+		return false
+	}
+
+	return p.Val == q.Val && check(q.Left, p.Right) && check(q.Right, p.Left)
+}
+
+// 108 将有序数组转换为二叉搜索树 https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/
+func sortedArrayToBST(nums []int) *TreeNode {
+	return sortedArrayToBSTHelper(nums, 0, len(nums)-1)
+}
+
+func sortedArrayToBSTHelper(nums []int, left, right int) *TreeNode {
+	if left > right {
+		return nil
+	}
+
+	mid := (left + right) / 2
+	root := &TreeNode{Val: nums[mid]}
+	root.Left = sortedArrayToBSTHelper(nums, left, mid-1)
+	root.Right = sortedArrayToBSTHelper(nums, mid+1, right)
+	return root
+}
+
+// 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
+func flatten(root *TreeNode) {
+	if root == nil {
+		return
+	}
+
+	// 先将左右子树展开
+	flatten(root.Left)
+	flatten(root.Right)
+
+	// 将左子树接到右子树上
+	if root.Left != nil {
+		// 找到左子树的最右节点
+		rightmost := root.Left
+		for rightmost.Right != nil {
+			rightmost = rightmost.Right
+		}
+		// 将右子树接到左子树的最右节点
+		rightmost.Right = root.Right
+		// 将左子树设为右子树
+		root.Right = root.Left
+		root.Left = nil
+	}
+}
+
 func main() {
 
 	// 构建一个示例树
@@ -359,4 +417,5 @@ func main() {
 
 	lowestCommonAncestor(root, root.Left, root.Right)
 	pathSum(root, 8)
+	sortedArrayToBST([]int{-10, -3, 0, 5, 9})
 }

@@ -415,6 +415,52 @@ func quickselect(nums []int, l, r, k int) int {
 	}
 }
 
+// 4. 寻找两个正序数组的中位数 https://leetcode.cn/problems/median-of-two-sorted-arrays/
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	// 合并两个有序数组
+	merged := mergeArrays(nums1, nums2)
+	n := len(merged)
+	// 如果长度为奇数，返回中间元素
+	if n%2 == 1 {
+		return float64(merged[n/2])
+	}
+	// 如果长度为偶数，返回中间两个元素的平均值
+	return float64(merged[n/2-1]+merged[n/2]) / 2.0
+}
+
+// mergeArrays 合并两个有序数组
+func mergeArrays(nums1 []int, nums2 []int) []int {
+	merged := make([]int, 0, len(nums1)+len(nums2))
+	i, j := 0, 0
+	for i < len(nums1) && j < len(nums2) {
+		if nums1[i] < nums2[j] {
+			merged = append(merged, nums1[i])
+			i++
+		} else {
+			merged = append(merged, nums2[j])
+			j++
+		}
+	}
+	// 将剩余元素添加到结果中
+	merged = append(merged, nums1[i:]...)
+	merged = append(merged, nums2[j:]...)
+	return merged
+}
+
+// 153 寻找旋转排序数组中的最小值 https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/
+func findMin(nums []int) int {
+	left, right := 0, len(nums)-1
+	for left < right {
+		mid := (left + right) / 2
+		if nums[mid] > nums[right] {
+			left = mid + 1
+		} else {
+			right = mid
+		}
+	}
+	return nums[left]
+}
+
 func main() {
 	relativeSortArray([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6})
 	relativeSortArray1([]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}, []int{2, 1, 4, 3, 9, 6})
