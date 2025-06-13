@@ -6,7 +6,6 @@ func permute(nums []int) [][]int {
 
 	var backtrack func(start int)
 	backtrack = func(start int) {
-
 		if start == len(nums)-1 {
 			// 复制当前排列到结果中
 			temp := make([]int, len(nums))

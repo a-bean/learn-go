@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"sort"
 	"strconv"
@@ -374,43 +373,41 @@ func findKthLargest(nums []int, k int) int {
 	return quickselect(nums, 0, n-1, n-k)
 }
 
-// quickselect 快速选择算法的核心实现
-// nums: 待处理的数组
-// l: 左边界
-// r: 右边界
-// k: 要找的下标（第k小的数）
+// quickselect 使用快速选择算法找到数组中第k小的元素
+// nums: 输入数组
+// l: 当前处理区间的左边界
+// r: 当前处理区间的右边界
+// k: 要找的第k小的元素的位置
 func quickselect(nums []int, l, r, k int) int {
-	// 如果区间只有一个元素，且是我们要找的k，直接返回
+	// 如果区间只包含一个元素，直接返回
 	if l == r {
 		return nums[k]
 	}
 
-	// 选择第一个元素作为分区点(pivot)
-	partition := nums[l]
-	// i指针从左边开始，j指针从右边开始
-	i := l - 1
-	j := r + 1
+	partition := nums[l] // 选择第一个元素作为基准值
+	i := l - 1           // i从左边界前一位开始
+	j := r + 1           // j从右边界后一位开始
 
-	// 双指针分区过程
+	// 分区过程
 	for i < j {
-		// 找到第一个大于等于partition的元素
+		// 从左向右找到第一个大于等于基准值的元素
 		for i++; nums[i] < partition; i++ {
 		}
-		// 找到第一个小于等于partition的元素
+		// 从右向左找到第一个小于等于基准值的元素
 		for j--; nums[j] > partition; j-- {
 		}
-		// 如果i和j没有相遇，交换这两个元素
+		// 如果i还在j的左边，交换这两个元素
 		if i < j {
 			nums[i], nums[j] = nums[j], nums[i]
 		}
 	}
 
-	// 根据分区点位置决定向左还是向右继续查找
+	// 根据k的位置决定向左还是向右继续查找
 	if k <= j {
-		// 如果k在分区点左边（包含分区点），继续在左半部分查找
+		// 如果k在分区点j的左边（包括j），在左半部分继续查找
 		return quickselect(nums, l, j, k)
 	} else {
-		// 如果k在分区点右边，继续在右半部分查找
+		// 如果k在分区点j的右边，在右半部分继续查找
 		return quickselect(nums, j+1, r, k)
 	}
 }
@@ -477,5 +474,7 @@ func main() {
 	largestNumber([]int{3, 30, 34, 5, 9})
 
 	containsNearbyAlmostDuplicate([]int{1, 2, 3, 1}, 3, 0)
-	fmt.Print(findKthLargest([]int{3, 2, 1, 5, 6, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15}, 2))
+	// fmt.Print(findKthLargest([]int{3, 2, 1, 5, 6, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15}, 2))
+
+	findKthLargest([]int{7, 4, 3, 2, 8, 1}, 2)
 }

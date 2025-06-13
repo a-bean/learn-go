@@ -173,6 +173,56 @@ func subsets(nums []int) [][]int {
 	return result
 }
 
+//	17// 电话号码的字母组合 https://leetcode.cn/problems/letter-combinations-of-a-phone-number/description/
+//
+// letterCombinations 返回给定电话号码数字的所有字母组合
+
+func letterCombinations(digits string) []string {
+	if digits == "" {
+		return []string{} // 如果输入为空，返回空切片
+	}
+
+	var letterMap = []string{
+		"",     // 0
+		"",     // 1
+		"abc",  // 2
+		"def",  // 3
+		"ghi",  // 4
+		"jkl",  // 5
+		"mno",  // 6
+		"pqrs", // 7
+		"tuv",  // 8
+		"wxyz", // 9
+	}
+
+	result := []string{} // 存放所有组合的结果
+	path := []byte{}     // 当前组合路径
+
+	var backtrack func(index int)
+
+	backtrack = func(index int) {
+		// 当路径长度等于 digits 的长度时，添加到结果中
+		if index == len(digits) {
+			result = append(result, string(path)) // 复制当前路径
+			return
+		}
+
+		// 获取当前数字对应的字母
+		num := digits[index] - '0'
+		letters := letterMap[num] // 获取对应的字母字符串
+
+		// 遍历字母
+		for i := 0; i < len(letters); i++ {
+			path = append(path, letters[i]) // 选择当前字母
+			backtrack(index + 1)            // 递归调用，处理下一个数字
+			path = path[:len(path)-1]       // 撤销选择
+		}
+	}
+
+	backtrack(0) // 从第一个数字开始生成组合
+	return result
+}
+
 // 77 组合  https://leetcode.cn/problems/combinations/description/
 // combine 返回从 1 到 n 中选择 k 个数的所有组合
 // 输入：n = 4, k = 2
@@ -202,6 +252,113 @@ func combine(n int, k int) [][]int {
 
 	backtrack(1) // 从1开始生成组合
 	return result
+}
+
+// 39 组合总和 https://leetcode.cn/problems/combination-sum/description/
+// combinationSum 返回给定整数数组中所有和为 target 的组合
+func combinationSum(candidates []int, target int) [][]int {
+	result := [][]int{} // 存放所有组合的结果
+	path := []int{}     // 当前组合路径
+
+	var backtrack func(start int, remaining int)
+
+	backtrack = func(start int, remaining int) {
+		// 如果剩余值为0，说明找到一个组合
+		if remaining == 0 {
+			result = append(result, append([]int{}, path...)) // 复制当前路径
+			return
+		}
+
+		// 如果剩余值小于0，说明当前路径不合法
+		if remaining < 0 {
+			return
+		}
+
+		// 遍历候选数字
+		for i := start; i < len(candidates); i++ {
+			path = append(path, candidates[i])    // 选择当前数字
+			backtrack(i, remaining-candidates[i]) // 递归调用，允许重复使用同一数字
+			path = path[:len(path)-1]             // 撤销选择
+		}
+	}
+
+	backtrack(0, target) // 从第一个数字开始生成组合
+	return result
+}
+
+// 22 括号生成 https://leetcode.cn/problems/generate-parentheses/description/
+// generateParenthesis 返回所有可能的括号组合
+func generateParenthesis(n int) []string {
+	result := []string{} // 存放所有括号组合的结果
+	path := []byte{}     // 当前括号组合路径
+
+	var backtrack func(left int, right int)
+
+	backtrack = func(left int, right int) {
+		// 如果左括号和右括号都用完了，说明找到一个合法组合
+		if left == 0 && right == 0 {
+			result = append(result, string(path)) // 复制当前路径
+			return
+		}
+
+		// 如果左括号还有剩余，可以添加左括号
+		if left > 0 {
+			path = append(path, '(')  // 选择左括号
+			backtrack(left-1, right)  // 递归调用
+			path = path[:len(path)-1] // 撤销选择
+		}
+
+		// 如果右括号的数量大于左括号，可以添加右括号
+		if right > left {
+			path = append(path, ')')  // 选择右括号
+			backtrack(left, right-1)  // 递归调用
+			path = path[:len(path)-1] // 撤销选择
+		}
+	}
+
+	backtrack(n, n) // 从 n 个左括号和 n 个右括号开始生成组合
+	return result
+}
+
+// 79 单词搜索 https://leetcode.cn/problems/word-search/description/
+// exist 检查给定的单词是否存在于二维网格中
+func exist(board [][]byte, word string) bool {
+	m, n := len(board), len(board[0])
+	directions := []struct{ dx, dy int }{
+		{1, 0}, {0, 1}, {-1, 0}, {0, -1},
+	}
+
+	var dfs func(x, y, index int) bool
+	dfs = func(x, y, index int) bool {
+		if index == len(word) {
+			return true // 找到完整单词
+		}
+		if x < 0 || x >= m || y < 0 || y >= n || board[x][y] != word[index] {
+			return false // 越界或字符不匹配
+		}
+
+		temp := board[x][y] // 保存当前字符
+		board[x][y] = '#'   // 标记为已访问
+
+		for _, dir := range directions {
+			if dfs(x+dir.dx, y+dir.dy, index+1) {
+				return true // 如果找到单词，返回 true
+			}
+		}
+
+		board[x][y] = temp // 恢复原字符
+		return false       // 未找到单词
+	}
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if dfs(i, j, 0) {
+				return true // 如果从任意位置找到单词，返回 true
+			}
+		}
+	}
+
+	return false // 未找到单词
 }
 
 // 46 全排列 https://leetcode.cn/problems/permutations/description/
@@ -290,8 +447,53 @@ func permuteUnique(nums []int) [][]int {
 	return result
 }
 
+// 131 分割回文串 https://leetcode.cn/problems/palindrome-partitioning/description/
+func partition(s string) [][]string {
+	result := [][]string{} // 存放所有分割结果
+	path := []string{}     // 当前分割路径
+
+	var backtrack func(start int)
+
+	backtrack = func(start int) {
+		// 如果起始位置到字符串末尾，说明找到一个分割
+		if start == len(s) {
+			result = append(result, append([]string{}, path...)) // 复制当前路径
+			return
+		}
+
+		// 遍历可能的分割位置
+		for end := start + 1; end <= len(s); end++ {
+			substr := s[start:end]    // 当前子串
+			if isPalindrome(substr) { // 检查是否为回文串
+				path = append(path, substr) // 选择当前子串
+				backtrack(end)              // 递归调用，继续分割后续部分
+				path = path[:len(path)-1]   // 撤销选择
+			}
+		}
+	}
+
+	backtrack(0) // 从起始位置开始分割
+	return result
+}
+
+// 辅助函数，检查字符串是否为回文串
+func isPalindrome(s string) bool {
+	left, right := 0, len(s)-1
+	for left < right {
+		if s[left] != s[right] {
+			return false // 如果不相等，则不是回文串
+		}
+		left++
+		right--
+	}
+	return true // 如果所有字符都相等，则是回文串
+}
+
 func main() {
 	fmt.Println(numberOfSubarrays([]int{1, 1, 2, 1, 1}, 3))
 	fmt.Println(subsets([]int{1, 2, 3}))
-
+	permute := permute([]int{1, 2, 3})
+	fmt.Println(permute)
+	partition := partition("aab")
+	fmt.Println(partition)
 }

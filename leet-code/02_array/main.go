@@ -196,6 +196,65 @@ func searchMatrix1(matrix [][]int, target int) bool {
 	return false
 }
 
+// 560 // 和为 K 的子数组 https://leetcode.cn/problems/subarray-sum-equals-k/description/
+func subarraySum(nums []int, k int) int {
+	count := 0
+	sum := 0
+	m := make(map[int]int)
+	m[0] = 1 // 初始化前缀和为0的情况
+	for _, num := range nums {
+		sum += num
+		if v, ok := m[sum-k]; ok {
+			count += v // 如果存在前缀和为 sum-k 的情况，则说明找到了一个子数组
+		}
+		m[sum]++ // 更新前缀和的计数
+	}
+	return count
+}
+
+// 238 // 除自身以外数组的乘积 https://leetcode.cn/problems/product-of-array-except-self/description/
+func productExceptSelf(nums []int) []int {
+	length := len(nums)
+	answer := make([]int, length)
+
+	// answer[i] 表示索引 i 左侧所有元素的乘积
+	// 因为索引为 '0' 的元素左侧没有元素， 所以 answer[0] = 1
+	answer[0] = 1
+	for i := 1; i < length; i++ {
+		answer[i] = nums[i-1] * answer[i-1]
+	}
+
+	// R 为右侧所有元素的乘积
+	// 刚开始右边没有元素，所以 R = 1
+	R := 1
+	for i := length - 1; i >= 0; i-- {
+		// 对于索引 i，左边的乘积为 answer[i]，右边的乘积为 R
+		answer[i] = answer[i] * R
+		// R 需要包含右边所有的乘积，所以计算下一个结果时需要将当前值乘到 R 上
+		R *= nums[i]
+	}
+	return answer
+}
+
+// 41 // 缺失的第一个正数 https://leetcode.cn/problems/first-missing-positive/description/
+func firstMissingPositive(nums []int) int {
+	n := len(nums)
+	for i := 0; i < n; i++ {
+		// 将 nums[i] 放到正确的位置上 即 nums[i] 应该在索引 nums[i]-1 的位置上
+		for nums[i] > 0 && nums[i] <= n && nums[nums[i]-1] != nums[i] {
+			nums[nums[i]-1], nums[i] = nums[i], nums[nums[i]-1]
+		}
+	}
+
+	// 遍历数组，找到第一个不满足条件的索引
+	for i := 0; i < n; i++ {
+		if nums[i] != i+1 {
+			return i + 1
+		}
+	}
+	return n + 1 // 如果所有位置都满足条件，则返回 n+1
+}
+
 func main() {
 	fmt.Print(removeDuplicates([]int{1, 1, 1, 2, 2, 3}))
 	moveZeroes([]int{1, 1, 1, 0, 2, 2, 3})
@@ -203,4 +262,13 @@ func main() {
 	fmt.Print(twoSum([]int{1, 2, 3, 4}, 5))
 	fmt.Print(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
 	rotate([][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}})
+
+	productExceptSelf([]int{1, 2, 3, 4})
+	firstMissingPositive([]int{1, 2, 0})
+	firstMissingPositive([]int{-1, 4, 2, 1, 9, 10})
+	spiralOrder([][]int{
+		{1, 2, 3},
+		{4, 5, 6},
+		{7, 8, 9},
+	})
 }

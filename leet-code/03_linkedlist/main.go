@@ -23,8 +23,12 @@ func reverseList(head *ListNode) *ListNode {
 }
 
 // 25: K 个一组翻转链表 https://leetcode.cn/problems/reverse-nodes-in-k-group/description/
+// getEnd 获取从头节点开始的第k个节点
+// head: 链表头节点
+// k: 要查找的位置
+// 返回: 第k个节点，如果链表长度小于k则返回nil
 func getEnd(head *ListNode, k int) *ListNode {
-	for head != nil {
+	for head != nil && k != 0 {
 		k--
 		if k == 0 {
 			return head
@@ -34,34 +38,48 @@ func getEnd(head *ListNode, k int) *ListNode {
 	return nil
 }
 
-func reverse(head *ListNode, stop *ListNode) {
-	last := head
+// reverse 反转从头节点到stop节点之前的链表
+// head: 要反转的链表头节点
+// stop: 反转的终止节点（不包含在反转范围内）
+func reverse(head, stop *ListNode) {
+	var last *ListNode
 	for head != stop {
-		nextHead := head.Next
+		next := head.Next
 		head.Next = last
 		last = head
-		head = nextHead
+		head = next
 	}
 }
 
+// reverseKGroup K个一组反转链表
+// head: 链表头节点
+// k: 每组的大小
+// 返回: 反转后的链表头节点
 func reverseKGroup(head *ListNode, k int) *ListNode {
-	protect := &ListNode{Val: 0, Next: head}
-	last := protect
+	protect := &ListNode{Val: 0, Next: head} // 哨兵节点，用于处理头节点的反转
+	last := protect                          // last指向已处理部分的最后一个节点
+
 	for head != nil {
+		// 查找当前组的结束节点
 		end := getEnd(head, k)
 		if end == nil {
-			break
+			break // 如果剩余节点不足k个，保持原有顺序
 		}
 
-		nextGroupHead := end.Next
+		nextGroupHead := end.Next // 保存下一组的起始节点
 
+		// 反转当前组的节点
 		reverse(head, nextGroupHead)
 
-		last.Next = end
-		head.Next = nextGroupHead
-		last = head
-		head = nextGroupHead
+		// 将反转后的部分连接到链表中
+		last.Next = end           // 前一组的尾节点指向反转后的头节点
+		head.Next = nextGroupHead // 反转后的尾节点指向下一组的头节点
+
+		// 更新指针，准备处理下一组
+		last = head          // 更新last为当前组的尾节点
+		head = nextGroupHead // 移动到下一组的开始位置
 	}
+
 	return protect.Next
 }
 
@@ -394,6 +412,108 @@ func swapPairs(head *ListNode) *ListNode {
 	}
 
 	return dummy.Next
+}
+
+// 138 . 复制带随机指针的链表 https://leetcode.cn/problems/copy-list-with-random-pointer/description/
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+// copyRandomList 复制一个包含随机指针的链表
+// 算法分三步：
+// 1. 在每个节点后创建其复制节点
+// 2. 处理随机指针
+// 3. 分离原链表和复制的链表
+func copyRandomList(head *Node) *Node {
+	if head == nil {
+		return nil
+	}
+
+	// 第一步：在每个节点后创建其复制节点
+	// 例如：1->2->3 变成 1->1'->2->2'->3->3'
+	for node := head; node != nil; node = node.Next.Next {
+		node.Next = &Node{Val: node.Val, Next: node.Next}
+	}
+
+	// 第二步：处理随机指针
+	// 利用 N 和 N' 的关系：N'.random = N.random.next
+	// node是原始节点，node.Next是其复制节点
+	// node.Random是原始节点的随机指针指向的节点
+	// node.Random.Next就是原始节点随机指针指向节点的复制节点
+	for node := head; node != nil; node = node.Next.Next {
+		if node.Random != nil {
+			node.Next.Random = node.Random.Next
+		}
+	}
+
+	// 第三步：分离原链表和复制的链表
+	headNew := head.Next // 保存新链表的头节点
+	for node := head; node != nil; node = node.Next {
+		nodeNew := node.Next       // 当前节点的复制节点
+		node.Next = node.Next.Next // 恢复原链表的 next 指针
+		if nodeNew.Next != nil {
+			nodeNew.Next = nodeNew.Next.Next // 建立新链表的 next 指针
+		}
+	}
+
+	return headNew
+}
+
+// 19. 删除链表的倒数第 N 个结点 https://leetcode.cn/problems/remove-nth-node-from-end-of-list/description/
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	if head == nil || n <= 0 {
+		return head
+	}
+
+	dummy := &ListNode{Next: head}
+	slow, fast := dummy, dummy
+
+	// 快指针先走 n+1 步
+	for i := 0; i < n+1; i++ {
+		if fast != nil {
+			fast = fast.Next
+		}
+	}
+
+	// 快慢指针一起走，直到快指针到达链表末尾
+	for fast != nil {
+		slow = slow.Next
+		fast = fast.Next
+	}
+
+	// 删除倒数第 n 个节点
+	slow.Next = slow.Next.Next
+
+	return dummy.Next
+}
+
+func removeNthFromEnd1(head *ListNode, n int) *ListNode {
+
+	length := getListLen(head)
+	dummy := &ListNode{0, head}
+	cur := dummy
+	for i := 0; i < length-n; i++ {
+		cur = cur.Next
+	}
+	cur.Next = cur.Next.Next
+	return dummy.Next
+
+}
+
+func getListLen(head *ListNode) int {
+	count := 0
+	if head == nil {
+		return count
+	}
+
+	for head != nil {
+		count += 1
+		head = head.Next
+	}
+
+	return count
 }
 
 func main() {

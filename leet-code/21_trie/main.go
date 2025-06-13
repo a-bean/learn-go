@@ -1,6 +1,6 @@
 package main
 
-// 208 https://leetcode.cn/problems/implement-trie-prefix-tree/description/
+// 208 实现 Trie (前缀树) https://leetcode.cn/problems/implement-trie-prefix-tree/description/
 
 type Trie struct {
 	isWord   bool

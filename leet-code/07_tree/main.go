@@ -290,24 +290,19 @@ func max(a, b int) int {
 // 236 最近公共祖先 https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
 
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-	// 递归来做
-	if root == nil || root == p || root == q {
+	if root == nil || p == root || q == root {
 		return root
 	}
 
-	left := lowestCommonAncestor(root.Left, p, q)
-	right := lowestCommonAncestor(root.Right, p, q)
-
-	// 当左右子树均不为空时，返回当前节点
-	if left != nil && right != nil {
-		return root
+	l := lowestCommonAncestor(root.Left, p, q)
+	r := lowestCommonAncestor(root.Right, p, q)
+	if l == nil {
+		return r
 	}
-
-	if left != nil {
-		return left
+	if r == nil {
+		return l
 	}
-
-	return right
+	return root
 }
 
 // 437 路径总和 III https://leetcode.cn/problems/path-sum-iii/description/
@@ -344,6 +339,7 @@ func countPaths(node *TreeNode, targetSum int) int {
 	return count
 }
 
+<<<<<<< HEAD
 // 101 对称二叉树 https://leetcode.cn/problems/symmetric-tree/description/?envType=study-plan-v2&envId=top-100-liked
 func isSymmetric(root *TreeNode) bool {
 	return check(root.Left, root.Right)
@@ -378,17 +374,101 @@ func sortedArrayToBSTHelper(nums []int, left, right int) *TreeNode {
 }
 
 // 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
+=======
+func pathSum1(root *TreeNode, targetSum int) (ans int) {
+	// 存储前缀和的出现次数，初始化时前缀和 0 出现 1 次
+	preSum := map[int64]int{0: 1}
+
+	// 定义 DFS 函数，node 是当前节点，curr 是从根到当前节点的路径和
+	var dfs func(*TreeNode, int64)
+	dfs = func(node *TreeNode, curr int64) {
+		if node == nil {
+			return
+		}
+
+		// 将当前节点的值加到路径和中
+		curr += int64(node.Val)
+
+		// 如果存在一个前缀和，使得 curr - 该前缀和 = targetSum
+		// 说明找到了一条符合要求的路径
+		ans += preSum[curr-int64(targetSum)]
+
+		// 将当前前缀和加入 map
+		preSum[curr]++
+
+		// 递归遍历左右子树
+		dfs(node.Left, curr)
+		dfs(node.Right, curr)
+
+		// 回溯：将当前前缀和从 map 中删除
+		preSum[curr]--
+	}
+
+	dfs(root, 0)
+	return
+}
+
+// 124 二叉树中的最大路径和 https://leetcode.cn/problems/binary-tree-maximum-path-sum/description/
+func maxPathSum(root *TreeNode) int {
+	maxSum := math.MinInt64
+
+	var dfs func(*TreeNode) int
+	dfs = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+
+		// 计算左子树和右子树的最大路径和
+		left := max(0, dfs(node.Left))   // 如果左子树的路径和为负，则不考虑它
+		right := max(0, dfs(node.Right)) // 同理
+
+		// 更新全局最大路径和
+		maxSum = max(maxSum, node.Val+left+right)
+
+		// 返回当前节点的最大路径和
+		return node.Val + max(left, right)
+	}
+
+	dfs(root)
+	return maxSum
+}
+
+// 101. 对称二叉树 https://leetcode.cn/problems/symmetric-tree/description/
+func isSymmetric(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+	return isMirror(root.Left, root.Right)
+}
+
+func isMirror(left, right *TreeNode) bool {
+	if left == nil && right == nil {
+		return true
+	}
+	if left == nil || right == nil {
+		return false
+	}
+	return left.Val == right.Val && isMirror(left.Left, right.Right) && isMirror(left.Right, right.Left)
+}
+
+// 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/description/
+>>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 func flatten(root *TreeNode) {
 	if root == nil {
 		return
 	}
 
+<<<<<<< HEAD
 	// 先将左右子树展开
+=======
+	// 先递归处理左子树和右子树
+>>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 	flatten(root.Left)
 	flatten(root.Right)
 
 	// 将左子树接到右子树上
 	if root.Left != nil {
+<<<<<<< HEAD
 		// 找到左子树的最右节点
 		rightmost := root.Left
 		for rightmost.Right != nil {
@@ -399,6 +479,18 @@ func flatten(root *TreeNode) {
 		// 将左子树设为右子树
 		root.Right = root.Left
 		root.Left = nil
+=======
+		right := root.Right // 保存右子树
+		root.Right = root.Left
+		root.Left = nil // 清空左子树
+
+		// 找到新的右子树的最右节点，将原来的右子树接到它的右边
+		current := root.Right
+		for current.Right != nil {
+			current = current.Right
+		}
+		current.Right = right
+>>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 	}
 }
 

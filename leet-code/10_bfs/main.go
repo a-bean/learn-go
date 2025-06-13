@@ -258,15 +258,10 @@ func orangesRotting(grid [][]int) int {
 		// 检查四个方向的相邻橘子
 		for k := 0; k < 4; k++ {
 			nr, nc := r+dr[k], c+dc[k]
-			// 如果相邻位置有新鲜橘子（值为1）且在网格范围内
 			if nr >= 0 && nr < R && nc >= 0 && nc < C && grid[nr][nc] == 1 {
-				// 将这个橘子标记为腐烂
 				grid[nr][nc] = 2
-				// 编码新位置
 				ncode := nr*C + nc
-				// 将新腐烂的橘子加入队列
 				queue = append(queue, ncode)
-				// 更新这个橘子腐烂的时间（当前橘子的时间+1）
 				depth[ncode] = depth[code] + 1
 				ans = depth[ncode]
 			}

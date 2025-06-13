@@ -328,4 +328,5 @@ func main() {
 	fmt.Println(trap([]int{2, 1, 2}))
 	nextGreaterElement([]int{4, 1, 2}, []int{1, 3, 4, 2})
 	calculate("3+2*2")
+	decodeString("3[a2[c]]")
 }

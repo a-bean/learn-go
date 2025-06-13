@@ -205,6 +205,143 @@ func maxHeapify(a []int, i, heapSize int) {
 	}
 }
 
+// IntHeap 是一个由 int 组成的最小堆
+type IntHeap []int
+
+func (h IntHeap) Len() int            { return len(h) }
+func (h IntHeap) Less(i, j int) bool  { return h[i] < h[j] }
+func (h IntHeap) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *IntHeap) Push(x interface{}) { *h = append(*h, x.(int)) }
+func (h *IntHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+// 295 数据流的中位数 https://leetcode.cn/problems/find-median-from-data-stream/description/
+
+// 维护两个堆：最大堆和最小堆
+type MedianFinder struct {
+	maxHeap *IntHeap // 最大堆，存储较小的一半
+	minHeap *IntHeap // 最小堆，存储较大的一半
+}
+
+func Constructor() MedianFinder {
+	return MedianFinder{
+		maxHeap: &IntHeap{},
+		minHeap: &IntHeap{},
+	}
+}
+func (this *MedianFinder) AddNum(num int) {
+	// 将新数添加到最大堆
+	heap.Push(this.maxHeap, num)
+	// 确保最大堆的最大值不大于最小堆的最小值
+	if this.maxHeap.Len() > 0 && this.minHeap.Len() > 0 && (*this.maxHeap)[0] > (*this.minHeap)[0] {
+		maxVal := heap.Pop(this.maxHeap).(int)
+		minVal := heap.Pop(this.minHeap).(int)
+		heap.Push(this.maxHeap, minVal)
+		heap.Push(this.minHeap, maxVal)
+	}
+
+	// 平衡两个堆的大小，最大堆可以多一个元素
+	if this.maxHeap.Len() > this.minHeap.Len()+1 {
+		val := heap.Pop(this.maxHeap).(int)
+		heap.Push(this.minHeap, val)
+	} else if this.minHeap.Len() > this.maxHeap.Len() {
+		val := heap.Pop(this.minHeap).(int)
+		heap.Push(this.maxHeap, val)
+	}
+}
+
+// FindMedian 返回当前数据流的中位数
+func (this *MedianFinder) FindMedian() float64 {
+	if this.maxHeap.Len() > this.minHeap.Len() {
+		return float64((*this.maxHeap)[0])
+	}
+	return float64((*this.maxHeap)[0]+(*this.minHeap)[0]) / 2.0
+}
+
+type Heap struct {
+	heaps  [][2]int
+	lessFn func(a, b int) bool
+}
+
+func (this *Heap) swap(i, j int) {
+	this.heaps[i], this.heaps[j] = this.heaps[j], this.heaps[i]
+}
+
+func (this *Heap) up(child int) {
+	if child <= 0 {
+		return
+	}
+
+	parent := (child - 1) >> 1
+	if this.lessFn(this.heaps[parent][1], this.heaps[child][1]) {
+		return
+	}
+	this.swap(parent, child)
+	this.up(parent)
+}
+
+func (this *Heap) Push(val [2]int) {
+	this.heaps = append(this.heaps, val)
+	this.up(len(this.heaps) - 1)
+}
+
+func (this *Heap) down(parent int) {
+	lessIdx := parent
+	lChild, rChild := parent<<1+1, parent<<1+2
+	if lChild < len(this.heaps) && this.lessFn(this.heaps[lChild][1], this.heaps[lessIdx][1]) {
+		lessIdx = lChild
+	}
+
+	if rChild < len(this.heaps) && this.lessFn(this.heaps[rChild][1], this.heaps[lessIdx][1]) {
+		lessIdx = rChild
+	}
+
+	if lessIdx == parent {
+		return
+	}
+
+	this.swap(lessIdx, parent)
+	this.down(lessIdx)
+}
+
+func (this *Heap) Pop() int {
+	val := this.heaps[0]
+	this.swap(0, len(this.heaps)-1)
+	this.heaps = this.heaps[:len(this.heaps)-1]
+	this.down(0)
+	return val[0]
+}
+
+func topKFrequent(nums []int, k int) []int {
+	m := make(map[int]int, 0)
+	for _, val := range nums {
+		m[val]++
+	}
+
+	less := func(a, b int) bool {
+		return a < b
+	}
+	heap := &Heap{lessFn: less}
+
+	for key, value := range m {
+		heap.Push([2]int{key, value})
+		if len(heap.heaps) > k {
+			heap.Pop()
+		}
+	}
+	ret := make([]int, k)
+	for i := 0; i < k; i++ {
+		ret[k-i-1] = heap.Pop()
+	}
+	return ret
+
+}
+
 func main() {
 	mergeKLists([]*ListNode{
 		{Val: 1, Next: &ListNode{Val: 4, Next: &ListNode{Val: 5}}},
