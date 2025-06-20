@@ -339,42 +339,6 @@ func countPaths(node *TreeNode, targetSum int) int {
 	return count
 }
 
-<<<<<<< HEAD
-// 101 对称二叉树 https://leetcode.cn/problems/symmetric-tree/description/?envType=study-plan-v2&envId=top-100-liked
-func isSymmetric(root *TreeNode) bool {
-	return check(root.Left, root.Right)
-}
-
-func check(p, q *TreeNode) bool {
-	if p == nil && q == nil {
-		return true
-	}
-	if p == nil || q == nil {
-		return false
-	}
-
-	return p.Val == q.Val && check(q.Left, p.Right) && check(q.Right, p.Left)
-}
-
-// 108 将有序数组转换为二叉搜索树 https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/
-func sortedArrayToBST(nums []int) *TreeNode {
-	return sortedArrayToBSTHelper(nums, 0, len(nums)-1)
-}
-
-func sortedArrayToBSTHelper(nums []int, left, right int) *TreeNode {
-	if left > right {
-		return nil
-	}
-
-	mid := (left + right) / 2
-	root := &TreeNode{Val: nums[mid]}
-	root.Left = sortedArrayToBSTHelper(nums, left, mid-1)
-	root.Right = sortedArrayToBSTHelper(nums, mid+1, right)
-	return root
-}
-
-// 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
-=======
 func pathSum1(root *TreeNode, targetSum int) (ans int) {
 	// 存储前缀和的出现次数，初始化时前缀和 0 出现 1 次
 	preSum := map[int64]int{0: 1}
@@ -452,34 +416,17 @@ func isMirror(left, right *TreeNode) bool {
 }
 
 // 114 二叉树展开为链表 https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/description/
->>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 func flatten(root *TreeNode) {
 	if root == nil {
 		return
 	}
 
-<<<<<<< HEAD
-	// 先将左右子树展开
-=======
 	// 先递归处理左子树和右子树
->>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 	flatten(root.Left)
 	flatten(root.Right)
 
 	// 将左子树接到右子树上
 	if root.Left != nil {
-<<<<<<< HEAD
-		// 找到左子树的最右节点
-		rightmost := root.Left
-		for rightmost.Right != nil {
-			rightmost = rightmost.Right
-		}
-		// 将右子树接到左子树的最右节点
-		rightmost.Right = root.Right
-		// 将左子树设为右子树
-		root.Right = root.Left
-		root.Left = nil
-=======
 		right := root.Right // 保存右子树
 		root.Right = root.Left
 		root.Left = nil // 清空左子树
@@ -490,7 +437,6 @@ func flatten(root *TreeNode) {
 			current = current.Right
 		}
 		current.Right = right
->>>>>>> 6f1e0346d92f60b8742465d2e7028edd4bb01070
 	}
 }
 
@@ -509,5 +455,4 @@ func main() {
 
 	lowestCommonAncestor(root, root.Left, root.Right)
 	pathSum(root, 8)
-	sortedArrayToBST([]int{-10, -3, 0, 5, 9})
 }
